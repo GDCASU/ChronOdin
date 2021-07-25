@@ -8,6 +8,11 @@ public class SlowDownSpeedUpObject : MonoBehaviour
     private bool slowing = false;
     private bool speedingUp = false;
     private float maxSpeed = 1f;
+    private float minimumMagnitude = 20f;
+    private float speedUpFactor = 2f;
+    private WaitForSeconds waitTime = new WaitForSeconds(5f);
+    private float radius = 100;
+    private float power = 1f;
 
     //Both coroutines are called from update to make sure they overwrite the natural velocity
     public void Update()
@@ -23,21 +28,24 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         if (slowing)
         {
             Rigidbody rid = gameObject.GetComponent<Rigidbody>();
-            //this can get removed in the game, this is only just so that the block falls when shot with a raycast
+            //these two lines can get removed in the game, this is only just so that the block falls when shot with a raycast and/or has a force applied laterally
             rid.useGravity = true;
-           
+            rid.AddExplosionForce(power, transform.forward, radius, 0, ForceMode.Impulse);
+
             //changes to velocity are only made if the magnitude is greater than 1, same for the angular velocity
-            if (rid.velocity.magnitude > maxSpeed)
-                rid.velocity = rid.velocity.normalized * maxSpeed;
-            if (rid.angularVelocity.magnitude > maxSpeed)
+            if (rid.velocity.sqrMagnitude > maxSpeed)
+                rid.velocity *= 0.90f;
+
+            // the same approach to velocity does not have the intended effect, here we normalize the vector and multiply by 1 instead
+            if (rid.angularVelocity.sqrMagnitude > maxSpeed)
                 rid.angularVelocity = rid.angularVelocity.normalized * maxSpeed;
 
+
+
             //objects are not to be slowed permanently, hence the coroutine timer to have the effect wear off
-            yield return new WaitForSeconds(slowDuration);
+            yield return waitTime;
             slowing = false;
         }
-        else
-            yield return new WaitForSeconds(0);
     }
 
      IEnumerator Speed()
@@ -46,19 +54,18 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         {
             Rigidbody rid = gameObject.GetComponent<Rigidbody>();
             rid.useGravity = true;
+            rid.AddExplosionForce(power, transform.forward, radius, 0F, ForceMode.Impulse);
             // 20 is a close whole number approximation of two times 9.8 (gravity is 9.8 meters per second per second)
-            if(rid.velocity.magnitude < 20)
-                rid.velocity *= 2;
-            if(rid.angularVelocity.magnitude < 20)    
-                rid.angularVelocity *= 2;
+            if (rid.velocity.magnitude < minimumMagnitude)
+                rid.velocity *= speedUpFactor;
+            if(rid.angularVelocity.magnitude < minimumMagnitude)    
+                rid.angularVelocity *= speedUpFactor;
             
 
 
-            yield return new WaitForSeconds(slowDuration);
+            yield return waitTime;
             speedingUp = false;
         }
-        else
-            yield return new WaitForSeconds(0);
     }
 
     public void SpeedUp()
