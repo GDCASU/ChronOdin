@@ -13,38 +13,53 @@ public class SlowDownSpeedUpObject : MonoBehaviour
     private WaitForSeconds waitTime = new WaitForSeconds(5f);
     private float radius = 100;
     private float power = 1f;
+    private bool slowing2 = false;
+    [SerializeField] float slowDownFactor = 0.5f;
 
     //Both coroutines are called from update to make sure they overwrite the natural velocity
+    Rigidbody rb;
+    private void Start()
+    {
+        rb = gameObject.GetComponent<Rigidbody>();
+    }
     public void Update()
     {
         StartCoroutine(Slow());
 
         StartCoroutine(Speed());
     }
-
+    private void FixedUpdate()
+    {
+        
+        if(slowing2)
+        {
+                rb.AddForce(Physics.gravity * 0.25f, ForceMode.Acceleration);
+            
+        }
+    }
     IEnumerator Slow()
     {
-        //entering the slow method does nothing if it's not currently slowing
         if (slowing)
         {
-            Rigidbody rid = gameObject.GetComponent<Rigidbody>();
-            //these two lines can get removed in the game, this is only just so that the block falls when shot with a raycast and/or has a force applied laterally
-            rid.useGravity = true;
-            rid.AddExplosionForce(power, transform.forward, radius, 0, ForceMode.Impulse);
+ 
+            slowing2 = true;
 
-            //changes to velocity are only made if the magnitude is greater than 1, same for the angular velocity
-            if (rid.velocity.sqrMagnitude > maxSpeed)
-                rid.velocity *= 0.90f;
+                rb.useGravity = false;
+                rb.velocity *= slowDownFactor;
+                slowing = false;
 
-            // the same approach to velocity does not have the intended effect, here we normalize the vector and multiply by 1 instead
-            if (rid.angularVelocity.sqrMagnitude > maxSpeed)
-                rid.angularVelocity = rid.angularVelocity.normalized * maxSpeed;
+            if (rb.angularVelocity.sqrMagnitude > maxSpeed)
+                rb.angularVelocity = rb.angularVelocity.normalized * maxSpeed;
 
 
 
             //objects are not to be slowed permanently, hence the coroutine timer to have the effect wear off
             yield return waitTime;
-            slowing = false;
+            Destroy(gameObject);
+            slowing2 = false;
+            rb.useGravity = true;
+            
+
         }
     }
 
@@ -52,14 +67,13 @@ public class SlowDownSpeedUpObject : MonoBehaviour
     {
         if (speedingUp)
         {
-            Rigidbody rid = gameObject.GetComponent<Rigidbody>();
-            rid.useGravity = true;
-            rid.AddExplosionForce(power, transform.forward, radius, 0F, ForceMode.Impulse);
+            rb.useGravity = true;
+            rb.AddExplosionForce(power, transform.forward, radius, 0F, ForceMode.Impulse);
             // 20 is a close whole number approximation of two times 9.8 (gravity is 9.8 meters per second per second)
-            if (rid.velocity.magnitude < minimumMagnitude)
-                rid.velocity *= speedUpFactor;
-            if(rid.angularVelocity.magnitude < minimumMagnitude)    
-                rid.angularVelocity *= speedUpFactor;
+            if (rb.velocity.magnitude < minimumMagnitude)
+                rb.velocity *= speedUpFactor;
+            if(rb.angularVelocity.magnitude < minimumMagnitude)    
+                rb.angularVelocity *= speedUpFactor;
             
 
 
