@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 664090465299294130}
   - component: {fileID: 664090465299294141}
   - component: {fileID: 664090465299294140}
-  - component: {fileID: 664090465299294128}
+  - component: {fileID: 776553944539402969}
   m_Layer: 0
   m_Name: TestCube
   m_TagString: Untagged
@@ -113,7 +113,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &664090465299294128
+--- !u!114 &776553944539402969
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,8 +122,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 664090465299294142}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e402f182bfe19004588e0e21fb2edf97, type: 3}
+  m_Script: {fileID: 11500000, guid: 6eb729966dd582541943ff81e940ded4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rewindTime: 2
-  timeBetweenSaves: 0.2
+  freezeTime: 5
+  freezeCooldown: 5
