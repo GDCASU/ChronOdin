@@ -28,35 +28,32 @@ public class SlowDownSpeedUpObject : MonoBehaviour
 
         if (speedingUp)
         {
-            rb.AddForce(Physics.gravity / (speedUpFactor * speedUpFactor), ForceMode.Acceleration);
+            rb.AddForce(Physics.gravity * (speedUpFactor * speedUpFactor), ForceMode.Acceleration);
 
         }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            SlowDown();
+        }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            SpeedUp();
+        }
     }
+    // Save velocity and turn off gravity for the object reduce velocity and angular velocity
     IEnumerator Slow()
     {
        
-        //this boolean allows us to keep applying the artificial gravity while applying the effect
         slowing = true;
-        //this has to be here or you get a null reference from the alt mode launchers
-        rb = gameObject.GetComponent<Rigidbody>();
-        //here we actually shut off the gravity for the object for the length of the effect
         rb.useGravity = false;
-        //we save the original velicity to reinstate after the effect wears off, if that is desired. if not this line can be commented out
         preVelocity = rb.velocity;
-        // we actually slow the cube
         rb.velocity *= slowDownFactor;
-        // we slow the rotational velocity of the cube
         rb.angularVelocity *= slowDownFactor;
-            
 
-
-
-            //objects are not to be slowed permanently, hence the coroutine timer to have the effect wear off
-            yield return waitTime;
-            //we revert our changes once the effect wears off
-            rb.velocity = preVelocity;
-            slowing = false;
-            rb.useGravity = true;
+        yield return waitTime;
+        rb.velocity = preVelocity;
+        slowing = false;
+        rb.useGravity = true;
             
 
     }
@@ -64,14 +61,11 @@ public class SlowDownSpeedUpObject : MonoBehaviour
      IEnumerator Speed()
     {
         //all tdhe same stuff as the Slow method but the opposite to have a speedup effect
-        rb = gameObject.GetComponent<Rigidbody>();
         speedingUp = true;
         rb.useGravity = false;
         preVelocity = rb.velocity;
-        rb.velocity /= slowDownFactor;
-        rb.angularVelocity /= slowDownFactor;
-            
-
+        rb.velocity *= speedUpFactor;
+        rb.angularVelocity *= speedUpFactor;
 
         yield return waitTime;
         rb.velocity = preVelocity;

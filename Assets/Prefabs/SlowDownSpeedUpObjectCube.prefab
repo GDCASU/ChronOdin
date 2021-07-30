@@ -11,12 +11,11 @@ GameObject:
   - component: {fileID: 881074322620961589}
   - component: {fileID: 881074322620961586}
   - component: {fileID: 881074322620961587}
-  - component: {fileID: 881074322620961550}
   - component: {fileID: 881074322620961588}
   - component: {fileID: 881074322620961584}
   - component: {fileID: 881074322620961585}
   m_Layer: 0
-  m_Name: Cube (1)
+  m_Name: SlowDownSpeedUpObjectCube
   m_TagString: targetObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,18 +84,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &881074322620961550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 881074322620961551}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d196946c9d5ea194cae560dc658f8bae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &881074322620961588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,6 +96,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a70501f4db2fb53478deaf29ae0e06fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slowDownFactor: 0.5
+  speedUpFactor: 2
 --- !u!65 &881074322620961584
 BoxCollider:
   m_ObjectHideFlags: 0
