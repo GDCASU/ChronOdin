@@ -56,6 +56,7 @@ public class PlayerReverse : MonoBehaviour
             isAbleToMoveBack = false;
             isCountingDown = true;
             StartCoroutine(ReversePosition());
+            StartCoroutine(ReversePositionCooldown());
         }
 
         if (isCountingDown && reverseTime > 0.0f)
@@ -110,7 +111,6 @@ public class PlayerReverse : MonoBehaviour
         this.GetComponent<Rigidbody>().Sleep();
 
         StartCoroutine(AddPosition());
-        StartCoroutine(ReversePositionCooldown());
     }
 
     /// <summary>

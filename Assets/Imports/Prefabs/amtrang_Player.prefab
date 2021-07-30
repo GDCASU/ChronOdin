@@ -562,7 +562,7 @@ MonoBehaviour:
   canReverseText: {fileID: 0}
   timeBetweenPositionTracking: 0.1
   reverseTimeLength: 1
-  reverseCooldown: 1
+  reverseCooldown: 3
 --- !u!1 &6671809769120853842
 GameObject:
   m_ObjectHideFlags: 0

@@ -50,8 +50,8 @@ public class GameManager : MonoBehaviour
     private void LateUpdate()
     {
         int enemyCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
-        if (enemyCount == 0)
-            winText.gameObject.SetActive(true);
+        /*if (enemyCount == 0)
+            winText.gameObject.SetActive(true);*/
     }
 
     /// <summary>
