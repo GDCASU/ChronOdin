@@ -125,5 +125,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e402f182bfe19004588e0e21fb2edf97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rewindTime: 2
+  maxRewindTime: 5
   timeBetweenSaves: 0.2
