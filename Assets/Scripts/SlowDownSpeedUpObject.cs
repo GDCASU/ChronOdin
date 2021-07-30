@@ -31,14 +31,14 @@ public class SlowDownSpeedUpObject : MonoBehaviour
             rb.AddForce(Physics.gravity * (speedUpFactor * speedUpFactor), ForceMode.Acceleration);
 
         }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            SlowDown();
-        }
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            SpeedUp();
-        }
+        //if (Input.GetKeyDown(KeyCode.E))
+        //{
+        //    SlowDown();
+        //}
+        //if (Input.GetKeyDown(KeyCode.Q))
+        //{
+        //    SpeedUp();
+        //}
     }
     // Save velocity and turn off gravity for the object reduce velocity and angular velocity
     IEnumerator Slow()
