@@ -4,17 +4,13 @@ using UnityEngine;
 
 public class SlowDownSpeedUpObject : MonoBehaviour
 {
-    private float slowDuration = 5;
     private bool speedingUp = false;
-    private float maxSpeed = 1f;
-    private float minimumMagnitude = 20f;
-    private float speedUpFactor = 2f;
     private WaitForSeconds waitTime = new WaitForSeconds(5f);
     private bool slowing = false;
     private Vector3 preVelocity;
     [SerializeField] float slowDownFactor = 0.5f;
+    [SerializeField] float speedUpFactor = 2f;
 
-    //Both coroutines are called from update to make sure they overwrite the natural velocity
     Rigidbody rb;
     private void Start()
     {
@@ -23,37 +19,41 @@ public class SlowDownSpeedUpObject : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
+        // this adds artificial gravity since we are disabling the in game gravity as part of acheiving our effect
         if(slowing)
         {
-                rb.AddForce(Physics.gravity * 0.25f, ForceMode.Acceleration);
+            rb.AddForce(Physics.gravity * (slowDownFactor * slowDownFactor), ForceMode.Acceleration);
             
         }
 
         if (speedingUp)
         {
-            rb.AddForce(Physics.gravity / 0.25f, ForceMode.Acceleration);
+            rb.AddForce(Physics.gravity / (speedUpFactor * speedUpFactor), ForceMode.Acceleration);
 
         }
     }
     IEnumerator Slow()
     {
        
- 
-            slowing = true;
-
-            rb.useGravity = false;
-            preVelocity = rb.velocity;
-            rb.velocity *= slowDownFactor;
-
-            rb.angularVelocity *= slowDownFactor;
+        //this boolean allows us to keep applying the artificial gravity while applying the effect
+        slowing = true;
+        //this has to be here or you get a null reference from the alt mode launchers
+        rb = gameObject.GetComponent<Rigidbody>();
+        //here we actually shut off the gravity for the object for the length of the effect
+        rb.useGravity = false;
+        //we save the original velicity to reinstate after the effect wears off, if that is desired. if not this line can be commented out
+        preVelocity = rb.velocity;
+        // we actually slow the cube
+        rb.velocity *= slowDownFactor;
+        // we slow the rotational velocity of the cube
+        rb.angularVelocity *= slowDownFactor;
             
 
 
 
             //objects are not to be slowed permanently, hence the coroutine timer to have the effect wear off
             yield return waitTime;
-            //Destroy(gameObject);
+            //we revert our changes once the effect wears off
             rb.velocity = preVelocity;
             slowing = false;
             rb.useGravity = true;
@@ -63,11 +63,9 @@ public class SlowDownSpeedUpObject : MonoBehaviour
 
      IEnumerator Speed()
     {
+        //all tdhe same stuff as the Slow method but the opposite to have a speedup effect
+        rb = gameObject.GetComponent<Rigidbody>();
         speedingUp = true;
-        //if (rb.velocity.magnitude < minimumMagnitude)
-        //    rb.velocity *= speedUpFactor;
-        //if(rb.angularVelocity.magnitude < minimumMagnitude)    
-        //    rb.angularVelocity *= speedUpFactor;
         rb.useGravity = false;
         preVelocity = rb.velocity;
         rb.velocity /= slowDownFactor;
@@ -76,7 +74,6 @@ public class SlowDownSpeedUpObject : MonoBehaviour
 
 
         yield return waitTime;
-        //Destroy(gameObject);
         rb.velocity = preVelocity;
         rb.useGravity = true;
         speedingUp = false;
@@ -84,6 +81,7 @@ public class SlowDownSpeedUpObject : MonoBehaviour
 
     public void SpeedUp()
     {
+        //could not figure out how to call the coroutine directly from the PlayerController or Launcher class
         StartCoroutine(Speed());
     }
 
