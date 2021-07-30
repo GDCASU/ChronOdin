@@ -21,7 +21,7 @@ public class ObjectFreeze : MonoBehaviour
     [Tooltip("The duration the object can't be frozen after being unfrozen.")]
     private float freezeCooldown = 5f;
 
-    private bool canFreeze = true;  // Is the object unfrozen and is the cooldown inactive?
+    private bool canInitiateFreeze = true;  // Is the object unfrozen and is the cooldown inactive?
 
     private Rigidbody objectPhysics;  // for collecting and saving velocity and angular velocity
     private Vector3 unfrozenVelocity, unfrozenAngularVelocity;  // saved before freezing object
@@ -39,7 +39,7 @@ public class ObjectFreeze : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && canFreeze)
+        if (Input.GetKey(KeyCode.F) && canInitiateFreeze)
         {
             StartCoroutine(freezeObject());
         }
@@ -51,7 +51,7 @@ public class ObjectFreeze : MonoBehaviour
     /// </summary>
     private IEnumerator freezeObject()
     {
-        canFreeze = false;
+        canInitiateFreeze = false;
 
         unfrozenVelocity = objectPhysics.velocity;
         unfrozenAngularVelocity = objectPhysics.angularVelocity;
@@ -73,6 +73,6 @@ public class ObjectFreeze : MonoBehaviour
     private IEnumerator runCooldown()
     {
         yield return new WaitForSeconds(freezeCooldown);
-        canFreeze = true;
+        canInitiateFreeze = true;
     }
 }
