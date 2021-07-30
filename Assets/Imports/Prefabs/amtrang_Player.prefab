@@ -246,7 +246,7 @@ GameObject:
   - component: {fileID: 6670809608777602893}
   - component: {fileID: 1580510412006047333}
   m_Layer: 0
-  m_Name: Player
+  m_Name: amtrang_Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -561,7 +561,8 @@ MonoBehaviour:
   playerMovement: {fileID: 6703125390895891408}
   canReverseText: {fileID: 0}
   timeBetweenPositionTracking: 0.1
-  startReverseTime: 1
+  reverseTimeLength: 1
+  reverseCooldown: 1
 --- !u!1 &6671809769120853842
 GameObject:
   m_ObjectHideFlags: 0

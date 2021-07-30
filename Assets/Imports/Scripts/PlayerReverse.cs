@@ -12,7 +12,8 @@ public class PlayerReverse : MonoBehaviour
     public FirstPersonAIO playerMovement;
     public TextMeshProUGUI canReverseText;
     public float timeBetweenPositionTracking = 0.1f;
-    public float startReverseTime = 3.0f;
+    public float reverseTimeLength = 3.0f;
+    public float reverseCooldown = 1.0f;
 
     private List<Vector3> previousPositions;
     private List<Quaternion> previousRotations;
@@ -31,8 +32,8 @@ public class PlayerReverse : MonoBehaviour
         previousPositions = new List<Vector3>();
         previousRotations = new List<Quaternion>();
         playerRigidBody = GetComponent<Rigidbody>();
-        reverseTime = startReverseTime;
-        previousPositionsLimit = 90 * (int)startReverseTime;
+        reverseTime = reverseTimeLength;
+        previousPositionsLimit = 90 * (int)reverseTimeLength;
         isStorePosition = true;
         isAbleToMoveBack = true;
         isCountingDown = false;
@@ -138,9 +139,9 @@ public class PlayerReverse : MonoBehaviour
     /// <returns>Yields time before the cooldown ends.</returns>
     private IEnumerator ReversePositionCooldown()
     {
-        yield return new WaitForSeconds(startReverseTime);
+        yield return new WaitForSeconds(reverseCooldown);
         isAbleToMoveBack = true;
-        reverseTime = startReverseTime;
+        reverseTime = reverseTimeLength;
         canReverseText.SetText("Reverse is ready!");
     }
 }
