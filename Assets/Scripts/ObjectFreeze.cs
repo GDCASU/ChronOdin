@@ -1,10 +1,9 @@
 /*
- * Freezes the attached gameobject for a specified amount of time. After the object is unfrozen, it can not be frozen for a specified amount of time.
- * Right now, the freeze button is [F].
+ * Freezes the attached gameobject for a specified amount of time; cooldown activates right when the object freezes. After the object is unfrozen, it can not be frozen whilst the cooldown is active.
+ * The freeze button is [F].
  * 
  * Author: Cristion Dominguez
  * Date: 28 July 2021
- * 
  */
 
 using System.Collections;
@@ -18,8 +17,12 @@ public class ObjectFreeze : MonoBehaviour
     private float freezeTime = 5f;
 
     [SerializeField]
-    [Tooltip("The duration the object can't be frozen after being unfrozen.")]
+    [Tooltip("The duration the object can't be frozen after being frozen.")]
     private float freezeCooldown = 5f;
+
+    // For suspending coroutines.
+    private WaitForSeconds waitForFreezeTime;
+    private WaitForSeconds waitForFreezeCooldown;
 
     private bool canInitiateFreeze = true;  // Is the object unfrozen and is the cooldown inactive?
 
@@ -27,52 +30,54 @@ public class ObjectFreeze : MonoBehaviour
     private Vector3 unfrozenVelocity, unfrozenAngularVelocity;  // saved before freezing object
 
     /// <summary>
-    /// Gathers the rigidbody of the gameobject.
+    /// Gathers the rigidbody of the gameobject and assigns coroutine suspension times.
     /// </summary>
     private void Start()
     {
         objectPhysics = transform.GetComponent<Rigidbody>();
+
+        waitForFreezeTime = new WaitForSeconds(freezeTime);
+        waitForFreezeCooldown = new WaitForSeconds(freezeCooldown);
     }
 
     /// <summary>
-    /// Freezes the gameobject if the Player presses F, the object is unfrozen, and the cooldown is not active.
+    /// Freezes the gameobject if the Player presses F, the object is unfrozen, and the cooldown is inactive.
     /// </summary>
     private void Update()
     {
-        if (Input.GetKey(KeyCode.F) && canInitiateFreeze)
+        if (Input.GetKeyDown(KeyCode.F) && canInitiateFreeze)
         {
             StartCoroutine(freezeObject());
         }
     }
 
     /// <summary>
-    /// Freezes the gameobject, saving its velocity and angular velocity before doing so. After the freeze time is up, the velocity and angular velocity is returned to
-    /// the object, and the cooldown becomes active.
+    /// Freezes the gameobject and activates the cooldown, saving the object's velocity and angular velocity before doing so. After the freeze time is up, the velocity and angular
+    /// velocity is returned to the object.
     /// </summary>
     private IEnumerator freezeObject()
     {
         canInitiateFreeze = false;
+        StartCoroutine(RunCooldown());
 
         unfrozenVelocity = objectPhysics.velocity;
         unfrozenAngularVelocity = objectPhysics.angularVelocity;
         objectPhysics.isKinematic = true;
 
-        yield return new WaitForSeconds(freezeTime);
+        yield return waitForFreezeTime;
         
         objectPhysics.velocity = unfrozenVelocity;
         objectPhysics.angularVelocity = unfrozenAngularVelocity;
         objectPhysics.isKinematic = false;
-
-        StartCoroutine(runCooldown());
     }
 
     /// <summary>
     /// Denies the object from being frozen throughout the freeze cooldown.
     /// </summary>
     /// <returns></returns>
-    private IEnumerator runCooldown()
+    private IEnumerator RunCooldown()
     {
-        yield return new WaitForSeconds(freezeCooldown);
+        yield return waitForFreezeCooldown;
         canInitiateFreeze = true;
     }
 }
