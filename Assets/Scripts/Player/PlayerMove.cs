@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestMoveThree : MonoBehaviour
+public class PlayerMove : MonoBehaviour
 {
     #region Variables
     public enum PlayerState
