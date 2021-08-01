@@ -874,6 +874,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 296497971}
     m_Modifications:
+    - target: {fileID: 664090465299294128, guid: 699724161ac170f4b95476ce9ca1f8b7, type: 3}
+      propertyPath: rewindTime
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 664090465299294128, guid: 699724161ac170f4b95476ce9ca1f8b7, type: 3}
+      propertyPath: rewindCooldown
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 664090465299294142, guid: 699724161ac170f4b95476ce9ca1f8b7, type: 3}
       propertyPath: m_Name
       value: Cube

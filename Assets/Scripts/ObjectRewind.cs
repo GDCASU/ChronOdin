@@ -1,12 +1,7 @@
 ﻿/*
- * Records past references of an object at defined intervals after the object moves for the 1st time.
- * Holding [R] rewinds the object to its previous location.
- * Releasing [R] allows the object to move with forward time, inheriting velocity and angular velocity from the most recent reference.
- * A cooldown is then imposed on the rewinding mechanic for the object, which is determined by how long the Player rewound the object for.
- * 
- * Possible Improvements:
-    * Method or script to calculate the proper velocity and angular velocity of the object when time is moved forward.
-    * Record a reference of the object after cancelling rewind.
+ * Records past references of an object at defined intervals.
+ * Pressing [R] rewinds the object to the past references for a specified amount of time.
+ * Immediately after rewinding, a cooldown is activated, denying another rewind cycle throughout its duration.
  * 
  * Author: Cristion Dominguez
  * Date: 22 July 2021
@@ -38,8 +33,12 @@ public struct PastReference
 public class ObjectRewind : MonoBehaviour
 {
     [SerializeField]
-    [Tooltip("Total time the object can be rewound.")]
-    private float maxRewindTime = 2f;
+    [Tooltip("Time the object shall rewind for.")]
+    private float rewindTime = 2f;
+
+    [SerializeField]
+    [Tooltip("The duration the object can't enter another rewind cycle immediately after rewinding.")]
+    private float rewindCooldown = 2f;
 
     [SerializeField]
     [Tooltip("Time between saving object information for rewinding.")]
@@ -47,97 +46,85 @@ public class ObjectRewind : MonoBehaviour
 
     private List<PastReference> references;  // saved references of the object
     private Rigidbody objectPhysics;  // for gathering object velocity and angular velocity
+    private WaitForSeconds waitForCooldown;  // coroutine suspension time for cooldown
 
     private float maxReferences;  // max amount of references that can be saved
     private float timeSinceLastSave = 0f;  // time since the latest reference was saved
-    private float rewindCooldown = 0f;  //  cooldown after the rewind finishes
 
     private bool canInitiateRewind = true;  // Is the object moving with forward time and is the cooldown inactive?
     private bool isRewinding = false;  // Is the object rewinding?
-    private bool hasMoved = false;  // Has the object moved?    
 
     /// <summary>
-    /// Initializes reference list and object physics, calculates the max amount of references to be saved, and records the first reference.
+    /// Initializes reference list, object physics and coroutine suspension for cooldown; calculates the max amount of references to be saved;
+    /// records the first reference.
     /// </summary>
     private void Start()
     {
         references = new List<PastReference>();
         objectPhysics = transform.GetComponent<Rigidbody>();
+        waitForCooldown = new WaitForSeconds(rewindCooldown);
 
-        maxReferences =  Mathf.Round(maxRewindTime / timeBetweenSaves);
+        maxReferences =  Mathf.Round(rewindTime / timeBetweenSaves);
         Record();
     }
 
     /// <summary>
-    /// Rewinds the object if the Player hold down the rewind button and the object can start rewinding. Otherwise, ceases the object from rewinding.
+    /// Rewinds the object if the Player presses the rewind button and the object can enter a rewind cycle.
     /// </summary>
     private void Update()
     {
-        if(Input.GetKey(KeyCode.R) && canInitiateRewind)
+        if(Input.GetKeyDown(KeyCode.R) && canInitiateRewind)
         {
-            isRewinding = true;
             StartCoroutine(Rewind());
-        }
-        else if(Input.GetKeyUp(KeyCode.R))
-        {
-            isRewinding = false;
         }
     }
 
     /// <summary>
-    /// Records references for the object after it has moved and is not rewinding.
+    /// Records references for the object if it is not rewinding.
     /// </summary>
     public void FixedUpdate()
     {
-        // If the object has moved and is not rewinding, then update the time since the last reference save and once it surpasses the time between saves, record a reference and reset the time since last reference.
-        if (hasMoved && !isRewinding)
+        // If the object is not rewinding, then update the time since the last reference save.
+        // Once the time between saves has been reached, record a reference and reset the time since last reference.
+        if (!isRewinding)
         {
-            if(timeSinceLastSave < timeBetweenSaves)
+            if (timeSinceLastSave < timeBetweenSaves)
             {
                 timeSinceLastSave += Time.fixedDeltaTime;
             }
-            else if(timeSinceLastSave >= timeBetweenSaves)
+            else if (timeSinceLastSave >= timeBetweenSaves)
             {
                 Record();
                 timeSinceLastSave = 0f;
             }
         }
-        // Commence recording references when the object's velocity and angular velocity reach a certain magnitude.
-        else if (objectPhysics.velocity.magnitude >= 0.01 || objectPhysics.angularVelocity.magnitude >= 0.01)
-        {
-            hasMoved = true;
-        }
     }
 
     /// <summary>
-    /// Rewinds the object to previous references.
+    /// Rewinds the object to previous references whilst immediately activating the cooldown.
     /// </summary>
     private IEnumerator Rewind()
     {
-        // Do not allow another Rewind coroutine to run and reset the rewind cooldown.
+        // Do not allow another Rewind coroutine to run, disable reference recording, and activate the cooldown.
         canInitiateRewind = false;
-        rewindCooldown = 0f;
+        isRewinding = true;
+        objectPhysics.isKinematic = true;
+        StartCoroutine(ActivateCooldown());
 
         // Declare variables.
-        PastReference referenceToReach;
+        PastReference referenceToReach = references[references.Count - 1];
         Vector3 initialPosition, finalPosition;
         Quaternion initialRotation, finalRotation;
-        float elapsedTime = 0f;
-        float timeToPreviousReference;
         bool isFromAReference = false;
+        float timeToPreviousReference;
+        float elapsedTimeRewinding = 0f;
+        float elapsedTimeBetweenReferences = 0f;
 
-        // Save the object velocity and angular velocity before freezing the object.
-        Vector3 velocity = objectPhysics.velocity;
-        Vector3 angularVelocity = objectPhysics.angularVelocity;
-        objectPhysics.isKinematic = true;
-
-        // Whilst [R] is being held down and there are saved references, lerp the object's position and rotation to its past references.
-        while(isRewinding && references.Count > 0)
+        // Whilst there are saved references, lerp the object's position and rotation to its past references.
+        while(references.Count > 0)
         {
-            // Assign the closest past reference as the reference for the object to reach, and save the reference's velocity and angular velocity.
+            // Assign the closest past reference as the reference for the object to reach.
             referenceToReach = references[references.Count - 1];
-            velocity = referenceToReach.velocity;
-            angularVelocity = referenceToReach.angularVelocity;
 
             // Assign positions and rotations for lerping.
             initialPosition = transform.position;
@@ -157,48 +144,49 @@ public class ObjectRewind : MonoBehaviour
                 isFromAReference = true;
             }
             
-            // Lerp the object to the reference to reach whilst the Player is holding the rewind button, updating the rewind cooldown.
-            elapsedTime = 0f;
-            while(isRewinding && elapsedTime < timeToPreviousReference)
+            // Lerp the object to the reference to reach and update the elapsed time rewinding whilst the rewind time has not been reached.
+            elapsedTimeBetweenReferences = 0f;
+            while(elapsedTimeBetweenReferences < timeToPreviousReference)
             {
-                transform.position = Vector3.Lerp(initialPosition, finalPosition, elapsedTime / timeToPreviousReference);
-                transform.rotation = Quaternion.Lerp(initialRotation, finalRotation, elapsedTime / timeToPreviousReference);
+                // Check whether the object is done rewinding.
+                if(elapsedTimeRewinding >= rewindTime)
+                {
+                    goto StopRewinding;
+                }
 
-                elapsedTime += Time.deltaTime;
-                rewindCooldown += Time.deltaTime;
+                // Lerp.
+                transform.position = Vector3.Lerp(initialPosition, finalPosition, elapsedTimeBetweenReferences / timeToPreviousReference);
+                transform.rotation = Quaternion.Lerp(initialRotation, finalRotation, elapsedTimeBetweenReferences / timeToPreviousReference);
+
+                // Update time.
+                elapsedTimeBetweenReferences += Time.deltaTime;
+                elapsedTimeRewinding += Time.deltaTime;
                 yield return null;
             }
 
-            // If the time lerping surpasses the time to the previous reference, then snap the object to the reference's position and rotation as well as removing the reference from the save list.
-            if(elapsedTime >= timeToPreviousReference)
-            {
-                transform.position = finalPosition;
-                transform.rotation = finalRotation;
-
-                references.RemoveAt(references.Count - 1);
-            }
+            // Snap the object position and rotation to the final position and rotation, and then remove a saved reference.
+            transform.position = finalPosition;
+            transform.rotation = finalRotation;
+            references.RemoveAt(references.Count - 1);
         }
 
-        isRewinding = false;
-        
-        // Grant the object the velocity and angular velocity of the closest reference, and allow it to move with forward time.
-        objectPhysics.velocity = velocity;
-        objectPhysics.angularVelocity = angularVelocity;
+        // Grant the object the velocity and angular velocity of the closest reference, allow the object to move with forward time,
+        // update the time the object is from the closest reference, and resume reference recording.
+        StopRewinding:
+        objectPhysics.velocity = referenceToReach.velocity;
+        objectPhysics.angularVelocity = referenceToReach.angularVelocity;
         objectPhysics.isKinematic = false;
-
-        // Update the time since last reference save and activate the cooldown.
-        timeSinceLastSave = timeBetweenSaves - elapsedTime;
-        StartCoroutine(RunCooldown());
+        timeSinceLastSave = timeBetweenSaves - elapsedTimeBetweenReferences;
+        isRewinding = false;
     }
 
     /// <summary>
-    /// Denies the object from being rewound for the time it has been rewinding after the object has regained forward movement.
+    /// Denies the object from being rewound for a time after the object begins rewinding.
     /// </summary>
-    private IEnumerator RunCooldown()
+    private IEnumerator ActivateCooldown()
     {
-        yield return new WaitForSeconds(rewindCooldown);
+        yield return waitForCooldown;
         canInitiateRewind = true;
-
     }
 
     /// <summary>
