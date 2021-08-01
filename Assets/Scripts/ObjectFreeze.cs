@@ -47,7 +47,7 @@ public class ObjectFreeze : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F) && canInitiateFreeze)
         {
-            StartCoroutine(freezeObject());
+            StartCoroutine(FreezeObject());
         }
     }
 
@@ -55,10 +55,10 @@ public class ObjectFreeze : MonoBehaviour
     /// Freezes the gameobject and activates the cooldown, saving the object's velocity and angular velocity before doing so. After the freeze time is up, the velocity and angular
     /// velocity is returned to the object.
     /// </summary>
-    private IEnumerator freezeObject()
+    private IEnumerator FreezeObject()
     {
         canInitiateFreeze = false;
-        StartCoroutine(RunCooldown());
+        StartCoroutine(ActivateCooldown());
 
         unfrozenVelocity = objectPhysics.velocity;
         unfrozenAngularVelocity = objectPhysics.angularVelocity;
@@ -75,7 +75,7 @@ public class ObjectFreeze : MonoBehaviour
     /// Denies the object from being frozen throughout the freeze cooldown.
     /// </summary>
     /// <returns></returns>
-    private IEnumerator RunCooldown()
+    private IEnumerator ActivateCooldown()
     {
         yield return waitForFreezeCooldown;
         canInitiateFreeze = true;
