@@ -69,8 +69,9 @@ public class PlayerController : MonoBehaviour
             GameObject target = hit.transform.gameObject;
             if (target != null && target.CompareTag("targetObject"))
             {
-                //invoke Speedup method on the target;
-                target.GetComponent<SlowDownSpeedUpObject>().SpeedUp();
+                //invoke Speedup method on the target if its not already being sped up
+                if(!target.GetComponent<SlowDownSpeedUpObject>().GetSpeedingStatus())
+                    target.GetComponent<SlowDownSpeedUpObject>().SpeedUp();
             }
         }
     }
@@ -84,8 +85,9 @@ public class PlayerController : MonoBehaviour
             GameObject target = hit.transform.gameObject;
             if (target != null && target.CompareTag("targetObject"))
             {
-                //invoke SlowDown method on the target;
-                target.GetComponent<SlowDownSpeedUpObject>().SlowDown();
+                //invoke SlowDown method on the target if not already slowing
+                if (!target.GetComponent<SlowDownSpeedUpObject>().GetSlowingStatus())
+                    target.GetComponent<SlowDownSpeedUpObject>().SlowDown();
             }
         }
     }

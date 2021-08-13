@@ -10,6 +10,7 @@ public class SlowDownSpeedUpObject : MonoBehaviour
     private Vector3 preVelocity;
     [SerializeField] float slowDownFactor = 0.5f;
     [SerializeField] float speedUpFactor = 2f;
+    private bool casting = false;
 
     Rigidbody rb;
     private void Start()
@@ -40,10 +41,17 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         //    SpeedUp();
         //}
     }
+    public bool GetSpeedingStatus()
+    {
+        return speedingUp;
+    }
+    public bool GetSlowingStatus()
+    {
+        return slowing;
+    }
     // Save velocity and turn off gravity for the object reduce velocity and angular velocity
     IEnumerator Slow()
     {
-       
         slowing = true;
         rb.useGravity = false;
         preVelocity = rb.velocity;
@@ -54,13 +62,14 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         rb.velocity = preVelocity;
         slowing = false;
         rb.useGravity = true;
+        casting = false;
             
 
     }
 
      IEnumerator Speed()
     {
-        //all tdhe same stuff as the Slow method but the opposite to have a speedup effect
+        //all the same stuff as the Slow method but the opposite to have a speedup effect
         speedingUp = true;
         rb.useGravity = false;
         preVelocity = rb.velocity;
@@ -71,17 +80,25 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         rb.velocity = preVelocity;
         rb.useGravity = true;
         speedingUp = false;
+        casting = false;
     }
 
     public void SpeedUp()
     {
-        //could not figure out how to call the coroutine directly from the PlayerController or Launcher class
-        StartCoroutine(Speed());
+        if (!casting)
+        {
+            casting = true;
+            StartCoroutine(Speed());
+        }
     }
 
     public void SlowDown()
     {
-        StartCoroutine(Slow());
+        if(!casting)
+        {
+            casting = true;
+            StartCoroutine(Slow());
+        }
     }
 
 }
