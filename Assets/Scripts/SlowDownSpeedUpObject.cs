@@ -22,16 +22,10 @@ public class SlowDownSpeedUpObject : MonoBehaviour
     {
         // this adds artificial gravity since we are disabling the in game gravity as part of acheiving our effect
         if(slowing)
-        {
             rb.AddForce(Physics.gravity * (slowDownFactor * slowDownFactor), ForceMode.Acceleration);
-            
-        }
-
-        if (speedingUp)
-        {
+        if(speedingUp)
             rb.AddForce(Physics.gravity * (speedUpFactor * speedUpFactor), ForceMode.Acceleration);
 
-        }
         //if (Input.GetKeyDown(KeyCode.E))
         //{
         //    SlowDown();
@@ -63,8 +57,6 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         slowing = false;
         rb.useGravity = true;
         casting = false;
-            
-
     }
 
      IEnumerator Speed()
@@ -78,18 +70,9 @@ public class SlowDownSpeedUpObject : MonoBehaviour
 
         yield return waitTime;
         rb.velocity = preVelocity;
-        rb.useGravity = true;
         speedingUp = false;
+        rb.useGravity = true;
         casting = false;
-    }
-
-    public void SpeedUp()
-    {
-        if (!casting)
-        {
-            casting = true;
-            StartCoroutine(Speed());
-        }
     }
 
     public void SlowDown()
@@ -101,4 +84,12 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         }
     }
 
+    public void SpeedUp()
+    {
+        if (!casting)
+        {
+            casting = true;
+            StartCoroutine(Speed());
+        }
+    }
 }
