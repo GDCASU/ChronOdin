@@ -245,6 +245,7 @@ GameObject:
   - component: {fileID: 6703125390895891408}
   - component: {fileID: 6670809608777602893}
   - component: {fileID: 1580510412006047333}
+  - component: {fileID: 290367965}
   m_Layer: 0
   m_Name: amtrang_Player
   m_TagString: Player
@@ -376,9 +377,9 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 2
+  m_Interpolate: 1
   m_Constraints: 112
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!136 &6734989057926826508
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -563,6 +564,21 @@ MonoBehaviour:
   timeBetweenPositionTracking: 0.1
   reverseTimeLength: 1
   reverseCooldown: 3
+--- !u!114 &290367965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6671321904004607766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd1ba6586b1e8b24a816bcc7d32a01bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCamera: {fileID: 6673285477540517096}
+  maxPickupDistance: 5
+  releaseForce: 15000
 --- !u!1 &6671809769120853842
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,6 +591,7 @@ GameObject:
   - component: {fileID: 6690898835929436592}
   - component: {fileID: 6751523626204111766}
   - component: {fileID: 6713679781528352820}
+  - component: {fileID: 230377533}
   m_Layer: 0
   m_Name: Player Camera
   m_TagString: MainCamera
@@ -658,6 +675,22 @@ Behaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6671809769120853842}
   m_Enabled: 1
+--- !u!54 &230377533
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6671809769120853842}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &6671935911496346214
 GameObject:
   m_ObjectHideFlags: 0
