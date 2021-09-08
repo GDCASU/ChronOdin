@@ -12,17 +12,23 @@ using UnityEngine;
 
 public class ObjectPickup : MonoBehaviour
 {
+    [Header("Transforms")]
     [Tooltip("The camera attached to Player")]
     [SerializeField]
     Transform playerCamera;
 
+    [Tooltip("An empty Transform that the held object shall follow")]
+    [SerializeField]
+    Transform target;
+
+    [Header("Properties")]
     [SerializeField]
     [Tooltip("The maximum distance the Player can pick up an object")]
     private float maxPickupDistance = 10f;
 
     [SerializeField]
-    [Tooltip("The amount of force that can be applied to the held object before Player releases it")]
-    private float releaseForce;
+    [Tooltip("The speed the held object travels to the target")]
+    private float speed = 1750f;
 
     private Transform heldObject = null;  // the transform of the picked up object
     private Rigidbody objectPhysics = null;  // the rigidbody of the picked up object
@@ -32,11 +38,13 @@ public class ObjectPickup : MonoBehaviour
     private RigidbodyInterpolation previousInterpolation = RigidbodyInterpolation.None;
     private CollisionDetectionMode previousDetectionMode = CollisionDetectionMode.Discrete;
 
-    FixedJoint objectJoint;  // the joint instantiated between playerCamera and heldObject
+    // Values for calculating held object velocity.
+    Vector3 direction;
+    float distance;
 
     /// <summary>
     /// Attempts to pick up an object when Player presses down [Tab]. 
-    /// Releases object when its joint is broken or the Player ceases pressing down [Tab].
+    /// Releases object when the Player ceases pressing down [Tab].
     /// </summary>
     private void Update()
     {
@@ -47,7 +55,7 @@ public class ObjectPickup : MonoBehaviour
 
         if (heldObject != null)
         {
-            if ((objectJoint == null) || Input.GetKeyUp(KeyCode.Tab))
+            if (Input.GetKeyUp(KeyCode.Tab))
             {
                 Release();
             }
@@ -55,14 +63,28 @@ public class ObjectPickup : MonoBehaviour
     }
 
     /// <summary>
+    /// Grants the held object velocity based on the direction to target, distance from target, and speed.
+    /// </summary>
+    private void FixedUpdate()
+    {
+        if (heldObject != null)
+        {
+            direction = (target.position - objectPhysics.position).normalized;
+            distance = Vector3.Distance(target.position, objectPhysics.position);
+            objectPhysics.velocity = direction * distance * speed * Time.fixedDeltaTime;            
+        }
+    }
+
+    /// <summary>
     /// Casts a ray from playerCamera in the forward direction. If the ray hits an object with the "Liftable" tag, the transform
     /// and rigidbody of the object is captured. Then the object's gravity is deactivated, and its interpolation and detection modes
-    /// are altered. Then a fixed joint between the playerCamera and object is instantiated with a specified break force.
+    /// are altered. Then the target position is centered at the held object's current position.
     /// </summary>
     private void Pickup()
     {
         if(Physics.Raycast(playerCamera.position, playerCamera.TransformDirection(Vector3.forward), out rayHit, maxPickupDistance))
         {
+            print(rayHit.transform.name);
             if (rayHit.transform.tag.Equals("Liftable"))
             {
                 // Capture the object's transform and rigidbody.
@@ -76,17 +98,15 @@ public class ObjectPickup : MonoBehaviour
                 objectPhysics.interpolation = RigidbodyInterpolation.Interpolate;
                 objectPhysics.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
-                // Add joint between held object and Player camera, and then assign a break force.
-                objectJoint = heldObject.gameObject.AddComponent<FixedJoint>();
-                objectJoint.connectedBody = playerCamera.GetComponent<Rigidbody>();
-                objectJoint.breakForce = releaseForce;
+                // Center target at held object.
+                target.position = heldObject.position;
             }
         }
     }
 
     /// <summary>
     /// Releases the held object from Player's grasp, which restores the object's properties before being
-    /// picked up and destroys the joint if it did not break.
+    /// picked up.
     /// </summary>
     private void Release()
     {
@@ -94,10 +114,6 @@ public class ObjectPickup : MonoBehaviour
         objectPhysics.useGravity = true;
         objectPhysics.interpolation = previousInterpolation;
         objectPhysics.collisionDetectionMode = previousDetectionMode;
-
-        // Destroy joint if it did not break.
-        if (objectJoint != null)
-            Destroy(objectJoint);
 
         // Assign the held object as nothing.
         heldObject = null;

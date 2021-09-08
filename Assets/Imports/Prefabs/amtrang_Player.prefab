@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1794551806
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1794551807}
+  m_Layer: 0
+  m_Name: PickupTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1794551807
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794551806}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6673285477540517096}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4411115241727768134
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,8 +607,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 6673285477540517096}
+  target: {fileID: 1794551807}
   maxPickupDistance: 5
-  releaseForce: 15000
+  speed: 1750
 --- !u!1 &6671809769120853842
 GameObject:
   m_ObjectHideFlags: 0
@@ -591,7 +622,6 @@ GameObject:
   - component: {fileID: 6690898835929436592}
   - component: {fileID: 6751523626204111766}
   - component: {fileID: 6713679781528352820}
-  - component: {fileID: 230377533}
   m_Layer: 0
   m_Name: Player Camera
   m_TagString: MainCamera
@@ -613,6 +643,7 @@ Transform:
   - {fileID: 6670809608003243315}
   - {fileID: 283023116877745819}
   - {fileID: 6670809608011893338}
+  - {fileID: 1794551807}
   m_Father: {fileID: 6673641910152580546}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -675,22 +706,6 @@ Behaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6671809769120853842}
   m_Enabled: 1
---- !u!54 &230377533
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6671809769120853842}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 1
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1 &6671935911496346214
 GameObject:
   m_ObjectHideFlags: 0
