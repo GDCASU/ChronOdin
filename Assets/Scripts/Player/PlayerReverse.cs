@@ -9,7 +9,7 @@ using UnityEngine;
 public class PlayerReverse : MonoBehaviour
 {
     public float timeBetweenPositionTracking = 0.1f;
-    public float startReverseTime = 3.0f;
+    public float timeReverseCooldown = 3.0f;
 
     public PlayerMove playerMovement;
     private List<Vector3> previousPositions;
@@ -30,8 +30,8 @@ public class PlayerReverse : MonoBehaviour
         previousPositions = new List<Vector3>();
         previousRotations = new List<Quaternion>();
         playerRigidBody = GetComponent<Rigidbody>();
-        reverseTime = startReverseTime;
-        previousPositionsLimit = 90 * (int)startReverseTime;
+        reverseTime = timeReverseCooldown;
+        previousPositionsLimit = 90 * (int)timeReverseCooldown;
         isStorePosition = true;
         isAbleToMoveBack = true;
         isCountingDown = false;
@@ -136,8 +136,8 @@ public class PlayerReverse : MonoBehaviour
     /// <returns>Yields time before the cooldown ends.</returns>
     private IEnumerator ReversePositionCooldown()
     {
-        yield return new WaitForSeconds(startReverseTime);
+        yield return new WaitForSeconds(timeReverseCooldown);
         isAbleToMoveBack = true;
-        reverseTime = startReverseTime;
+        reverseTime = timeReverseCooldown;
     }
 }
