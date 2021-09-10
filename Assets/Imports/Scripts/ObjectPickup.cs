@@ -1,6 +1,6 @@
 /*
- * Allows the Player to pick up liftable objects upon pressing [Tab].
- * Objects are released when Player ceases pressing [Tab].
+ * Allows the Player to pick up liftable objects upon pressing the pickup key.
+ * Objects are released when Player ceases pressing the pickup key.
  * 
  * Author: Cristion Dominguez
  * Date: 6 Sept. 2021
@@ -10,6 +10,11 @@ using UnityEngine;
 
 public class ObjectPickup : MonoBehaviour
 {
+    [Header("Button")]
+    [Tooltip("Button to invoke object pickup")]
+    [SerializeField]
+    private KeyCode pickupKey = KeyCode.Tab;
+
     [Header("Transforms")]
     [Tooltip("The camera attached to Player")]
     [SerializeField]
@@ -47,19 +52,19 @@ public class ObjectPickup : MonoBehaviour
     float distanceToTarget;  // distance between held object and target
 
     /// <summary>
-    /// Attempts to pick up an object when Player presses down [Tab]. 
-    /// Releases object when the Player ceases pressing down [Tab].
+    /// Attempts to pick up an object when Player presses down the pickup key. 
+    /// Releases object when the Player ceases pressing down the pickup key.
     /// </summary>
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(pickupKey))
         {
             Pickup();
         }
 
         if (heldObject != null)
         {
-            if (Input.GetKeyUp(KeyCode.Tab))
+            if (Input.GetKeyUp(pickupKey))
             {
                 Release();
             }
