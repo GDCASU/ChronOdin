@@ -608,8 +608,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 6673285477540517096}
   target: {fileID: 1794551807}
-  maxPickupDistance: 5
-  speed: 1750
+  maxPickupDistance: 2
+  speed: 1500
 --- !u!1 &6671809769120853842
 GameObject:
   m_ObjectHideFlags: 0
