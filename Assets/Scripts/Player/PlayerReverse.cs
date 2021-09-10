@@ -20,6 +20,7 @@ public class PlayerReverse : MonoBehaviour
     private bool isStorePosition;
     private bool isAbleToMoveBack;
     private bool isCountingDown;
+    public KeyCode keyToActivate;
 
     /// <summary>
     /// Start on frame one initializing variables.
@@ -45,7 +46,7 @@ public class PlayerReverse : MonoBehaviour
     private void Update()
     {
         // Reverse the player's position if the cooldown is done.
-        if (isAbleToMoveBack && Input.GetKeyDown(KeyCode.Backspace))
+        if (isAbleToMoveBack && Input.GetKeyDown(keyToActivate))
         {
             playerMovement.enabled = false;
             playerRigidBody.useGravity = false;
