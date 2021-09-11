@@ -9,20 +9,24 @@ using TMPro;
 /// </summary>
 public class PlayerReverse : MonoBehaviour
 {
-    public FirstPersonAIO playerMovement;
-    public TextMeshProUGUI canReverseText;
-    public float timeBetweenPositionTracking = 0.1f;
-    public float reverseTimeLength = 3.0f;
+    public TestMoveThree playerMovement;
+    //public TextMeshProUGUI canReverseText;
+    public int positionsSavedPerSecond;
+    public float amountOfTimeReversed;
     public float reverseCooldown = 1.0f;
+    public float lerpBetweenPositionsRate;
 
+    private float lerpBetweenPositions;
+    private float timeBetweenPositions;
+    private float lerpBetweenPositionsTime;
     private List<Vector3> previousPositions;
     private List<Quaternion> previousRotations;
-    private Rigidbody playerRigidBody;
-    private float reverseTime;
     private int previousPositionsLimit;
-    private bool isStorePosition;
-    private bool isAbleToMoveBack;
-    private bool isCountingDown;
+    private bool storePositions;
+    private bool isAbleToReverse;
+
+    private WaitForSeconds timeBetweenSaves;
+    private WaitForSeconds timeBetweenLerps;
 
     /// <summary>
     /// Start on frame one initializing variables.
@@ -31,13 +35,13 @@ public class PlayerReverse : MonoBehaviour
     {
         previousPositions = new List<Vector3>();
         previousRotations = new List<Quaternion>();
-        playerRigidBody = GetComponent<Rigidbody>();
-        reverseTime = reverseTimeLength;
-        previousPositionsLimit = 90 * (int)reverseTimeLength;
-        isStorePosition = true;
-        isAbleToMoveBack = true;
-        isCountingDown = false;
-
+        timeBetweenPositions = 1.0f / positionsSavedPerSecond;
+        lerpBetweenPositionsTime = 1.0f / lerpBetweenPositionsRate;
+        previousPositionsLimit = (int) (positionsSavedPerSecond * amountOfTimeReversed);
+        storePositions = true;
+        isAbleToReverse = true;
+        timeBetweenSaves = new WaitForSeconds(timeBetweenPositions);
+        timeBetweenLerps = new WaitForSeconds(lerpBetweenPositionsTime);
         StartCoroutine(AddPosition());
     }
 
@@ -48,25 +52,7 @@ public class PlayerReverse : MonoBehaviour
     private void Update()
     {
         // Reverse the player's position if the cooldown is done.
-        if (isAbleToMoveBack && Input.GetKeyDown(KeyCode.Backspace))
-        {
-            playerMovement.enabled = false;
-            playerRigidBody.useGravity = false;
-            isStorePosition = false;
-            isAbleToMoveBack = false;
-            isCountingDown = true;
-            StartCoroutine(ReversePosition());
-            StartCoroutine(ReversePositionCooldown());
-        }
-
-        if (isCountingDown && reverseTime > 0.0f)
-        {
-            reverseTime -= Time.deltaTime;
-        }
-        else
-        {
-            isCountingDown = false;
-        }
+        if (isAbleToReverse && Input.GetKeyDown(KeyCode.Backspace)) StartCoroutine(ReversePosition());
     }
 
     /// <summary>
@@ -75,41 +61,48 @@ public class PlayerReverse : MonoBehaviour
     /// <returns>Null for this coroutine.</returns>
     private IEnumerator ReversePosition()
     {
+        playerMovement.enabled = false;
+        storePositions = false;
+        isAbleToReverse = false;
+        Destroy(GetComponent<Rigidbody>());
+
         Quaternion beforeReverseRotation = previousRotations[previousRotations.Count - 1];
-        while (isCountingDown && previousPositions.Count > 1)
+
+        while (previousPositions.Count > 1)
         {
-            for (float rate = 0.1f; rate <= 1.0f; rate += 0.1f)
+            lerpBetweenPositions = 0;
+            Vector3 newPosition = transform.position;
+            Quaternion newRotation = transform.rotation;
+            while (lerpBetweenPositions <= 1.0f)
             {
-                Vector3 newPosition = Vector3.Lerp(this.transform.position, previousPositions[previousPositions.Count - 1], rate);
-                this.transform.position = newPosition;
+                transform.position = Vector3.Lerp(newPosition, previousPositions[previousPositions.Count - 1], lerpBetweenPositions); ;
 
-                Quaternion newRotation = Quaternion.Slerp(this.transform.rotation, previousRotations[previousRotations.Count - 1], rate);
-                this.transform.rotation = newRotation;
-                
-                this.GetComponent<Rigidbody>().Sleep();
+                transform.rotation = Quaternion.Slerp(newRotation, previousRotations[previousRotations.Count - 1], lerpBetweenPositions);
+                transform.rotation = newRotation;
+                lerpBetweenPositions += lerpBetweenPositionsRate;
+                yield return timeBetweenLerps;
             }
-
             previousPositions.RemoveAt(previousPositions.Count - 1);
             previousRotations.RemoveAt(previousRotations.Count - 1);
-            yield return null;
         }
         Quaternion afterReverseRotation = this.transform.rotation;
 
-        for (float slerpRate = 0.1f; slerpRate <= 1.0f; slerpRate += 0.1f)
-        {
-            this.transform.rotation = Quaternion.Slerp(afterReverseRotation, beforeReverseRotation, slerpRate);
-            yield return null;
-        }
-        this.GetComponent<Rigidbody>().Sleep();
+        //for (float slerpRate = 0.1f; slerpRate <= 1.0f; slerpRate += 0.1f)
+        //{
+        //    transform.rotation = Quaternion.Slerp(afterReverseRotation, beforeReverseRotation, slerpRate);
+        //    yield return null;
+        //}
 
         previousPositions.Clear();
         previousRotations.Clear();
         playerMovement.enabled = true; // this script causes the player to snap back to the rotation before hitting the backspace key
-        playerRigidBody.useGravity = true;
-        isStorePosition = true;
-        canReverseText.SetText($"Can't reverse yet...");
-        this.GetComponent<Rigidbody>().Sleep();
+        storePositions = true;
+        //canReverseText.SetText($"Can't reverse yet...");
+        Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
 
+        StartCoroutine(ReversePositionCooldown());
         StartCoroutine(AddPosition());
     }
 
@@ -119,7 +112,7 @@ public class PlayerReverse : MonoBehaviour
     /// <returns>Yields time between each position tracked.</returns>
     private IEnumerator AddPosition()
     {
-        while (isStorePosition)
+        while (storePositions)
         {
             previousPositions.Add(this.gameObject.transform.position);
             previousRotations.Add(this.gameObject.transform.rotation);
@@ -129,7 +122,7 @@ public class PlayerReverse : MonoBehaviour
                 previousRotations.RemoveAt(0);
             }
 
-            yield return new WaitForSeconds(timeBetweenPositionTracking);
+            yield return timeBetweenSaves;
         }
     }
 
@@ -140,8 +133,7 @@ public class PlayerReverse : MonoBehaviour
     private IEnumerator ReversePositionCooldown()
     {
         yield return new WaitForSeconds(reverseCooldown);
-        isAbleToMoveBack = true;
-        reverseTime = reverseTimeLength;
-        canReverseText.SetText("Reverse is ready!");
+        isAbleToReverse = true;        //canReverseText.SetText("Reverse is ready!");
+        StartCoroutine(AddPosition());
     }
 }
