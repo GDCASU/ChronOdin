@@ -21,9 +21,14 @@ public class ObjectFreeze : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        FreezeInvocation.freezeEveryObject += FreezeObject;
+        FreezeInvocation.freezeEveryObject += StartFreeze;
 
         objectPhysics = transform.GetComponent<Rigidbody>();
+    }
+
+    private void StartFreeze(float freezeTime)
+    {
+        StartCoroutine(FreezeObject(freezeTime));
     }
 
     /// <summary>

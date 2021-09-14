@@ -1,5 +1,7 @@
 /*
- * Freezes the attached gameobject for a specified amount of time; cooldown activates right when the object freezes. After the object is unfrozen, it can not be frozen whilst the cooldown is active.
+ * Freezes objects for a specified amount of time.
+ * The Player has the option to freeze a single object or all freezeable objects.
+ * To freeze a single object, the Player must look at the object
  * 
  * Author: Cristion Dominguez
  * Date: 10 September 2021
@@ -18,6 +20,7 @@ public class FreezeInvocation : MonoBehaviour
     private KeyCode freezeSingleButton = KeyCode.F;
 
     [Tooltip("The button to freeze the entire environment")]
+    [SerializeField]
     private KeyCode freezeEnvironmentButton = KeyCode.G;
 
     [Header("Time Values")]
@@ -42,10 +45,8 @@ public class FreezeInvocation : MonoBehaviour
     [SerializeField]
     private Transform playerCamera;
 
-    // For suspending coroutines.
-    private WaitForSeconds waitForSingleTime;
+    // For suspending cooldown coroutines.
     private WaitForSeconds waitForSingleCooldown;
-    private WaitForSeconds waitForEnvironmentTime;
     private WaitForSeconds waitForEnvironmentCooldown;
 
     private bool canInitiateSingleFreeze = true;  // Is the object unfrozen and is the cooldown inactive?
@@ -53,17 +54,14 @@ public class FreezeInvocation : MonoBehaviour
 
     ObjectFreeze objectToFreeze = null;
 
-    public static Func<float, IEnumerator> freezeEveryObject;
+    public static Action<float> freezeEveryObject;
 
     /// <summary>
     /// Gathers the rigidbody of the gameobject and assigns coroutine suspension times.
     /// </summary>
     private void Start()
     {
-        waitForSingleTime = new WaitForSeconds(freezeSingleTime);
         waitForSingleCooldown = new WaitForSeconds(freezeSingleCooldown);
-
-        waitForEnvironmentTime = new WaitForSeconds(freezeEnvironmentTime);
         waitForEnvironmentCooldown = new WaitForSeconds(freezeEnvironmentCooldown);
     }
 
@@ -106,11 +104,11 @@ public class FreezeInvocation : MonoBehaviour
 
         if (Input.GetKeyDown(freezeEnvironmentButton) && canInitiateEnvironmentFreeze)
         {
-            Debug.Log("Hi");
             if (freezeEveryObject != null)
             {
+                Debug.Log("Hi");
                 canInitiateEnvironmentFreeze = false;
-                StartCoroutine(freezeEveryObject(freezeEnvironmentTime));
+                freezeEveryObject(freezeEnvironmentTime);
                 StartCoroutine(ActivateEnvironmentCooldown());
             }
         }
@@ -132,7 +130,7 @@ public class FreezeInvocation : MonoBehaviour
     /// <returns></returns>
     private IEnumerator ActivateEnvironmentCooldown()
     {
-        yield return freezeEnvironmentCooldown;
+        yield return waitForEnvironmentCooldown;
         canInitiateEnvironmentFreeze = true;
     }
 }
