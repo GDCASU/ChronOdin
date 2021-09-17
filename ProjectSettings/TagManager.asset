@@ -6,6 +6,7 @@ TagManager:
   tags:
   - targetObject
   - Liftable
+  - Enemy
   layers:
   - Default
   - TransparentFX
