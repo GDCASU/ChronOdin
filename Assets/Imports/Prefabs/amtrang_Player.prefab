@@ -276,6 +276,8 @@ GameObject:
   - component: {fileID: 6670809608777602893}
   - component: {fileID: 1580510412006047333}
   - component: {fileID: 290367965}
+  - component: {fileID: 1086442171}
+  - component: {fileID: 1086442179}
   m_Layer: 0
   m_Name: amtrang_Player
   m_TagString: Player
@@ -606,10 +608,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd1ba6586b1e8b24a816bcc7d32a01bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pickupKey: 9
   playerCamera: {fileID: 6673285477540517096}
   target: {fileID: 1794551807}
   maxPickupDistance: 2
   speed: 1500
+--- !u!114 &1086442171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6671321904004607766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae5017f1d8ae9674cb8d97b3662fca07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slowEnvironmentButton: 118
+  slowEnvironmentTime: 5
+  slowEnvironmentCooldown: 10
+  slowDownFactor: 0.5
+--- !u!114 &1086442179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6671321904004607766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66e004ddbfffe964d84e05622975546d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  freezeSingleObjectButton: 102
+  freezeEnvironmentButton: 103
+  freezeSingleTime: 5
+  freezeSingleCooldown: 5
+  freezeEnvironmentTime: 10
+  freezeEnvironmentCooldown: 10
+  playerCamera: {fileID: 6673285477540517096}
 --- !u!1 &6671809769120853842
 GameObject:
   m_ObjectHideFlags: 0
