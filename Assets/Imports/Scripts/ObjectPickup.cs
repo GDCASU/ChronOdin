@@ -81,7 +81,6 @@ public class ObjectPickup : MonoBehaviour
             directionToTarget = (target.position - objectPhysics.position).normalized;
             distanceToTarget = Vector3.Distance(target.position, objectPhysics.position);
             objectPhysics.velocity = directionToTarget * distanceToTarget * speed * Time.fixedDeltaTime;
-            Debug.Log(objectPhysics.velocity.magnitude);
         }
     }
 
