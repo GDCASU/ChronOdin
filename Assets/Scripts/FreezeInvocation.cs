@@ -2,7 +2,7 @@
  * Freezes objects for a specified amount of time.
  * The Player has the option to freeze a single object or all freezeable objects.
  * To freeze a single object, the Player must look at the object and press the freeze single object button whilst the corresponding cooldown is inactive.
- * To freeze the environment, the Player must press the freeze environment button whilst the corresponding cooldown in inactive.
+ * To freeze the environment, the Player must press the freeze environment button whilst the corresponding cooldown is inactive.
  * 
  * Author: Cristion Dominguez
  * Date: 10 September 2021
@@ -60,7 +60,6 @@ public class FreezeInvocation : MonoBehaviour
     private bool canInitiateEnvironmentFreeze = true;  // Is the environment freeze cooldown inactive?
     ObjectFreeze objectToFreeze = null;  // script attached to object that the Player desires to freeze
     public static Action<float> freezeEveryObject;  // event container for freezing every freezeable object
-    
 
     /// <summary>
     /// Assigns coroutine suspension times.

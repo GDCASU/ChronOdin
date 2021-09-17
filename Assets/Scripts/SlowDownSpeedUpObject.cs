@@ -1,3 +1,10 @@
+/*
+ * Revision Author: Cristion Dominguez
+ * Modification: 
+ *  Subscribed the SlowDown method to the slowEveryObject event upon Scene start.
+ *  The slowDownFactor is set in the SlowInvocation script.
+ */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,14 +15,16 @@ public class SlowDownSpeedUpObject : MonoBehaviour
     private WaitForSeconds waitTime = new WaitForSeconds(5f);
     private bool slowing = false;
     private Vector3 preVelocity;
-    [SerializeField] float slowDownFactor = 0.5f;
-    [SerializeField] float speedUpFactor = 2f;
+    private float slowDownFactor = 0.5f;
+    private float speedUpFactor = 2f;
     private bool casting = false;
 
     Rigidbody rb;
     private void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
+
+        SlowInvocation.slowEveryObject += SlowDown;
     }
 
     private void FixedUpdate()
@@ -44,7 +53,7 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         return slowing;
     }
     // Save velocity and turn off gravity for the object reduce velocity and angular velocity
-    IEnumerator Slow()
+    IEnumerator Slow(float slowTime)
     {
         slowing = true;
         rb.useGravity = false;
@@ -52,7 +61,8 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         rb.velocity *= slowDownFactor;
         rb.angularVelocity *= slowDownFactor;
 
-        yield return waitTime;
+        yield return new WaitForSeconds(slowTime);
+
         rb.velocity = preVelocity;
         slowing = false;
         rb.useGravity = true;
@@ -75,12 +85,14 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         casting = false;
     }
 
-    public void SlowDown()
+    public void SlowDown(float slowTime, float newSlowDownFactor)
     {
+        slowDownFactor = newSlowDownFactor;
+
         if(!casting)
         {
             casting = true;
-            StartCoroutine(Slow());
+            StartCoroutine(Slow(slowTime));
         }
     }
 
