@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD:Assets/Scripts/FreezeInvocation.cs.meta
-guid: 68a6b0a31d2293646a6fbeecc90362cc
-=======
-guid: e402f182bfe19004588e0e21fb2edf97
->>>>>>> main:Assets/Scripts/ObjectRewind.cs.meta
+guid: 23ef73c430456574987f48e04b308638
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

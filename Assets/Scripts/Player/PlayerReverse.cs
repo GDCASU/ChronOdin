@@ -8,10 +8,9 @@ using UnityEngine;
 /// </summary>
 public class PlayerReverse : MonoBehaviour
 {
-<<<<<<< HEAD:Assets/Imports/Scripts/PlayerReverse.cs
     public TestMoveThree playerMovement;
     //public TextMeshProUGUI canReverseText;
-    [Range (1 , 50)]
+    [Range(1, 50)]
     public int positionsSavedPerSecond;
     public float amountOfTimeReversed;
     public float reverseCooldown = 1.0f;
@@ -21,12 +20,6 @@ public class PlayerReverse : MonoBehaviour
     private float lerpBetweenPositions;
     public float timeBetweenPositions;
     //public float lerpBetweenPositionsTime;
-=======
-    public float timeBetweenPositionTracking = 0.1f;
-    public float startReverseTime = 3.0f;
-
-    public PlayerMove playerMovement;
->>>>>>> main:Assets/Scripts/Player/PlayerReverse.cs
     private List<Vector3> previousPositions;
     private List<Quaternion> previousRotations;
     public int previousPositionsLimit;
@@ -44,8 +37,8 @@ public class PlayerReverse : MonoBehaviour
         previousPositions = new List<Vector3>();
         previousRotations = new List<Quaternion>();
         timeBetweenPositions = 1.0f / positionsSavedPerSecond;
-        previousPositionsLimit = (int) (positionsSavedPerSecond * amountOfTimeReversed);
-        lerpBetweenPositionsRate = 1 / ( (reverseDuration / previousPositionsLimit) / .02f);
+        previousPositionsLimit = (int)(positionsSavedPerSecond * amountOfTimeReversed);
+        lerpBetweenPositionsRate = 1 / ((reverseDuration / previousPositionsLimit) / .02f);
         if (lerpBetweenPositionsRate > 1) lerpBetweenPositionsRate = 1;
         storePositions = true;
         isAbleToReverse = true;
@@ -87,22 +80,12 @@ public class PlayerReverse : MonoBehaviour
             Quaternion newRotation = transform.rotation;
             while (lerpBetweenPositions <= 1.0f)
             {
-<<<<<<< HEAD:Assets/Imports/Scripts/PlayerReverse.cs
                 transform.position = Vector3.Lerp(newPosition, previousPositions[previousPositions.Count - 1], lerpBetweenPositions);
                 transform.rotation = Quaternion.Slerp(newRotation, previousRotations[previousRotations.Count - 1], lerpBetweenPositions);
                 lerpBetweenPositions += lerpBetweenPositionsRate;
                 //print("stuck");
                 //print(lerpBetweenPositionsTime);
                 yield return fixedUpdate;
-=======
-                Vector3 newPosition = Vector3.Lerp(this.transform.position, previousPositions[previousPositions.Count - 1], rate);
-                this.transform.position = newPosition;
-
-                Quaternion newRotation = Quaternion.Slerp(this.transform.rotation, previousRotations[previousRotations.Count - 1], rate);
-                this.transform.rotation = newRotation;
-
-                this.GetComponent<Rigidbody>().Sleep();
->>>>>>> main:Assets/Scripts/Player/PlayerReverse.cs
             }
             previousPositions.RemoveAt(previousPositions.Count - 1);
             previousRotations.RemoveAt(previousRotations.Count - 1);
@@ -122,14 +105,8 @@ public class PlayerReverse : MonoBehaviour
         //rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         //rb.interpolation = RigidbodyInterpolation.Interpolate;
         playerMovement.enabled = true; // this script causes the player to snap back to the rotation before hitting the backspace key
-<<<<<<< HEAD:Assets/Imports/Scripts/PlayerReverse.cs
         storePositions = true;
         //canReverseText.SetText($"Can't reverse yet...");
-=======
-        playerRigidBody.useGravity = true;
-        isStorePosition = true;
-        this.GetComponent<Rigidbody>().Sleep();
->>>>>>> main:Assets/Scripts/Player/PlayerReverse.cs
 
         StartCoroutine(ReversePositionCooldown());
         StartCoroutine(AddPosition());
@@ -161,14 +138,8 @@ public class PlayerReverse : MonoBehaviour
     /// <returns>Yields time before the cooldown ends.</returns>
     private IEnumerator ReversePositionCooldown()
     {
-<<<<<<< HEAD:Assets/Imports/Scripts/PlayerReverse.cs
         yield return new WaitForSeconds(reverseCooldown);
         isAbleToReverse = true;        //canReverseText.SetText("Reverse is ready!");
         StartCoroutine(AddPosition());
-=======
-        yield return new WaitForSeconds(startReverseTime);
-        isAbleToMoveBack = true;
-        reverseTime = startReverseTime;
->>>>>>> main:Assets/Scripts/Player/PlayerReverse.cs
     }
 }
