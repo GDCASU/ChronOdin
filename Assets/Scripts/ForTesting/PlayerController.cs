@@ -1,3 +1,11 @@
+/*
+ * Revision Author: Cristion Dominguez
+ * Revision Date: 17 Sept. 2021
+ * Modification:
+ *   Added a variable for determining the time an object should be slowed for.
+ *   Added a variable for determining how slow the object should be when slowed.
+ */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +23,9 @@ public class PlayerController : MonoBehaviour
     private float nextTimeToCastSl = 0f;
     private float nextTimeToCastSp = 0f;
     private float castRate = 5;
+
+    private float slowObjectTime = 5f;
+    private float slowDownFactor = 0.5f;
     
     // Start is called before the first frame update
     void Start()
@@ -87,7 +98,7 @@ public class PlayerController : MonoBehaviour
             {
                 //invoke SlowDown method on the target if not already slowing
                 if (!target.GetComponent<SlowDownSpeedUpObject>().GetSlowingStatus())
-                    target.GetComponent<SlowDownSpeedUpObject>().SlowDown();
+                    target.GetComponent<SlowDownSpeedUpObject>().SlowDown(slowObjectTime, slowDownFactor);
             }
         }
     }
