@@ -1,7 +1,7 @@
 ﻿/*
  * Records past references of an object at defined intervals.
- * Pressing [R] rewinds the object to the past references for a specified amount of time.
- * Immediately after rewinding, a cooldown is activated, denying another rewind cycle throughout its duration.
+ * When StartReverse() is called, the object reverses to the past references for a specified amount of time.
+ * Immediately after reversing, a cooldown is activated, denying another reverse cycle throughout its duration.
  * 
  * Author: Cristion Dominguez
  * Date: 22 July 2021
@@ -30,63 +30,44 @@ public struct PastReference
     }
 }
 
-public class ObjectRewind : MonoBehaviour
+public class ObjectReverse : MonoBehaviour
 {
     [SerializeField]
-    [Tooltip("Time the object shall rewind for.")]
-    private float rewindTime = 2f;
-
-    [SerializeField]
-    [Tooltip("The duration the object can't enter another rewind cycle immediately after rewinding.")]
-    private float rewindCooldown = 2f;
-
-    [SerializeField]
-    [Tooltip("Time between saving object information for rewinding.")]
+    [Tooltip("Time between saving object information for reversing.")]
     private float timeBetweenSaves = 0.2f;
+
+    private float reverseTime;  // the duration the object shall reverse for
 
     private List<PastReference> references;  // saved references of the object
     private Rigidbody objectPhysics;  // for gathering object velocity and angular velocity
-    private WaitForSeconds waitForCooldown;  // coroutine suspension time for cooldown
 
     private float maxReferences;  // max amount of references that can be saved
     private float timeSinceLastSave = 0f;  // time since the latest reference was saved
 
-    private bool canInitiateRewind = true;  // Is the object moving with forward time and is the cooldown inactive?
-    private bool isRewinding = false;  // Is the object rewinding?
+    //private bool canInitiateRewind = true;  // Is the object moving with forward time and is the cooldown inactive?
+    private bool isReversing = false;  // Is the object rewinding?
 
     /// <summary>
-    /// Initializes reference list, object physics and coroutine suspension for cooldown; calculates the max amount of references to be saved;
-    /// records the first reference.
+    /// Initializes reference list and object physics; calculates the max amount of references to be saved; records the first reference.
     /// </summary>
     private void Start()
     {
         references = new List<PastReference>();
         objectPhysics = transform.GetComponent<Rigidbody>();
-        waitForCooldown = new WaitForSeconds(rewindCooldown);
 
-        maxReferences =  Mathf.Round(rewindTime / timeBetweenSaves);
+        reverseTime = ReverseInvocation.singleton.GetReverseObjectTime();
+        maxReferences =  Mathf.Round(reverseTime / timeBetweenSaves);
         Record();
     }
 
     /// <summary>
-    /// Rewinds the object if the Player presses the rewind button and the object can enter a rewind cycle.
-    /// </summary>
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.R) && canInitiateRewind)
-        {
-            StartCoroutine(Rewind());
-        }
-    }
-
-    /// <summary>
-    /// Records references for the object if it is not rewinding.
+    /// Records references for the object if it is not reversing.
     /// </summary>
     public void FixedUpdate()
     {
-        // If the object is not rewinding, then update the time since the last reference save.
+        // If the object is not reverse, then update the time since the last reference save.
         // Once the time between saves has been reached, record a reference and reset the time since last reference.
-        if (!isRewinding)
+        if (!isReversing)
         {
             if (timeSinceLastSave < timeBetweenSaves)
             {
@@ -101,15 +82,13 @@ public class ObjectRewind : MonoBehaviour
     }
 
     /// <summary>
-    /// Rewinds the object to previous references whilst immediately activating the cooldown.
+    /// Reverses the object to previous references.
     /// </summary>
-    private IEnumerator Rewind()
+    public virtual IEnumerator Reverse()
     {
-        // Do not allow another Rewind coroutine to run, disable reference recording, and activate the cooldown.
-        canInitiateRewind = false;
-        isRewinding = true;
+        // Disable reference recording and object collisions.
+        isReversing = true;
         objectPhysics.isKinematic = true;
-        StartCoroutine(ActivateCooldown());
 
         // Declare variables.
         PastReference referenceToReach = references[references.Count - 1];
@@ -144,12 +123,12 @@ public class ObjectRewind : MonoBehaviour
                 isFromAReference = true;
             }
             
-            // Lerp the object to the reference to reach and update the elapsed time rewinding whilst the rewind time has not been reached.
+            // Lerp the object to the reference to reach and update the elapsed time reversing whilst the rewind time has not been reached.
             elapsedTimeBetweenReferences = 0f;
             while(elapsedTimeBetweenReferences < timeToPreviousReference)
             {
-                // Check whether the object is done rewinding.
-                if(elapsedTimeRewinding >= rewindTime)
+                // Check whether the object is done reversing.
+                if(elapsedTimeRewinding >= reverseTime)
                 {
                     goto StopRewinding;
                 }
@@ -177,16 +156,7 @@ public class ObjectRewind : MonoBehaviour
         objectPhysics.angularVelocity = referenceToReach.angularVelocity;
         objectPhysics.isKinematic = false;
         timeSinceLastSave = timeBetweenSaves - elapsedTimeBetweenReferences;
-        isRewinding = false;
-    }
-
-    /// <summary>
-    /// Denies the object from being rewound for a time after the object begins rewinding.
-    /// </summary>
-    private IEnumerator ActivateCooldown()
-    {
-        yield return waitForCooldown;
-        canInitiateRewind = true;
+        isReversing = false;
     }
 
     /// <summary>
