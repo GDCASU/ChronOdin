@@ -46,11 +46,13 @@ public class ObjectFreeze : MonoBehaviour
         unfrozenAngularVelocity = objectPhysics.angularVelocity;
         previousContraints = objectPhysics.constraints;
         objectPhysics.constraints = RigidbodyConstraints.FreezeAll;
+        if (GetComponent<Mikey_BackNForth>()) GetComponent<Mikey_BackNForth>().enabled = false;
 
         yield return new WaitForSeconds(freezeTime);
 
         objectPhysics.constraints = previousContraints;
         objectPhysics.velocity = unfrozenVelocity;
         objectPhysics.angularVelocity = unfrozenAngularVelocity;
+        if (GetComponent<Mikey_BackNForth>()) GetComponent<Mikey_BackNForth>().enabled = true;
     }
 }
