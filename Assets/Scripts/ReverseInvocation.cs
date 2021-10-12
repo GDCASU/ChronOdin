@@ -5,7 +5,7 @@ using System;
 
 public class ReverseInvocation : MonoBehaviour
 {
-    [Header("Button")]
+    [Header("Buttons")]
     [Tooltip("The button to reverse a single object")]
     [SerializeField]
     private KeyCode reverseObjectButton = KeyCode.R;
@@ -23,9 +23,11 @@ public class ReverseInvocation : MonoBehaviour
     [SerializeField]
     private float reverseObjectCooldown = 5f;
 
+    /*
     [Tooltip("The duration the Player shall be reversed for")]
     [SerializeField]
     private float reversePlayerTime = 10f;
+    */
 
     [Tooltip("The duration the Player can't be reversed after being reversed")]
     [SerializeField]
