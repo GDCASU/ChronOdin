@@ -51,7 +51,7 @@ public class ReverseInvocation : MonoBehaviour
     private bool canInitiateObjectReverse = true;  // Is the object reverse cooldown inactive?
     private bool canInitiatePlayerReverse = true;  // Is the Player reverse cooldown inactive?
     ObjectReverse objectToReverse = null;  // script attached to object that the Player desires to reverse
-    //PlayerReverse playerReversal = null;  // script attached to Player responsible for reversing the Player
+    PlayerReverse playerReversal = null;  // script attached to Player responsible for reversing the Player
 
     /// <summary>
     /// Assigns the singleton.
@@ -72,7 +72,7 @@ public class ReverseInvocation : MonoBehaviour
         waitForObjectCooldown = new WaitForSeconds(reverseObjectCooldown);
         waitForPlayerCooldown = new WaitForSeconds(reversePlayerCooldown);
 
-        //playerReversal = transform.GetComponent<PlayerReverse>();
+        playerReversal = transform.GetComponent<PlayerReverse>();
     }
 
     /// <summary>
@@ -130,7 +130,7 @@ public class ReverseInvocation : MonoBehaviour
         // If the Player presses the reverse Player button and the corresponding cooldown is inactive, attempt to reverse the Player.
         if (Input.GetKeyDown(reversePlayerButton) && canInitiatePlayerReverse)
         {
-            // playerReversal.reversePlayer();
+            playerReversal.CallReverse();
             StartCoroutine(ActivatePlayerCooldown());
         }
     }
@@ -157,6 +157,7 @@ public class ReverseInvocation : MonoBehaviour
         canInitiatePlayerReverse = true;
     }
 
+    // Returns the duration an object shall reverse for.
     public float GetReverseObjectTime()
     {
         return reverseObjectTime;

@@ -5,16 +5,22 @@ using UnityEngine;
 /// <summary>
 /// Adds the ability for the player to move back to where they were.
 /// Author: Alben Trang
+/// 
+/// Revision Author: Cristion Dominguez'
+/// Modification: Commented out the cooldown coroutine as that shall be handlded in the ReverseInvocation script.
+///               Added headers so the Design team can figure out which fields to edit and which fields to leave alone.
 /// </summary>
 public class PlayerReverse : MonoBehaviour
 {
+    [Header("Editable Fields")]
     public TestMoveThree playerMovement;
     [Range(1, 50)]
     public int positionsSavedPerSecond;
     public float amountOfTimeReversed;
-    public float reverseCooldown = 1.0f;
-    public float lerpBetweenPositionsRate;
+    // public float reverseCooldown = 1.0f;
 
+    [Header("Calculated Fields (Leave Alone)")]
+    public float lerpBetweenPositionsRate;
     private float lerpBetweenPositions;
     public float timeBetweenPositions;
     private List<Vector3> previousPositions;
@@ -98,7 +104,7 @@ public class PlayerReverse : MonoBehaviour
         playerMovement.enabled = true; // this script causes the player to snap back to the rotation before hitting the backspace key
         storePositions = true;
         reversing = false;
-        StartCoroutine(ReversePositionCooldown());
+        //StartCoroutine(ReversePositionCooldown());
         StartCoroutine(AddPosition());
     }
 
@@ -122,6 +128,7 @@ public class PlayerReverse : MonoBehaviour
         }
     }
 
+    /*
     /// <summary>
     /// Activates a cooldown before the player can reverse their position again.
     /// </summary>
@@ -132,4 +139,5 @@ public class PlayerReverse : MonoBehaviour
         isAbleToReverse = true;        //canReverseText.SetText("Reverse is ready!");
         StartCoroutine(AddPosition());
     }
+    */
 }
