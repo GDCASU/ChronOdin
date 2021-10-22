@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaterReverse : MonoBehaviour
+public class WaterReverse : ObjectReverse
 {
     [SerializeField]
     [Tooltip("The upward force objects in a reversed waterfall shall experience")]
@@ -10,7 +10,11 @@ public class WaterReverse : MonoBehaviour
 
     private bool isReversing = false;
 
-    public IEnumerator Reverse(float reverseTime)
+    protected override void Start() { }
+    protected override void FixedUpdate() { }
+    protected override void Record() { }
+
+    public override IEnumerator Reverse(float reverseTime)
     {
         isReversing = true;
         yield return new WaitForSeconds(reverseTime);
@@ -21,9 +25,9 @@ public class WaterReverse : MonoBehaviour
     {
         if (isReversing)
         {
-            if(GetComponent<TestMoveThree>()) GetComponent<TestMoveThree>().useGravity = false;
+            //if(GetComponent<TestMoveThree>()) GetComponent<TestMoveThree>().useGravity = false;
             other.attachedRigidbody.AddForce(0, reverseWaterForce, 0);
         }
-        else if (GetComponent<TestMoveThree>()) GetComponent<TestMoveThree>().useGravity = true;
+        //else if (GetComponent<TestMoveThree>()) GetComponent<TestMoveThree>().useGravity = true;
     }
 }

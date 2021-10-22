@@ -36,7 +36,7 @@ public class ObjectReverse : MonoBehaviour
     [Tooltip("Time between saving object information for reversing.")]
     private float timeBetweenSaves = 0.2f;
 
-    private float reverseTime;  // the duration the object shall reverse for
+    private float totalReverseTime;  // the duration the object shall reverse for
 
     private List<PastReference> references;  // saved references of the object
     private Rigidbody objectPhysics;  // for gathering object velocity and angular velocity
@@ -50,20 +50,20 @@ public class ObjectReverse : MonoBehaviour
     /// <summary>
     /// Initializes reference list and object physics; calculates the max amount of references to be saved; records the first reference.
     /// </summary>
-    private void Start()
+    protected virtual void Start()
     {
         references = new List<PastReference>();
         objectPhysics = transform.GetComponent<Rigidbody>();
 
-        reverseTime = ReverseInvocation.singleton.GetReverseObjectTime();
-        maxReferences =  Mathf.Round(reverseTime / timeBetweenSaves);
+        totalReverseTime = ReverseInvocation.singleton.GetReverseObjectTime();
+        maxReferences =  Mathf.Round(totalReverseTime / timeBetweenSaves);
         Record();
     }
 
     /// <summary>
     /// Records references for the object if it is not reversing.
     /// </summary>
-    public void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         // If the object is not reverse, then update the time since the last reference save.
         // Once the time between saves has been reached, record a reference and reset the time since last reference.
@@ -82,9 +82,10 @@ public class ObjectReverse : MonoBehaviour
     }
 
     /// <summary>
-    /// Reverses the object to previous references.
+    /// Reverses the object to previous references for total reverse time.
     /// </summary>
-    public virtual IEnumerator Reverse()
+    /// <param name="reverseTime_Child"> not utilized; for override methods in child classes </param>
+    public virtual IEnumerator Reverse(float reverseTime_Child)
     {
         // Disable reference recording and object collisions.
         isReversing = true;
@@ -128,7 +129,7 @@ public class ObjectReverse : MonoBehaviour
             while(elapsedTimeBetweenReferences < timeToPreviousReference)
             {
                 // Check whether the object is done reversing.
-                if(elapsedTimeRewinding >= reverseTime)
+                if(elapsedTimeRewinding >= totalReverseTime)
                 {
                     goto StopRewinding;
                 }
@@ -162,7 +163,7 @@ public class ObjectReverse : MonoBehaviour
     /// <summary>
     /// Saves a new reference of the object. If the reference limit has been met, the oldest reference is removed to allow the newest reference in the list.
     /// </summary>
-    private void Record()
+    protected virtual void Record()
     {
         if(references.Count > maxReferences)
         {
