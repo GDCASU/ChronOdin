@@ -85,6 +85,7 @@ public class TestMoveThree : MonoBehaviour
     public float gravityRate;
     public float maxGravity;
     public float jumpingInitialGravity;
+    public bool useGravity = true;
     #endregion
 
     #region Jump
@@ -221,10 +222,14 @@ public class TestMoveThree : MonoBehaviour
         GroundCheck();
         Move();
         Crouch();
-        HandleJumpInput();
-        ApplyGravity();
-        ClimbingChecks();
-        HandleVault();
+        if (useGravity)
+        {
+            HandleJumpInput();
+            ApplyGravity();
+            ClimbingChecks();
+            HandleVault();
+        }
+
         rb.velocity += totalVelocityToAdd;
         if (rb.velocity.magnitude < minVelocity && x == 0 && z == 0 && (isGrounded))        //If the player stops moving set its maxVelocity to walkingSpeed and set its rb velocity to 0
         {
@@ -387,13 +392,16 @@ public class TestMoveThree : MonoBehaviour
     }
     private void ApplyGravity()
     {
-        if (playerState != PlayerState.Climbing)
+        if (useGravity)
         {
-            if (!isGrounded)
+            if (playerState != PlayerState.Climbing)
             {
-                totalVelocityToAdd += Vector3.up * g;
+                if (!isGrounded)
+                {
+                    totalVelocityToAdd += Vector3.up * g;
+                }
+                if (g > maxGravity) g *= gravityRate;
             }
-            if (g > maxGravity) g *= gravityRate;
         }
     }
     private void HandleVault()
@@ -405,6 +413,21 @@ public class TestMoveThree : MonoBehaviour
         if (_climbingCooldown > 0) _climbingCooldown -= Time.fixedDeltaTime;
         if (playerState == PlayerState.InAir && forwardCheck && rb.velocity.y > negativeVelocityToClimb && (z > 0 || currentForwardAndRight.magnitude > 0f) && _climbingCooldown <= 0)
             StartCoroutine(ClimbCoroutine());
+    }
+    public void ToggleGravity(bool active)
+    {
+        previousState = playerState;
+        playerState = PlayerState.InAir;
+        if (active)
+        {
+            useGravity = true;
+            g = initialGravity;
+        }
+        else
+        {
+            useGravity = false;
+            g = 0;
+        }
     }
     private IEnumerator FakeGround()
     {
