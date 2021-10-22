@@ -177,6 +177,15 @@ public class TestMoveThree : MonoBehaviour
     #endregion
 
      private WaitForFixedUpdate fixedUpdate;
+    public static TestMoveThree singleton;
+
+    private void Awake()
+    {
+        if (singleton == null)
+            singleton = this;
+        else
+            Destroy(gameObject);
+    }
     #endregion
 
     void Start()
