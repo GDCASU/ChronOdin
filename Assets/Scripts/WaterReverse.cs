@@ -23,15 +23,29 @@ public class WaterReverse : ObjectReverse
 
     private void OnTriggerStay(Collider other)
     {
-        if (isReversing)
+        if (other.tag.Equals("Player"))
         {
-            if (other.GetComponent<TestMoveThree>()) other.GetComponent<TestMoveThree>().ToggleGravity(false);
-            other.attachedRigidbody.AddForce(0, reverseWaterForce, 0);
+            if (isReversing)
+            {
+                TestMoveThree.singleton.ToggleGravity(false);
+                other.attachedRigidbody.AddForce(0, reverseWaterForce, 0);
+            }
+            else
+            {
+                Debug.Log("HI");
+                if (TestMoveThree.singleton.useGravity == false)
+                {
+                    TestMoveThree.singleton.ToggleGravity(true);
+                }
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.GetComponent<TestMoveThree>()) other.GetComponent<TestMoveThree>().ToggleGravity(true);
+        if (other.tag.Equals("Player"))
+        {
+            TestMoveThree.singleton.ToggleGravity(true);
+        }
     }
 }
