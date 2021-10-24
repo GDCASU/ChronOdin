@@ -9,15 +9,19 @@ using TMPro;
 /// </summary>
 public class PlayerReverse : MonoBehaviour
 {
+    [Header("Unity Specific Variables")]
+    [Tooltip("The movement script that should be disabled when the player is being reversed")]
     public FirstPersonAIO playerMovement;
+    [Tooltip("UI TextMeshProUGUI that displays if the player can reverse or not")]
     public TextMeshProUGUI canReverseText;
-    public float timeBetweenPositionTracking = 0.1f;
-    public float reverseTimeLength = 3.0f;
+    [Tooltip("How many seconds it takes before the player rewind themselves again")]
     public float reverseCooldown = 1.0f;
 
     private List<Vector3> previousPositions;
     private List<Quaternion> previousRotations;
     private Rigidbody playerRigidBody;
+    public float timeBetweenPositionTracking;
+    private float reverseTimeLength;
     private float reverseTime;
     private int previousPositionsLimit;
     private bool isStorePosition;
@@ -32,6 +36,8 @@ public class PlayerReverse : MonoBehaviour
         previousPositions = new List<Vector3>();
         previousRotations = new List<Quaternion>();
         playerRigidBody = GetComponent<Rigidbody>();
+        timeBetweenPositionTracking = 0.1f;
+        reverseTimeLength = 3.0f;
         reverseTime = reverseTimeLength;
         previousPositionsLimit = 90 * (int)reverseTimeLength;
         isStorePosition = true;
