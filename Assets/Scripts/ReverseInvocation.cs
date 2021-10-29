@@ -52,7 +52,7 @@ public class ReverseInvocation : MonoBehaviour
 
     private bool canInitiateObjectReverse = true;  // Is the object reverse cooldown inactive?
     private bool canInitiatePlayerReverse = true;  // Is the Player reverse cooldown inactive?
-    ObjectReverse objectToReverse = null;  // script attached to object that the Player desires to reverse
+    EntityReverse objectToReverse = null;  // script attached to object that the Player desires to reverse
     PlayerReverse playerReversal = null;  // script attached to Player responsible for reversing the Player
 
     /// <summary>
@@ -95,7 +95,7 @@ public class ReverseInvocation : MonoBehaviour
                 if (Physics.Raycast(startRayPosition, rayDirection, out rayHit))
                 {
                     // Attempt to acquire the ObjectReverse script from the object the ray hit.
-                    objectToReverse = rayHit.transform.GetComponent<ObjectReverse>();
+                    objectToReverse = rayHit.transform.GetComponent<EntityReverse>();
 
                     // If the ray hits the Player, re-assign the starting position to be a bit away from the hit position
                     // in the previous ray's direction and continue to the next loop iteration.
