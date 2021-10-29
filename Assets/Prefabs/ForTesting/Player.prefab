@@ -56,6 +56,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -153,8 +154,8 @@ MonoBehaviour:
   walkSpeedIncrease: 1
   sprintSpeedIncrease: 2
   speedIncrease: 0
-  maxWalkVelocity: 7.5
-  maxSprintVelocity: 15
+  maxWalkVelocity: 3.45
+  maxSprintVelocity: 7.5
   maxVelocity: 0
   minVelocity: 0.1
   friction: 0
@@ -162,11 +163,12 @@ MonoBehaviour:
   inAirFriction: 0.004
   slidingFriction: 0.02
   inAirControl: 0.25
-  inAirJumps: 1
+  inAirJumps: 0
   initialGravity: -0.55
   gravityRate: 1.008
   maxGravity: -39.2
   jumpingInitialGravity: -0.3
+  useGravity: 1
   jumpBuffer: 0.2
   jumpStrength: 6.5
   jumpStregthDecreaser: 0.05
@@ -186,6 +188,8 @@ MonoBehaviour:
   headCheck: 0
   forwardCheck: 0
   vaultClimbStrength: 10
+  vaultEndStrength: 3
+  validDistanceAboveCamera: 1
   negativeVelocityToClimb: -45
   climbingDuration: 1
   climbAcceleration: 0.5

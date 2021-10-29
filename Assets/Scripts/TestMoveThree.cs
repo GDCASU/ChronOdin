@@ -132,6 +132,8 @@ public class TestMoveThree : MonoBehaviour
     #region Vault
     [Header("Vault Variables")]
     public float vaultClimbStrength;
+    public float vaultEndStrength;
+    public float validDistanceAboveCamera = .25f;
     #endregion
 
     #region Climb
@@ -305,7 +307,7 @@ public class TestMoveThree : MonoBehaviour
     {
         float maxDistance = capCollider.radius * (1 + ((isSprinting)?(rb.velocity.magnitude / maxSprintVelocity): 0) );
         if (playerState == PlayerState.Grounded) feetSphereCheck = Physics.SphereCast(transform.position - Vector3.up * .5f, capCollider.radius + .01f, rb.velocity.normalized, out feetHit, maxDistance);
-        headCheck = Physics.Raycast(Camera.main.transform.position + Vector3.up * .25f, transform.forward, capCollider.radius + .1f);
+        headCheck = Physics.Raycast(Camera.main.transform.position + Vector3.up * validDistanceAboveCamera, transform.forward, capCollider.radius + .1f);
         forwardCheck = (Physics.Raycast(transform.position, transform.forward, capCollider.radius + .1f));  //forwardCheck = Physics.Raycast(transform.position, transform.forward, capCollider.radius + ((slope >= 70? capCollider.radius:.1f)));
         if (forwardCheck && currentForwardAndRight.magnitude > 1) velocityAtCollision = currentForwardAndRight;        
         if (feetSphereCheck && !onFakeGround)
@@ -415,7 +417,12 @@ public class TestMoveThree : MonoBehaviour
     }
     private void HandleVault()
     {
-        if (playerState != PlayerState.Vaulting && forwardCheck && !headCheck && z > 0) StartCoroutine(VaultCoroutine());
+        if ((playerState == PlayerState.InAir || (playerState == PlayerState.Climbing && slope == 0)) && forwardCheck && !headCheck && z > 0)
+        {
+            previousState = playerState;
+            playerState = PlayerState.Vaulting;
+            StartCoroutine(VaultCoroutine());
+        }
     }
     private void HandleClimb()
     {
@@ -517,22 +524,20 @@ public class TestMoveThree : MonoBehaviour
     }
     private IEnumerator VaultCoroutine()
     {
-        previousState = playerState;
-        playerState = PlayerState.Vaulting;
         rb.velocity = Vector3.up * vaultClimbStrength;
         float height = Camera.main.transform.position.y;
         Physics.BoxCast(transform.position - transform.forward.normalized * capCollider.radius * .5f, Vector3.one * capCollider.radius, transform.forward, out forwardHit, Quaternion.identity, 1f);
         feetCheck = (Physics.Raycast(transform.position - Vector3.up * capCollider.height * .5f, transform.forward, capCollider.radius + .1f));
-        while ((transform.position.y - capCollider.height * .5)<height )
+        while ((transform.position.y - capCollider.height * .5) < height && rb.velocity.y > 0)
         {
             //feetCheck = (Physics.Raycast(transform.position - Vector3.up * capCollider.height * .5f, transform.forward, capCollider.radius + .1f));
-            rb.velocity += Vector3.up * .05f;
+            rb.velocity += .05f * Vector3.up;
             yield return fixedUpdate;
         }
         feetCheck = false;
         previousState = playerState;
         if (!isGrounded) playerState = PlayerState.InAir;
-        rb.velocity = -forwardHit.normal * 10;
+        rb.velocity = ((forwardHit.normal.magnitude == 0) ? transform.forward : -forwardHit.normal) * vaultEndStrength;
 
     }
     private IEnumerator ClimbCoroutine()
