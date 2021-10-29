@@ -1,7 +1,6 @@
 ﻿/*
  * Records past references of an object at defined intervals.
- * When StartReverse() is called, the object reverses to the past references for a specified amount of time.
- * Immediately after reversing, a cooldown is activated, denying another reverse cycle throughout its duration.
+ * When Reverse() is called, the object reverses to the past references for a specified amount of time.
  * 
  * Author: Cristion Dominguez
  * Date: 22 July 2021
@@ -30,13 +29,13 @@ public struct PastReference
     }
 }
 
-public class ObjectReverse : MonoBehaviour
+public class ObjectReverse : EntityReverse
 {
     [SerializeField]
     [Tooltip("Time between saving object information for reversing.")]
     private float timeBetweenSaves = 0.2f;
 
-    private float reverseTime;  // the duration the object shall reverse for
+    private float totalReverseTime;  // the duration the object shall reverse for
 
     private List<PastReference> references;  // saved references of the object
     private Rigidbody objectPhysics;  // for gathering object velocity and angular velocity
@@ -44,7 +43,6 @@ public class ObjectReverse : MonoBehaviour
     private float maxReferences;  // max amount of references that can be saved
     private float timeSinceLastSave = 0f;  // time since the latest reference was saved
 
-    //private bool canInitiateRewind = true;  // Is the object moving with forward time and is the cooldown inactive?
     private bool isReversing = false;  // Is the object rewinding?
 
     /// <summary>
@@ -55,15 +53,15 @@ public class ObjectReverse : MonoBehaviour
         references = new List<PastReference>();
         objectPhysics = transform.GetComponent<Rigidbody>();
 
-        reverseTime = ReverseInvocation.singleton.GetReverseObjectTime();
-        maxReferences =  Mathf.Round(reverseTime / timeBetweenSaves);
+        totalReverseTime = ReverseInvocation.singleton.GetReverseObjectTime();
+        maxReferences =  Mathf.Round(totalReverseTime / timeBetweenSaves);
         Record();
     }
 
     /// <summary>
     /// Records references for the object if it is not reversing.
     /// </summary>
-    public void FixedUpdate()
+    private void FixedUpdate()
     {
         // If the object is not reverse, then update the time since the last reference save.
         // Once the time between saves has been reached, record a reference and reset the time since last reference.
@@ -82,9 +80,10 @@ public class ObjectReverse : MonoBehaviour
     }
 
     /// <summary>
-    /// Reverses the object to previous references.
+    /// Reverses the object to previous references for total reverse time assigned at the Start() function.
     /// </summary>
-    public virtual IEnumerator Reverse()
+    /// <param name="reverseTime"> not utilized </param>
+    public override IEnumerator Reverse(float reverseTime)
     {
         // Disable reference recording and object collisions.
         isReversing = true;
@@ -128,7 +127,7 @@ public class ObjectReverse : MonoBehaviour
             while(elapsedTimeBetweenReferences < timeToPreviousReference)
             {
                 // Check whether the object is done reversing.
-                if(elapsedTimeRewinding >= reverseTime)
+                if(elapsedTimeRewinding >= totalReverseTime)
                 {
                     goto StopRewinding;
                 }
