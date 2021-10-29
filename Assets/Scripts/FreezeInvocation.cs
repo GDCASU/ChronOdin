@@ -130,6 +130,7 @@ public class FreezeInvocation : MonoBehaviour
             {
                 freezeEveryObject(freezeEnvironmentTime);
                 StartCoroutine(ActivateEnvironmentCooldown());
+                MasterTime.singleton.UpdateTime(0);
             }
         }
     }
@@ -153,6 +154,7 @@ public class FreezeInvocation : MonoBehaviour
     {
         canInitiateEnvironmentFreeze = false;
         yield return waitForEnvironmentCooldown;
+        MasterTime.singleton.UpdateTime(1);
         canInitiateEnvironmentFreeze = true;
     }
 }
