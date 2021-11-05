@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaterReverse : EntityReverse
+public class WaterReverse : ComplexReverse
 {
     [SerializeField]
     [Tooltip("The upward force objects in a reversed waterfall shall experience")]
@@ -21,7 +21,11 @@ public class WaterReverse : EntityReverse
     /// Sets the waterfall's state to reverse for reverse time.
     /// </summary>
     /// <param name="reverseTime"> time to reverse the waterfall for (in seconds) </param>
-    public override IEnumerator Reverse(float reverseTime)
+    public override void Reverse(float reverseTime)
+    {
+        StartCoroutine(CountdownReverseActiveTime(reverseTime));
+    }
+    private IEnumerator CountdownReverseActiveTime(float reverseTime)
     {
         isReversing = true;
         yield return new WaitForSeconds(reverseTime);

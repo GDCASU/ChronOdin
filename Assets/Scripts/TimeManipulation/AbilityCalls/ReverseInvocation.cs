@@ -38,39 +38,29 @@ public class ReverseInvocation : MonoBehaviour
     [SerializeField]
     private Transform playerCamera;
 
-    public static ReverseInvocation singleton; // singleton for detecting Player
-
     // Values for casting a ray to detect collisions.
     RaycastHit rayHit;
     private Vector3 startRayPosition, rayDirection;
     private int maxRayCasts = 2;
     private float rayPositionOffset = 0.000006f;
 
-    // For suspending cooldown coroutines.
+    // For suspending active and cooldown coroutines.
+    private WaitForSeconds waitForObjectActiveTime;
     private WaitForSeconds waitForObjectCooldown;
     private WaitForSeconds waitForPlayerCooldown;
 
     private bool canInitiateObjectReverse = true;  // Is the object reverse cooldown inactive?
     private bool canInitiatePlayerReverse = true;  // Is the Player reverse cooldown inactive?
-    EntityReverse objectToReverse = null;  // script attached to object that the Player desires to reverse
+    SimpleTimeManipulation simpleObject = null;  // object with a simple reverse mechanism
+    ComplexReverse complexObject = null;  // object with a complex reverse mechanism
     PlayerReverse playerReversal = null;  // script attached to Player responsible for reversing the Player
-
-    /// <summary>
-    /// Assigns the singleton.
-    /// </summary>
-    private void Awake()
-    {
-        if (singleton == null)
-        {
-            singleton = this;
-        }
-    }
 
     /// <summary>
     /// Assigns coroutine suspension times and collects the PlayerReverse script.
     /// </summary>
     private void Start()
     {
+        waitForObjectActiveTime = new WaitForSeconds(reverseObjectTime);
         waitForObjectCooldown = new WaitForSeconds(reverseObjectCooldown);
         waitForPlayerCooldown = new WaitForSeconds(reversePlayerCooldown);
 
@@ -94,9 +84,6 @@ public class ReverseInvocation : MonoBehaviour
             {
                 if (Physics.Raycast(startRayPosition, rayDirection, out rayHit))
                 {
-                    // Attempt to acquire the ObjectReverse script from the object the ray hit.
-                    objectToReverse = rayHit.transform.GetComponent<EntityReverse>();
-
                     // If the ray hits the Player, re-assign the starting position to be a bit away from the hit position
                     // in the previous ray's direction and continue to the next loop iteration.
                     if (rayHit.transform.gameObject.CompareTag("Player"))
@@ -104,14 +91,27 @@ public class ReverseInvocation : MonoBehaviour
                         startRayPosition = rayHit.point + (rayDirection.normalized * rayPositionOffset);
                         continue;
                     }
-                    // If the ray hits an object with the ObjectReverse script, then reverse the object, activate the reverse object cooldown, and stop casting rays.
-                    if (objectToReverse != null)
+
+                    // If the ray does not hit the Player, attempt to detect an object that can be reversed.
+                    simpleObject = rayHit.transform.GetComponent<SimpleTimeManipulation>();
+                    complexObject = rayHit.transform.GetComponent<ComplexReverse>();
+
+                    // If the ray hits an object that can be reversed, then reverse the object, activate the reverse object cooldown, and stop casting rays.
+                    if (simpleObject != null)
                     {
-                        StartCoroutine(objectToReverse.Reverse(reverseObjectTime));
+                        simpleObject.UpdateTimescale(-1f);
+                        StartCoroutine(ActivateObjectCooldown());
+                        StartCoroutine(CountdownObjectReverse(simpleObject));
+                        return;
+                        
+                    }
+                    else if (complexObject != null)
+                    {
+                        complexObject.Reverse(reverseObjectTime);
                         StartCoroutine(ActivateObjectCooldown());
                         return;
                     }
-                    // If the ray hits nothing, stop casting rays.
+                    // If the ray hits an object that can't be reversed, then stop casting rays.
                     // FOR TESTING PURPOSES, comment this "else" block out.
                     else
                     {
@@ -136,11 +136,21 @@ public class ReverseInvocation : MonoBehaviour
             StartCoroutine(ActivatePlayerCooldown());
         }
     }
+    
+    /// <summary>
+    /// Updates the simple object's timescale to the default value after the object active time passes.
+    /// </summary>
+    /// <param name="simpleObject"> object with a simple reverse mechanism </param>
+    /// <returns></returns>
+    private IEnumerator CountdownObjectReverse(SimpleTimeManipulation simpleObject)
+    {
+        yield return waitForObjectActiveTime;
+        simpleObject.UpdateTimescale(1f);
+    }
 
     /// <summary>
     /// Denies the Player from reversing an object throughout the reverse object cooldown.
     /// </summary>
-    /// <returns></returns>
     private IEnumerator ActivateObjectCooldown()
     {
         canInitiateObjectReverse = false;
@@ -151,7 +161,6 @@ public class ReverseInvocation : MonoBehaviour
     /// <summary>
     /// Denies the Player from reversing themself throughout the reverse Player cooldown.
     /// </summary>
-    /// <returns></returns>
     private IEnumerator ActivatePlayerCooldown()
     {
         canInitiatePlayerReverse = false;
@@ -159,7 +168,10 @@ public class ReverseInvocation : MonoBehaviour
         canInitiatePlayerReverse = true;
     }
 
-    // Returns the duration an object shall reverse for.
+    /// <summary>
+    /// Returns the duration an object shall reverse for.
+    /// </summary>
+    /// <returns></returns>
     public float GetReverseObjectTime()
     {
         return reverseObjectTime;

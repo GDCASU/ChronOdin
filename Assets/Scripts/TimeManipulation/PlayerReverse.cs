@@ -116,8 +116,9 @@ public class PlayerReverse : MonoBehaviour
     {
         while (storePositions)
         {
-            previousPositions.Add(this.gameObject.transform.position);
-            previousRotations.Add(this.gameObject.transform.rotation);
+            previousPositions.Add(transform.position);
+            previousRotations.Add(transform.rotation);
+
             if (previousPositions.Count > previousPositionsLimit)
             {
                 previousPositions.RemoveAt(0);

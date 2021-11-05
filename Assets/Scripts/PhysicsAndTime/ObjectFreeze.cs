@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectFreeze : MonoBehaviour
+public class ObjectFreeze : ComplexFreeze
 {
     private Rigidbody objectPhysics;  // for collecting and saving velocity, angular velocity, and rigidbody contraints
 
@@ -23,7 +23,7 @@ public class ObjectFreeze : MonoBehaviour
     private void Start()
     {
         objectPhysics = transform.GetComponent<Rigidbody>();
-        FreezeInvocation.freezeEveryObject += StartFreeze;
+        FreezeInvocation.freezeEveryObject += Freeze;
     }
 
     /// <summary>
@@ -31,7 +31,7 @@ public class ObjectFreeze : MonoBehaviour
     /// Necessary for freeze environment event to function correctly.
     /// </summary>
     /// <param name="freezeTime"> time to freeze object </param>
-    public void StartFreeze(float freezeTime)
+    public override void Freeze(float freezeTime)
     {
         StartCoroutine(FreezeObject(freezeTime));
     }
