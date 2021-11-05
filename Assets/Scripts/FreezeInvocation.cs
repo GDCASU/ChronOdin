@@ -126,11 +126,9 @@ public class FreezeInvocation : MonoBehaviour
         if (Input.GetKeyDown(freezeEnvironmentButton) && canInitiateEnvironmentFreeze)
         {
             // If there are freezeable objects existing in the scene, then freeze all of them and activate the freeze environment cooldown.
-            if (freezeEveryObject != null)
-            {
-                freezeEveryObject(freezeEnvironmentTime);
-                StartCoroutine(ActivateEnvironmentCooldown());
-            }
+            MasterTime.singleton.UpdateTime(0);
+            StartCoroutine(ActivateEnvironmentCooldown());
+            if (freezeEveryObject != null) freezeEveryObject(freezeEnvironmentTime);
         }
     }
 
@@ -153,6 +151,7 @@ public class FreezeInvocation : MonoBehaviour
     {
         canInitiateEnvironmentFreeze = false;
         yield return waitForEnvironmentCooldown;
+        MasterTime.singleton.UpdateTime(1);
         canInitiateEnvironmentFreeze = true;
     }
 }

@@ -178,7 +178,8 @@ public class TestMoveThree : MonoBehaviour
     RaycastHit feetHit;
     #endregion
 
-     private WaitForFixedUpdate fixedUpdate;
+    public LayerMask triggers;
+    private WaitForFixedUpdate fixedUpdate;
     public static TestMoveThree singleton;
 
     private void Awake()
@@ -254,7 +255,7 @@ public class TestMoveThree : MonoBehaviour
     {
         if(_coyoteTimer> 0)_coyoteTimer -= Time.fixedDeltaTime;
         if (_justJumpedCooldown > 0) _justJumpedCooldown -= Time.fixedDeltaTime;
-        groundCheck = (_justJumpedCooldown <= 0) ? Physics.SphereCast(transform.position, capCollider.radius, -transform.up, out hit, groundCheckDistance + 0.01f) : false;
+        groundCheck = (_justJumpedCooldown <= 0) ? Physics.SphereCast(transform.position, capCollider.radius, -transform.up, out hit, groundCheckDistance + 0.01f, ~triggers ) : false;
         slope = Vector3.Angle(hit.normal, Vector3.up);
         if ( slope > maxSlope)
         {
@@ -306,14 +307,21 @@ public class TestMoveThree : MonoBehaviour
     private void ClimbingChecks()
     {
         float maxDistance = capCollider.radius * (1 + ((isSprinting)?(rb.velocity.magnitude / maxSprintVelocity): 0) );
-        if (playerState == PlayerState.Grounded) feetSphereCheck = Physics.SphereCast(transform.position - Vector3.up * .5f, capCollider.radius + .01f, rb.velocity.normalized, out feetHit, maxDistance);
-        headCheck = Physics.Raycast(Camera.main.transform.position + Vector3.up * validDistanceAboveCamera, transform.forward, capCollider.radius + .1f);
-        forwardCheck = (Physics.Raycast(transform.position, transform.forward, capCollider.radius + .1f));  //forwardCheck = Physics.Raycast(transform.position, transform.forward, capCollider.radius + ((slope >= 70? capCollider.radius:.1f)));
-        if (forwardCheck && currentForwardAndRight.magnitude > 1) velocityAtCollision = currentForwardAndRight;        
+        if (playerState == PlayerState.Grounded) feetSphereCheck = Physics.SphereCast(transform.position - Vector3.up * .5f, capCollider.radius + .01f, rb.velocity.normalized, out feetHit, maxDistance, ~triggers);
+        headCheck = Physics.Raycast(Camera.main.transform.position + Vector3.up * validDistanceAboveCamera, transform.forward, capCollider.radius + .1f, ~triggers);
+        forwardCheck = (Physics.Raycast(transform.position, transform.forward, capCollider.radius + .1f, ~triggers));
+        if (forwardCheck && currentForwardAndRight.magnitude > 1)
+        {
+            velocityAtCollision = currentForwardAndRight;
+            //if (playerState != PlayerState.Climbing) rb.velocity = Vector3.zero;              //Avoid bouncing
+        }
+
         if (feetSphereCheck && !onFakeGround)
         {
-            kneesCheck = Physics.Raycast(transform.position - Vector3.up * capCollider.height * .24f, transform.forward, maxDistance + capCollider.radius);
-            if (!kneesCheck && playerState == PlayerState.Grounded && (x != 0 || z != 0))StartCoroutine(FakeGround());
+            Vector3 direction = feetHit.point - (transform.position - Vector3.up * .5f);
+            float dist = direction.magnitude;
+            kneesCheck = Physics.Raycast(transform.position - Vector3.up * capCollider.height * .24f, (direction - rb.velocity.y * Vector3.up), dist, ~triggers);
+            if (!kneesCheck && playerState == PlayerState.Grounded && (x != 0 || z != 0)) StartCoroutine(FakeGround());
         }
         kneesCheck = false;
     }
@@ -366,7 +374,7 @@ public class TestMoveThree : MonoBehaviour
     }
     private void Crouch()
     {
-        topIsClear = !Physics.Raycast(transform.position - newForwardandRight.normalized * capCollider.radius, Vector3.up, capCollider.height + .01f); // Check if thee's nothing blocking the player from standing up
+        topIsClear = !Physics.Raycast(transform.position - newForwardandRight.normalized * capCollider.radius, Vector3.up, capCollider.height + .01f, ~triggers); // Check if thee's nothing blocking the player from standing up
         //Crouch
         if (!isCrouching && crouchBuffer)
         {
@@ -526,8 +534,8 @@ public class TestMoveThree : MonoBehaviour
     {
         rb.velocity = Vector3.up * vaultClimbStrength;
         float height = Camera.main.transform.position.y;
-        Physics.BoxCast(transform.position - transform.forward.normalized * capCollider.radius * .5f, Vector3.one * capCollider.radius, transform.forward, out forwardHit, Quaternion.identity, 1f);
-        feetCheck = (Physics.Raycast(transform.position - Vector3.up * capCollider.height * .5f, transform.forward, capCollider.radius + .1f));
+        Physics.BoxCast(transform.position - transform.forward.normalized * capCollider.radius * .5f, Vector3.one * capCollider.radius, transform.forward, out forwardHit, Quaternion.identity, 1f, ~triggers);
+        feetCheck = (Physics.Raycast(transform.position - Vector3.up * capCollider.height * .5f, transform.forward, capCollider.radius + .1f, ~triggers));
         while ((transform.position.y - capCollider.height * .5) < height && rb.velocity.y > 0)
         {
             //feetCheck = (Physics.Raycast(transform.position - Vector3.up * capCollider.height * .5f, transform.forward, capCollider.radius + .1f));
@@ -547,7 +555,7 @@ public class TestMoveThree : MonoBehaviour
         _climbingTime = climbingDuration;
         _justJumpedCooldown = 0;
         _climbingGravity = initialClimbingGravity;
-        Physics.BoxCast(transform.position - transform.forward.normalized * capCollider.radius * .5f, Vector3.one * capCollider.radius, transform.forward, out forwardHit, Quaternion.identity, 1f);
+        Physics.BoxCast(transform.position - transform.forward.normalized * capCollider.radius * .5f, Vector3.one * capCollider.radius, transform.forward, out forwardHit, Quaternion.identity, 1f, ~triggers);
         _climbingStrafe = climbingStrafe;
         Vector3 playerOnWallRightDirection = Vector3.Cross(forwardHit.normal, Vector3.up).normalized;
         Vector3 originalHorizontalClimbingDirection = Vector3.Project(velocityAtCollision, playerOnWallRightDirection);
