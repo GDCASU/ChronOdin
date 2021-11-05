@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlowDownSpeedUpObject : MonoBehaviour
+public class SlowDownSpeedUpObject : ComplexSlow
 {
     private bool speedingUp = false;
     private WaitForSeconds waitTime = new WaitForSeconds(5f);
@@ -24,7 +24,7 @@ public class SlowDownSpeedUpObject : MonoBehaviour
     {
         rb = gameObject.GetComponent<Rigidbody>();
 
-        SlowInvocation.slowEveryObject += SlowDown;
+        SlowInvocation.slowEveryObject += Slow;
     }
 
     private void FixedUpdate()
@@ -53,7 +53,7 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         return slowing;
     }
     // Save velocity and turn off gravity for the object reduce velocity and angular velocity
-    IEnumerator Slow(float slowTime)
+    IEnumerator SlowObject(float slowTime)
     {
         slowing = true;
         rb.useGravity = false;
@@ -69,7 +69,7 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         casting = false;
     }
 
-     IEnumerator Speed()
+     IEnumerator SpeedObject()
     {
         //all the same stuff as the Slow method but the opposite to have a speedup effect
         speedingUp = true;
@@ -85,14 +85,14 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         casting = false;
     }
 
-    public void SlowDown(float slowTime, float newSlowDownFactor)
+    public override void Slow(float slowTime, float newSlowDownFactor)
     {
         slowDownFactor = newSlowDownFactor;
 
         if(!casting)
         {
             casting = true;
-            StartCoroutine(Slow(slowTime));
+            StartCoroutine(SlowObject(slowTime));
         }
     }
 
@@ -101,7 +101,7 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         if (!casting)
         {
             casting = true;
-            StartCoroutine(Speed());
+            StartCoroutine(SpeedObject());
         }
     }
 }

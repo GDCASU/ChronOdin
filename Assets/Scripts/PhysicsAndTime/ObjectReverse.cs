@@ -29,7 +29,7 @@ public struct PastReference
     }
 }
 
-public class ObjectReverse : EntityReverse
+public class ObjectReverse : ComplexReverse
 {
     [SerializeField]
     [Tooltip("Time between saving object information for reversing.")]
@@ -53,7 +53,7 @@ public class ObjectReverse : EntityReverse
         references = new List<PastReference>();
         objectPhysics = transform.GetComponent<Rigidbody>();
 
-        totalReverseTime = ReverseInvocation.singleton.GetReverseObjectTime();
+        totalReverseTime = TestMoveThree.singleton.transform.GetComponent<ReverseInvocation>().GetReverseObjectTime();
         maxReferences =  Mathf.Round(totalReverseTime / timeBetweenSaves);
         Record();
     }
@@ -83,7 +83,11 @@ public class ObjectReverse : EntityReverse
     /// Reverses the object to previous references for total reverse time assigned at the Start() function.
     /// </summary>
     /// <param name="reverseTime"> not utilized </param>
-    public override IEnumerator Reverse(float reverseTime)
+    public override void Reverse(float reverseTime)
+    {
+        StartCoroutine(ReverseObject(0));
+    }
+    private IEnumerator ReverseObject(float reverseTime)
     {
         // Disable reference recording and object collisions.
         isReversing = true;
