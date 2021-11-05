@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -436,11 +436,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!4 &792235851 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8225854369619139701, guid: 84edb829044563e40a96a9579f6a350c, type: 3}
-  m_PrefabInstance: {fileID: 1603850150}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &883806779
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,7 +736,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1467869498
 GameObject:
@@ -809,7 +804,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8225854368876441680, guid: 84edb829044563e40a96a9579f6a350c, type: 3}
       propertyPath: m_Name
-      value: Player
+      value: Player (1)
       objectReference: {fileID: 0}
     - target: {fileID: 8225854368876441680, guid: 84edb829044563e40a96a9579f6a350c, type: 3}
       propertyPath: m_TagString
@@ -887,26 +882,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1824939127}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ffe7b00340e23974ba3501cc055aea74, type: 3}
+  m_Script: {fileID: 11500000, guid: 66e004ddbfffe964d84e05622975546d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reverseObjectButton: 114
-  reversePlayerButton: 104
-  reverseObjectTime: 5
-  reverseObjectCooldown: 5
-  reversePlayerCooldown: 10
-  playerCamera: {fileID: 792235851}
---- !u!114 &1824939129 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8225854368876441686, guid: 84edb829044563e40a96a9579f6a350c, type: 3}
-  m_PrefabInstance: {fileID: 1603850150}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1824939127}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba3e5119f56c2094eb5f45d3a59023b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  freezeSingleObjectButton: 102
+  freezeEnvironmentButton: 103
+  freezeSingleTime: 5
+  freezeSingleCooldown: 5
+  freezeEnvironmentTime: 10
+  freezeEnvironmentCooldown: 10
+  playerCamera: {fileID: 0}
 --- !u!114 &1824939136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -916,16 +901,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1824939127}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b724ad0227a8ac54b8fa639fe46a9b40, type: 3}
+  m_Script: {fileID: 11500000, guid: ae5017f1d8ae9674cb8d97b3662fca07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerMovement: {fileID: 1824939129}
-  positionsSavedPerSecond: 30
-  amountOfTimeReversed: 5
-  lerpBetweenPositionsRate: 0
-  timeBetweenPositions: 0
-  previousPositionsLimit: 0
-  timer: 0
+  slowEnvironmentButton: 118
+  slowEnvironmentTime: 5
+  slowEnvironmentCooldown: 10
+  slowDownFactor: 0.5
 --- !u!1001 &529830068946299523
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -939,7 +921,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2093141343213389019, guid: 758fb3ebb7cfb8e4bba0c126568232f0, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2093141343213389019, guid: 758fb3ebb7cfb8e4bba0c126568232f0, type: 3}
       propertyPath: m_LocalPosition.x
