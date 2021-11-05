@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class EntityReverse : MonoBehaviour
+public abstract class ComplexReverse : MonoBehaviour
 {
-    public abstract IEnumerator Reverse(float reverseTime);
+    public abstract void Reverse(float reverseTime);
 }
