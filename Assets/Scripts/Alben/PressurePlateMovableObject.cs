@@ -7,32 +7,32 @@ using UnityEngine;
 /// is not pressed.
 /// Author: Alben Trang
 /// </summary>
-public class PressureMovableObject : MonoBehaviour, PressureObject
+public class PressurePlateMovableObject: MonoBehaviour, LinkedToPressurePlate
 {
-    [Header("New Position Coordinates")]
-    [Tooltip("The objects new x position")]
-    public float moveX = 5.0f;
-    [Tooltip("The objects new y position")]
-    public float moveY = 5.0f;
-    [Tooltip("The objects new z position")]
-    public float moveZ = 5.0f;
+    [Tooltip("The objects new position")]
+    public Vector3 newPosition;
+
+    [Tooltip("Speed at which the object moves")]
+    public float speed = 3.0f;
 
     [Header("Activation Delays")]
     [Tooltip("Set how many seconds before the object is activated")]
-    public float activationDelay = 1.0f;
+    public float activationDelay = .5f;
     [Tooltip("Set how many seconds before the object is deactivated (Tip: if the pressure plate is pressed briefly, set this higher than activationDelay for better effect)")]
-    public float deactivationDelay = 3.0f;
+    public float deactivationDelay = 1f;
 
+    private float timeScale;
     private Vector3 originalPosition;
-    private Vector3 newPosition;
 
     /// <summary>
     /// Start at frame one to store the object's original position and it's new position.
     /// </summary>
     private void Start()
     {
-        originalPosition = this.transform.position;
-        newPosition = new Vector3(transform.position.x + moveX, transform.position.y + moveY, transform.position.z + moveZ);
+        UpdateTime();
+        MasterTime.singleton.updateTimeScaleEvent += UpdateTime;
+        originalPosition = transform.position;
+        newPosition = originalPosition + newPosition;
     }
 
     /// <summary>
@@ -60,10 +60,13 @@ public class PressureMovableObject : MonoBehaviour, PressureObject
     private IEnumerator MoveObject()
     {
         yield return new WaitForSeconds(activationDelay);
-
-        for (float liftRate = 0.0f; liftRate <= 1.1f; liftRate += 0.1f)
+        Vector3 startingPosition = transform.position;
+        float step = 0;
+        while (step < 1)
         {
-            this.transform.position = Vector3.Lerp(originalPosition, newPosition, liftRate);
+            step += speed * timeScale * Time.fixedDeltaTime;
+            transform.position = Vector3.Lerp(startingPosition, newPosition, step);
+            yield return new WaitForFixedUpdate();
         }
     }
 
@@ -74,10 +77,15 @@ public class PressureMovableObject : MonoBehaviour, PressureObject
     private IEnumerator ReturnObject()
     {
         yield return new WaitForSeconds(deactivationDelay);
-
-        for (float dropRate = 0.0f; dropRate <= 1.1f; dropRate += 0.1f)
+        Vector3 startingPosition = transform.position;
+        float step = 0;
+        while (step < 1)
         {
-            this.transform.position = Vector3.Lerp(newPosition, originalPosition, dropRate);
+            step += speed * timeScale * Time.fixedDeltaTime;
+            transform.position = Vector3.Lerp(startingPosition, originalPosition, step);
+            yield return new WaitForFixedUpdate();
         }
     }
+
+    private void UpdateTime() => timeScale = MasterTime.singleton.timeScale;
 }

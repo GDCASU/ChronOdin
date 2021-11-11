@@ -13,40 +13,18 @@ public class PressurePlate : MonoBehaviour
     [Tooltip("Put in any objects with a script deriving from the PressureObject interface script to be activated and deactivated by the plate")]
     public GameObject[] pressureObjects;
 
-    private bool isActive;
-
-    /// <summary>
-    /// Start at frame one the isActive Boolean variable that is used to avoid
-    /// repetitive use of a method when the pressure plate is touched or not.
-    /// </summary>
-    private void Start()
+    private void OnTriggerEnter(Collider other)
     {
-        isActive = false;
-    }
-
-    /// <summary>
-    /// Check every frame if there is anything (other than the floor) that touches the pressure plate.
-    /// </summary>
-    private void Update()
-    {
-        // Make sure to remove the collider for the plate because that will be counted for the number of colliders it checks
-        if (!isActive && Physics.OverlapBox(transform.position, transform.localScale / 2).Length > 1)
+        if (other.gameObject.CompareTag("Player")) 
         {
-            this.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
-            foreach (GameObject pressureObject in pressureObjects)
-            {
-                pressureObject.GetComponent<PressureObject>().Activate();
-            }
-            isActive = true;
+            foreach (GameObject pressureObject in pressureObjects) pressureObject.GetComponent<LinkedToPressurePlate>().Activate();
         }
-        else if (isActive && Physics.OverlapBox(transform.position, transform.localScale / 2).Length <= 1)
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
         {
-            this.gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
-            foreach (GameObject pressureObject in pressureObjects)
-            {
-                pressureObject.GetComponent<PressureObject>().Deactivate();
-            }
-            isActive = false;
+            foreach (GameObject pressureObject in pressureObjects) pressureObject.GetComponent<LinkedToPressurePlate>().Deactivate();
         }
     }
 }

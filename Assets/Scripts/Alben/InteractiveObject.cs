@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractiveObject : MonoBehaviour
+public interface InteractiveObject
 {
-    public virtual void Interact() {}
+    public void Interact();
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 /// 
 /// Author: Alben Trang
 /// </summary>
-public interface PressureObject
+public interface LinkedToPressurePlate
 {
     /// <summary>
     /// Change the object to an activated(alternative) state.
