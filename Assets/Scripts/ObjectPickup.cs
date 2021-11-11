@@ -22,24 +22,25 @@ public class ObjectPickup : MonoBehaviour
     [Header("Properties")]
     [SerializeField]
     [Tooltip("The maximum distance the Player can pick up an object")]
-    private float maxPickupDistance = 2f;
+    private float maxPickupDistance = 3f;
+
+    [Header("Properties")]
+    [SerializeField]
+    [Tooltip("The distance the object will be from teh player after being pick up")]
+    private float distanceFromPlayer = 3f;
 
     [SerializeField]
     [Tooltip("The speed the held object travels to the target")]
     private float speed = 1500f;
 
     [SerializeField]
-    [Tooltip("Min angle required to actually apply force to the object")]
-    private float minAngle = 30f;
+    [Tooltip("Layer the object will be set to to avoid collisions with the palyer")]
+    private int newLayer = 7;                   //7 is the ignore player layer
 
-    [SerializeField]
-    [Tooltip("Min angle required to actually apply force to the object")]
-    private LayerMask newLayer;
-
-    private LayerMask originalLayer;
+    private int originalLayer;
 
     private Transform heldObject = null;  // the transform of the picked up object
-    private Rigidbody objectPhysics = null;  // the rigidbody of the picked up object
+    private Rigidbody objectRb = null;  // the rigidbody of the picked up object
     private RaycastHit rayHit;  // info about ray collisions
     
     // The previous interpolation and detection mode of the picked up object.
@@ -49,8 +50,6 @@ public class ObjectPickup : MonoBehaviour
     // Values for casting a ray to detect collisions.
     Vector3 startRayPosition;  // starting position of ray
     Vector3 rayDirection;  // direction of ray
-    float rayPositionOffset = 0.000006f;  // distance the new starting position is away from the hit position if the ray detected the Player
-    int maxRayCasts = 2;  // max amount of times to cast ray
 
     // Values for calculating held object velocity.
     Vector3 directionToTarget;  // direction from held object to target
@@ -83,11 +82,13 @@ public class ObjectPickup : MonoBehaviour
     {
         if (heldObject != null)
         {
-            directionToTarget = (target.position - objectPhysics.position).normalized;
-            distanceToTarget = Vector3.Distance(target.position, objectPhysics.position);
-            float angle = Vector3.Angle(-transform.up, (heldObject.position - Camera.main.transform.position).normalized);
-            if (angle > minAngle) objectPhysics.velocity = directionToTarget * distanceToTarget * speed * Time.fixedDeltaTime;
-            else objectPhysics.velocity = Vector3.zero;
+            directionToTarget = (target.position - objectRb.position).normalized;
+            distanceToTarget = Vector3.Distance(target.position, objectRb.position);
+            objectRb.velocity = directionToTarget * distanceToTarget * speed * Time.fixedDeltaTime;
+            Vector3 dirToPlayer = (transform.position - heldObject.position);
+            Physics.Raycast(heldObject.position, dirToPlayer.normalized, out rayHit, dirToPlayer.magnitude);
+            Debug.DrawLine(heldObject.position, heldObject.position+dirToPlayer,Color.red);
+            if (rayHit.collider != null && !rayHit.transform.CompareTag("Player")) Release();
             //print(Vector3.Angle(-transform.up, directionToTarget));
             //Debug.Log(objectPhysics.velocity.magnitude);
         }
@@ -108,46 +109,38 @@ public class ObjectPickup : MonoBehaviour
         rayDirection = playerCamera.TransformDirection(Vector3.forward);
 
         // Cast the ray until the ray does not hit the Player or maxRayCasts has been reached.
-        for(int i = 0; i < maxRayCasts; i++)
+        if (Physics.Raycast(startRayPosition, rayDirection, out rayHit, maxPickupDistance))
         {
-            if (Physics.Raycast(startRayPosition, rayDirection, out rayHit, maxPickupDistance))
+            // If the ray hits a Liftable, prepare the object for holding and stop casting rays.
+            if (rayHit.transform.tag.Equals("Liftable"))
             {
-                // If the ray hits the Player, re-assign the starting position to be a bit away from the hit position
-                // in the previous ray's direction and continue to the next loop iteration.
-                if (rayHit.transform.tag.Equals("Player"))
-                {
-                    startRayPosition = rayHit.point + (rayDirection.normalized * rayPositionOffset);
-                    continue;
-                }
-                // If the ray hits a Liftable, prepare the object for holding and stop casting rays.
-                else if (rayHit.transform.tag.Equals("Liftable"))
-                {
-                    // Capture the object's transform and rigidbod
-                    heldObject = rayHit.transform;
-                    //print(Vector3.Angle(-transform.up, (heldObject.position-Camera.main.transform.position).normalized));
-                    objectPhysics = heldObject.GetComponent<Rigidbody>();
-                    originalLayer = heldObject.gameObject.layer;
-                    heldObject.gameObject.layer = newLayer;
+                // Capture the object's transform and rigidbod
+                heldObject = rayHit.transform;
+                //print(Vector3.Angle(-transform.up, (heldObject.position-Camera.main.transform.position).normalized));
+                objectRb = heldObject.GetComponent<Rigidbody>();
+                originalLayer = heldObject.gameObject.layer;
+                heldObject.gameObject.layer = newLayer;
 
-                    // Alter the object's physics properties.
-                    objectPhysics.useGravity = false;
-                    previousInterpolation = objectPhysics.interpolation;
-                    previousDetectionMode = objectPhysics.collisionDetectionMode;
-                    objectPhysics.interpolation = RigidbodyInterpolation.Interpolate;
-                    objectPhysics.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                // Alter the object's physics properties.
+                objectRb.useGravity = false;
+                previousInterpolation = objectRb.interpolation;
+                previousDetectionMode = objectRb.collisionDetectionMode;
+                objectRb.interpolation = RigidbodyInterpolation.Interpolate;
+                objectRb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                objectRb.freezeRotation = true;
 
-                    // Center target at held object.
-                    target.position = heldObject.position;
-                    return;
-                }
-                // If the ray hits nothing, stop casting rays.
-                // FOR TESTING PURPOSES, comment this "else" block out.
-                else
-                {
-                    return;
-                }
+                // Center target at held object.
+                target.position = playerCamera.transform.position + playerCamera.transform.forward * distanceFromPlayer;
+                return;
+            }
+            // If the ray hits nothing, stop casting rays.
+            // FOR TESTING PURPOSES, comment this "else" block out.
+            else
+            {
+                return;
             }
         }
+        
 
         // FOR TESTING PURPOSES, remove the comments for the block below.
         /*
@@ -165,10 +158,11 @@ public class ObjectPickup : MonoBehaviour
     private void Release()
     {
         // Restore object properties before pickup.
-        objectPhysics.useGravity = true;
-        objectPhysics.interpolation = previousInterpolation;
-        objectPhysics.collisionDetectionMode = previousDetectionMode;
-        objectPhysics.gameObject.layer = originalLayer;
+        objectRb.useGravity = true;
+        objectRb.interpolation = previousInterpolation;
+        objectRb.collisionDetectionMode = previousDetectionMode;
+        objectRb.freezeRotation = false;
+        objectRb.gameObject.layer = originalLayer;
         originalLayer = 0;
         // Assign the held object as nothing.
         heldObject = null;
