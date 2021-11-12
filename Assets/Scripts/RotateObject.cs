@@ -5,11 +5,12 @@ using UnityEngine;
 public class RotateObject : MonoBehaviour
 {
 
-    private float timeScale; 
+    private float timeScale;
 
-    public float rotateSpeed;
-    public GameObject gameObject;
-    
+    [SerializeField]
+    private float rotateSpeed = 2;
+    //public GameObject pillar;
+
     // Start is called before the first frame update
     void Start()
     {
