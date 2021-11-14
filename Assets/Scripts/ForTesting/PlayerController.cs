@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviour
             {
                 //invoke SlowDown method on the target if not already slowing
                 if (!target.GetComponent<SlowDownSpeedUpObject>().GetSlowingStatus())
-                    target.GetComponent<SlowDownSpeedUpObject>().Slow(slowObjectTime, slowDownFactor);
+                    target.GetComponent<SlowDownSpeedUpObject>().SlowDown(slowObjectTime, slowDownFactor);
             }
         }
     }
