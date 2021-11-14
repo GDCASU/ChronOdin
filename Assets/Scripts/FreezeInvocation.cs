@@ -52,16 +52,13 @@ public class FreezeInvocation : MonoBehaviour
     private int maxRayCasts = 2;
     private float rayPositionOffset = 0.000006f;
 
-    // For suspending active and cooldown coroutines.
-    private WaitForSeconds waitForSingleActiveTime;
-    private WaitForSeconds waitForEnvironmentActiveTime;
+    // For suspending cooldown coroutines.
     private WaitForSeconds waitForSingleCooldown;
     private WaitForSeconds waitForEnvironmentCooldown;
 
     private bool canInitiateSingleFreeze = true;  // Is the single freeze cooldown inactive?
     private bool canInitiateEnvironmentFreeze = true;  // Is the environment freeze cooldown inactive?
-    SimpleTimeManipulation simpleObject = null;  // object with a simple freeze mechanism
-    ComplexFreeze complexObject = null;  // objecct with a complex freeze mechanism
+    ObjectFreeze objectToFreeze = null;  // script attached to object that the Player desires to freeze
     public static Action<float> freezeEveryObject;  // event container for freezing every freezeable object
 
     /// <summary>
@@ -69,8 +66,6 @@ public class FreezeInvocation : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        waitForSingleActiveTime = new WaitForSeconds(freezeSingleTime);
-        waitForEnvironmentActiveTime = new WaitForSeconds(freezeEnvironmentTime);
         waitForSingleCooldown = new WaitForSeconds(freezeSingleCooldown);
         waitForEnvironmentCooldown = new WaitForSeconds(freezeEnvironmentCooldown);
     }
@@ -92,6 +87,9 @@ public class FreezeInvocation : MonoBehaviour
             {
                 if (Physics.Raycast(startRayPosition, rayDirection, out rayHit))
                 {
+                    // Attempt to acquire the ObjectFreeze script from the object the ray hit.
+                    objectToFreeze = rayHit.transform.GetComponent<ObjectFreeze>();
+
                     // If the ray hits the Player, re-assign the starting position to be a bit away from the hit position
                     // in the previous ray's direction and continue to the next loop iteration.
                     if (rayHit.transform.gameObject.CompareTag("Player"))
@@ -99,22 +97,10 @@ public class FreezeInvocation : MonoBehaviour
                         startRayPosition = rayHit.point + (rayDirection.normalized * rayPositionOffset);
                         continue;
                     }
-
-                    // If the ray does not hit the Player, attempt to detect an object that can be frozen.
-                    simpleObject = rayHit.transform.GetComponent<SimpleTimeManipulation>();
-                    complexObject = rayHit.transform.GetComponent<ComplexFreeze>();
-
-                    // If the ray hits an object that can be frozen, then freeze the object, activate the freeze single object cooldown, and stop casting rays.
-                    if (simpleObject != null)
+                    // If the ray hits an object with the ObjectFreeze script, then freeze the object, activate the freeze single object cooldown, and stop casting rays.
+                    if (objectToFreeze != null)
                     {
-                        simpleObject.UpdateTimescale(0f);
-                        StartCoroutine(ActivateSingleCooldown());
-                        StartCoroutine(CountdownSingleReverse(simpleObject));
-                        return;
-                    }
-                    if (complexObject != null)
-                    {
-                        complexObject.Freeze(freezeSingleTime);
+                        objectToFreeze.StartFreeze(freezeSingleTime);
                         StartCoroutine(ActivateSingleCooldown());
                         return;
                     }
@@ -141,34 +127,15 @@ public class FreezeInvocation : MonoBehaviour
         {
             // If there are freezeable objects existing in the scene, then freeze all of them and activate the freeze environment cooldown.
             MasterTime.singleton.UpdateTime(0);
-            if (freezeEveryObject != null) freezeEveryObject(freezeEnvironmentTime);
             StartCoroutine(ActivateEnvironmentCooldown());
-            StartCoroutine(CountdownEnvironmentReverse());
+            if (freezeEveryObject != null) freezeEveryObject(freezeEnvironmentTime);
         }
-    }
-
-    /// <summary>
-    /// Updates the simple object's timescale to the default value after the single active time passes.
-    /// </summary>
-    /// <param name="simpleObject"> object with a simple freeze mechanism </param>
-    private IEnumerator CountdownSingleReverse(SimpleTimeManipulation simpleObject)
-    {
-        yield return waitForSingleActiveTime;
-        simpleObject.UpdateTimescale(1f);
-    }
-
-    /// <summary>
-    /// Updates every simple object's timescale to the default value after the environment active time passes.
-    /// </summary>
-    private IEnumerator CountdownEnvironmentReverse()
-    {
-        yield return waitForEnvironmentActiveTime;
-        MasterTime.singleton.UpdateTime(1);
     }
 
     /// <summary>
     /// Denies the Player from freezing an object throughout the freeze single cooldown.
     /// </summary>
+    /// <returns></returns>
     private IEnumerator ActivateSingleCooldown()
     {
         canInitiateSingleFreeze = false;
@@ -179,10 +146,12 @@ public class FreezeInvocation : MonoBehaviour
     /// <summary>
     /// Denies the Player from freezing the environment throughout the freeze environment cooldown.
     /// </summary>
+    /// <returns></returns>
     private IEnumerator ActivateEnvironmentCooldown()
     {
         canInitiateEnvironmentFreeze = false;
         yield return waitForEnvironmentCooldown;
+        MasterTime.singleton.UpdateTime(1);
         canInitiateEnvironmentFreeze = true;
     }
 }
