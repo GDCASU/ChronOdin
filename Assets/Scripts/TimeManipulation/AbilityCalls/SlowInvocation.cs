@@ -37,7 +37,7 @@ public class SlowInvocation : MonoBehaviour
     private WaitForSeconds waitForEnvironmentCooldown;
 
     private bool canInitiateEnvironmentSlow = true;  // Is the environment slow cooldown inactive?
-    public static Action<float, float> slowEveryObject;  // event container for slowing every slowable object
+    public static Action<TimeEffect, float, float> slowAllComplexObjects;  // event container for slowing every slowable object
 
     /// <summary>
     /// Assigns coroutine suspension times.
@@ -58,7 +58,7 @@ public class SlowInvocation : MonoBehaviour
         {
             // If there are slowable objects existing in the scene, then slow all of them and activate the slow environment cooldown.
             MasterTime.singleton.UpdateTime(5);
-            if (slowEveryObject != null) slowEveryObject(slowEnvironmentTime, slowDownFactor);
+            if (slowAllComplexObjects != null) slowAllComplexObjects(TimeEffect.Slow, slowEnvironmentTime, slowDownFactor);
             StartCoroutine(ActivateEnvironmentCooldown());
             StartCoroutine(CountdownEnvironmentSlow());
         }

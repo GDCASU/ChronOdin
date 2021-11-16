@@ -52,7 +52,7 @@ public class ReverseInvocation : MonoBehaviour
     private bool canInitiateObjectReverse = true;  // Is the object reverse cooldown inactive?
     private bool canInitiatePlayerReverse = true;  // Is the Player reverse cooldown inactive?
     SimpleTimeManipulation simpleObject = null;  // object with a simple reverse mechanism
-    ComplexReverse complexObject = null;  // object with a complex reverse mechanism
+    ComplexTimeManipulation complexObject = null;  // object with a complex reverse mechanism
     PlayerReverse playerReversal = null;  // script attached to Player responsible for reversing the Player
 
     /// <summary>
@@ -94,7 +94,7 @@ public class ReverseInvocation : MonoBehaviour
 
                     // If the ray does not hit the Player, attempt to detect an object that can be reversed.
                     simpleObject = rayHit.transform.GetComponent<SimpleTimeManipulation>();
-                    complexObject = rayHit.transform.GetComponent<ComplexReverse>();
+                    complexObject = rayHit.transform.GetComponent<ComplexTimeManipulation>();
 
                     // If the ray hits an object that can be reversed, then reverse the object, activate the reverse object cooldown, and stop casting rays.
                     if (simpleObject != null)
@@ -107,7 +107,7 @@ public class ReverseInvocation : MonoBehaviour
                     }
                     else if (complexObject != null)
                     {
-                        complexObject.Reverse(reverseObjectTime);
+                        complexObject.AffectEntity(TimeEffect.Reverse, reverseObjectTime, 0);
                         StartCoroutine(ActivateObjectCooldown());
                         return;
                     }

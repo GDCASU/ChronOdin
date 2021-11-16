@@ -55,7 +55,7 @@ public class ObjectReverse : ComplexReverse
 
         totalReverseTime = TestMoveThree.singleton.transform.GetComponent<ReverseInvocation>().GetReverseObjectTime();
         maxReferences =  Mathf.Round(totalReverseTime / timeBetweenSaves);
-        Record();
+        Record(TimeEffect.None);
     }
 
     /// <summary>
@@ -67,14 +67,29 @@ public class ObjectReverse : ComplexReverse
         // Once the time between saves has been reached, record a reference and reset the time since last reference.
         if (!isReversing)
         {
-            if (timeSinceLastSave < timeBetweenSaves)
+            if (complexEntity.CurrentEffect == TimeEffect.None)
             {
-                timeSinceLastSave += Time.fixedDeltaTime;
+                if (timeSinceLastSave < timeBetweenSaves)
+                {
+                    timeSinceLastSave += Time.fixedDeltaTime;
+                }
+                else if (timeSinceLastSave >= timeBetweenSaves)
+                {
+                    Record(TimeEffect.None);
+                    timeSinceLastSave = 0f;
+                }
             }
-            else if (timeSinceLastSave >= timeBetweenSaves)
+            else if (complexEntity.CurrentEffect == TimeEffect.Slow)
             {
-                Record();
-                timeSinceLastSave = 0f;
+                if (timeSinceLastSave < (timeBetweenSaves * (1 / complexEntity.CurrentTimescale)))
+                {
+                    timeSinceLastSave += Time.fixedDeltaTime;
+                }
+                else if (timeSinceLastSave >= (timeBetweenSaves * (1 / complexEntity.CurrentTimescale)))
+                {
+                    Record(TimeEffect.Slow);
+                    timeSinceLastSave = 0f;
+                }
             }
         }
     }
@@ -103,7 +118,7 @@ public class ObjectReverse : ComplexReverse
         float elapsedTimeBetweenReferences = 0f;
 
         // Whilst there are saved references, lerp the object's position and rotation to its past references.
-        while(references.Count > 0)
+        while (references.Count > 0 && complexEntity.NewEffect == TimeEffect.None)
         {
             // Assign the closest past reference as the reference for the object to reach.
             referenceToReach = references[references.Count - 1];
@@ -131,7 +146,7 @@ public class ObjectReverse : ComplexReverse
             while(elapsedTimeBetweenReferences < timeToPreviousReference)
             {
                 // Check whether the object is done reversing.
-                if(elapsedTimeRewinding >= totalReverseTime)
+                if (elapsedTimeRewinding >= totalReverseTime || complexEntity.NewEffect != TimeEffect.None)
                 {
                     goto StopRewinding;
                 }
@@ -159,19 +174,39 @@ public class ObjectReverse : ComplexReverse
         objectPhysics.angularVelocity = referenceToReach.angularVelocity;
         objectPhysics.isKinematic = false;
         timeSinceLastSave = timeBetweenSaves - elapsedTimeBetweenReferences;
+        
+        if (complexEntity.NewEffect == TimeEffect.Slow)
+        {
+            timeSinceLastSave = timeSinceLastSave * (1 / complexEntity.NewTimescale);
+        }
+
+        complexEntity.ResetCurrentTimeEffect();
         isReversing = false;
     }
 
     /// <summary>
     /// Saves a new reference of the object. If the reference limit has been met, the oldest reference is removed to allow the newest reference in the list.
     /// </summary>
-    private void Record()
+    private void Record(TimeEffect effect)
     {
         if(references.Count > maxReferences)
         {
             references.RemoveAt(0);
         }
 
-        references.Add(new PastReference(transform.position, transform.rotation, objectPhysics.velocity, objectPhysics.angularVelocity));
+        if (effect == TimeEffect.None)
+        {
+            references.Add(new PastReference(transform.position, transform.rotation, objectPhysics.velocity, objectPhysics.angularVelocity));
+
+        }
+        else if (effect == TimeEffect.Slow)
+        {
+            references.Add(new PastReference(transform.position, transform.rotation, objectPhysics.velocity * (1 / complexEntity.CurrentTimescale), objectPhysics.angularVelocity * (1 / complexEntity.CurrentTimescale)));
+        }
+    }
+
+    public override float[] GetData()
+    {
+        return null;
     }
 }

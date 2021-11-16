@@ -79,4 +79,9 @@ public class WaterReverse : ComplexReverse
             TestMoveThree.singleton.ToggleGravity(true);
         }
     }
+
+    public override float[] GetData()
+    {
+        return null;
+    }
 }

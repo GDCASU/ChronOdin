@@ -23,8 +23,6 @@ public class SlowDownSpeedUpObject : ComplexSlow
     private void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
-
-        SlowInvocation.slowEveryObject += Slow;
     }
 
     private void FixedUpdate()
@@ -61,12 +59,20 @@ public class SlowDownSpeedUpObject : ComplexSlow
         rb.velocity *= slowDownFactor;
         rb.angularVelocity *= slowDownFactor;
 
-        yield return new WaitForSeconds(slowTime);
+        float elapsedTime = 0f;
+        while (elapsedTime < slowTime && complexEntity.NewEffect == TimeEffect.None)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        //yield return new WaitForSeconds(slowTime);
 
         rb.velocity = preVelocity;
         slowing = false;
         rb.useGravity = true;
         casting = false;
+
+        complexEntity.ResetCurrentTimeEffect();
     }
 
      IEnumerator SpeedObject()
@@ -103,5 +109,10 @@ public class SlowDownSpeedUpObject : ComplexSlow
             casting = true;
             StartCoroutine(SpeedObject());
         }
+    }
+
+    public override float[] GetData()
+    {
+        return null;
     }
 }

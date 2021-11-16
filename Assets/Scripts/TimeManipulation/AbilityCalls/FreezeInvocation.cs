@@ -61,8 +61,8 @@ public class FreezeInvocation : MonoBehaviour
     private bool canInitiateSingleFreeze = true;  // Is the single freeze cooldown inactive?
     private bool canInitiateEnvironmentFreeze = true;  // Is the environment freeze cooldown inactive?
     SimpleTimeManipulation simpleObject = null;  // object with a simple freeze mechanism
-    ComplexFreeze complexObject = null;  // objecct with a complex freeze mechanism
-    public static Action<float> freezeEveryObject;  // event container for freezing every freezeable object
+    ComplexTimeManipulation complexObject = null;  // objecct with a complex freeze mechanism
+    public static Action<TimeEffect, float, float> freezeAllComplexObjects;  // event container for freezing every freezeable object
 
     /// <summary>
     /// Assigns coroutine suspension times.
@@ -102,7 +102,7 @@ public class FreezeInvocation : MonoBehaviour
 
                     // If the ray does not hit the Player, attempt to detect an object that can be frozen.
                     simpleObject = rayHit.transform.GetComponent<SimpleTimeManipulation>();
-                    complexObject = rayHit.transform.GetComponent<ComplexFreeze>();
+                    complexObject = rayHit.transform.GetComponent<ComplexTimeManipulation>();
 
                     // If the ray hits an object that can be frozen, then freeze the object, activate the freeze single object cooldown, and stop casting rays.
                     if (simpleObject != null)
@@ -114,7 +114,7 @@ public class FreezeInvocation : MonoBehaviour
                     }
                     if (complexObject != null)
                     {
-                        complexObject.Freeze(freezeSingleTime);
+                        complexObject.AffectEntity(TimeEffect.Freeze, freezeSingleTime, 0f);
                         StartCoroutine(ActivateSingleCooldown());
                         return;
                     }
@@ -141,7 +141,7 @@ public class FreezeInvocation : MonoBehaviour
         {
             // If there are freezeable objects existing in the scene, then freeze all of them and activate the freeze environment cooldown.
             MasterTime.singleton.UpdateTime(0);
-            if (freezeEveryObject != null) freezeEveryObject(freezeEnvironmentTime);
+            if (freezeAllComplexObjects != null) freezeAllComplexObjects(0, freezeEnvironmentTime, 0);
             StartCoroutine(ActivateEnvironmentCooldown());
             StartCoroutine(CountdownEnvironmentReverse());
         }

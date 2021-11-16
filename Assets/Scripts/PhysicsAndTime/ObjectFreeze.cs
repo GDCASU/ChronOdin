@@ -23,7 +23,6 @@ public class ObjectFreeze : ComplexFreeze
     private void Start()
     {
         objectPhysics = transform.GetComponent<Rigidbody>();
-        FreezeInvocation.freezeEveryObject += Freeze;
     }
 
     /// <summary>
@@ -47,10 +46,23 @@ public class ObjectFreeze : ComplexFreeze
         previousContraints = objectPhysics.constraints;
         objectPhysics.constraints = RigidbodyConstraints.FreezeAll;
 
-        yield return new WaitForSeconds(freezeTime);
+        //yield return new WaitForSeconds(freezeTime);
+        float elapsedTime = 0f;
+        while (elapsedTime < freezeTime && complexEntity.NewEffect == TimeEffect.None)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
 
         objectPhysics.constraints = previousContraints;
         objectPhysics.velocity = unfrozenVelocity;
         objectPhysics.angularVelocity = unfrozenAngularVelocity;
+
+        complexEntity.ResetCurrentTimeEffect();
+    }
+
+    public override float[] GetData()
+    {
+        return null;
     }
 }
