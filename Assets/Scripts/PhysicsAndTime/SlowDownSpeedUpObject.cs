@@ -60,7 +60,7 @@ public class SlowDownSpeedUpObject : ComplexSlow
         rb.angularVelocity *= slowDownFactor;
 
         float elapsedTime = 0f;
-        while (elapsedTime < slowTime && complexEntity.NewEffect == TimeEffect.None)
+        while (elapsedTime < slowTime && complexEntity.IncomingEffect == TimeEffect.None)
         {
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -72,7 +72,7 @@ public class SlowDownSpeedUpObject : ComplexSlow
         rb.useGravity = true;
         casting = false;
 
-        complexEntity.ResetCurrentTimeEffect();
+        complexEntity.TransitionToEffect();
     }
 
      IEnumerator SpeedObject()

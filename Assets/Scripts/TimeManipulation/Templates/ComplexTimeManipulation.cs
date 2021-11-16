@@ -16,12 +16,17 @@ public class ComplexTimeManipulation : MonoBehaviour
     private ComplexReverse objectToReverse;
     private ComplexSlow objectToSlow;
 
+    public bool NewEffectIntroduced { get; private set; }
+
     public TimeEffect CurrentEffect { get; private set; }
+    public float CurrentActiveTime { get; private set; }
     public float CurrentTimescale { get; private set; }
     public float[] CurrentData { get; private set; }
-    public TimeEffect NewEffect { get; private set; }
-    public float NewTimescale { get; private set; }
-    public float[] NewData { get; private set; }
+
+    public TimeEffect IncomingEffect { get; private set; }
+    public float IncomingActiveTime { get; private set; }
+    public float IncomingTimescale { get; private set; }
+    public float[] IncomingData { get; private set; }
 
     private void Awake()
     {
@@ -32,70 +37,78 @@ public class ComplexTimeManipulation : MonoBehaviour
         FreezeInvocation.freezeAllComplexObjects += AffectEntity;
         SlowInvocation.slowAllComplexObjects += AffectEntity;
 
-        CurrentEffect = TimeEffect.None;
-        CurrentTimescale = 1f;
+        NewEffectIntroduced = false;
 
-        NewEffect = TimeEffect.None;
-        NewTimescale = 1f;
+        CurrentEffect = TimeEffect.None;
+        CurrentActiveTime = 0f;
+        CurrentTimescale = 1f;
+        CurrentData = null;
+
+        IncomingEffect = TimeEffect.None;
+        IncomingActiveTime = 0f;
+        IncomingTimescale = 1f;
+        IncomingData = null;
     }
 
     public void AffectEntity(TimeEffect effect, float activeTime, float timescale)
     {
-        if (CurrentEffect != TimeEffect.None)
+        Debug.Log("Hi");
+
+        IncomingEffect = effect;
+        IncomingActiveTime = activeTime;
+        IncomingTimescale = timescale;
+
+        if (IncomingEffect == TimeEffect.Freeze && objectToFreeze != null)
         {
-            NewEffect = effect;
-            NewTimescale = timescale;
-
-            if (CurrentEffect == TimeEffect.Freeze && objectToFreeze != null)
-            {
-                objectToFreeze.GetData();
-            }
-            else if (CurrentEffect == TimeEffect.Reverse && objectToReverse != null)
-            {
-                objectToReverse.GetData();
-            }
-            else if (CurrentEffect == TimeEffect.Slow && objectToSlow != null)
-            {
-                objectToSlow.GetData();
-            }
-
-            while (CurrentEffect != TimeEffect.None) ;
-
-            NewEffect = TimeEffect.None;
-            NewTimescale = 1f;
-            NewData = null;
+            IncomingData = objectToFreeze.GetData();
+        }
+        else if (IncomingEffect == TimeEffect.Reverse && objectToReverse != null)
+        {
+            IncomingData = objectToReverse.GetData();
+        }
+        else if (IncomingEffect == TimeEffect.Slow && objectToSlow != null)
+        {
+            IncomingData = objectToSlow.GetData();
         }
 
-        CurrentEffect = effect;
-        CurrentTimescale = timescale;
-
-        if (CurrentEffect == TimeEffect.Freeze && objectToFreeze != null)
+        if (CurrentEffect == TimeEffect.None)
         {
-            objectToFreeze.Freeze(activeTime);
-        }
-        else if (CurrentEffect == TimeEffect.Reverse && objectToReverse != null)
-        {
-            objectToReverse.Reverse(activeTime);
-        }
-        else if (CurrentEffect == TimeEffect.Slow && objectToSlow != null)
-        {
-            objectToSlow.Slow(activeTime, timescale);
+            TransitionToEffect();
         }
         else
         {
-            ResetCurrentTimeEffect();
+            NewEffectIntroduced = true;
         }
     }
 
-    public void SetCurrentEffectData(float[] effectData)
+    public void TransitionToEffect()
     {
-        CurrentData = effectData;
-    }
+        NewEffectIntroduced = false;
 
-    public void ResetCurrentTimeEffect()
-    {
-        CurrentEffect = TimeEffect.None;
-        CurrentTimescale = 1f;
-        CurrentData = null;
+        CurrentEffect = IncomingEffect;
+        CurrentActiveTime = IncomingActiveTime;
+        CurrentTimescale = IncomingTimescale;
+        CurrentData = IncomingData;
+
+        IncomingEffect = TimeEffect.None;
+        IncomingActiveTime = 0f;
+        IncomingTimescale = 1f;
+        IncomingData = null;
+
+        if (CurrentEffect == TimeEffect.Freeze && objectToFreeze != null)
+        {
+            CurrentData = objectToFreeze.GetData();
+            objectToFreeze.Freeze(CurrentActiveTime);
+        }
+        else if (CurrentEffect == TimeEffect.Reverse && objectToReverse != null)
+        {
+            CurrentData = objectToReverse.GetData();
+            objectToReverse.Reverse(CurrentActiveTime);
+        }
+        else if (CurrentEffect == TimeEffect.Slow && objectToSlow != null)
+        {
+            CurrentData = objectToSlow.GetData();
+            objectToSlow.Slow(CurrentActiveTime, CurrentTimescale);
+        }
     }
 }

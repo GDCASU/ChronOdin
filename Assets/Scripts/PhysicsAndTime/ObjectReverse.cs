@@ -118,7 +118,7 @@ public class ObjectReverse : ComplexReverse
         float elapsedTimeBetweenReferences = 0f;
 
         // Whilst there are saved references, lerp the object's position and rotation to its past references.
-        while (references.Count > 0 && complexEntity.NewEffect == TimeEffect.None)
+        while (references.Count > 0 && complexEntity.IncomingEffect == TimeEffect.None)
         {
             // Assign the closest past reference as the reference for the object to reach.
             referenceToReach = references[references.Count - 1];
@@ -146,7 +146,7 @@ public class ObjectReverse : ComplexReverse
             while(elapsedTimeBetweenReferences < timeToPreviousReference)
             {
                 // Check whether the object is done reversing.
-                if (elapsedTimeRewinding >= totalReverseTime || complexEntity.NewEffect != TimeEffect.None)
+                if (elapsedTimeRewinding >= totalReverseTime || complexEntity.IncomingEffect != TimeEffect.None)
                 {
                     goto StopRewinding;
                 }
@@ -175,12 +175,12 @@ public class ObjectReverse : ComplexReverse
         objectPhysics.isKinematic = false;
         timeSinceLastSave = timeBetweenSaves - elapsedTimeBetweenReferences;
         
-        if (complexEntity.NewEffect == TimeEffect.Slow)
+        if (complexEntity.IncomingEffect == TimeEffect.Slow)
         {
-            timeSinceLastSave = timeSinceLastSave * (1 / complexEntity.NewTimescale);
+            timeSinceLastSave = timeSinceLastSave * (1 / complexEntity.IncomingTimescale);
         }
 
-        complexEntity.ResetCurrentTimeEffect();
+        complexEntity.TransitionToEffect();
         isReversing = false;
     }
 

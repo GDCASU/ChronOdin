@@ -48,7 +48,7 @@ public class ObjectFreeze : ComplexFreeze
 
         //yield return new WaitForSeconds(freezeTime);
         float elapsedTime = 0f;
-        while (elapsedTime < freezeTime && complexEntity.NewEffect == TimeEffect.None)
+        while (elapsedTime < freezeTime && complexEntity.IncomingEffect == TimeEffect.None)
         {
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -58,7 +58,7 @@ public class ObjectFreeze : ComplexFreeze
         objectPhysics.velocity = unfrozenVelocity;
         objectPhysics.angularVelocity = unfrozenAngularVelocity;
 
-        complexEntity.ResetCurrentTimeEffect();
+        complexEntity.TransitionToEffect();
     }
 
     public override float[] GetData()
