@@ -36,13 +36,16 @@ public class PlayerInteractions : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1"))
         {
-            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out rayHit, maxInteractDistance))
+            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out rayHit, maxInteractDistance) && rayHit.collider)
             {
-                if (rayHit.transform.tag.Equals("Liftable"))GetComponent<ObjectPickup>().PickupObject();
+                if (rayHit.transform.tag.Equals("Liftable")) GetComponent<ObjectPickup>().PickupObject();
                 else if (rayHit.transform.tag.Equals("Interactable")) rayHit.transform.GetComponent<InteractiveObject>().Interact();
             }
         }
-        else if(Input.GetButtonUp("Fire1"))
-            if (rayHit.transform.tag.Equals("Liftable")) GetComponent<ObjectPickup>().PickupObject();
-    }
+        else if (Input.GetButtonUp("Fire1"))
+        {
+            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out rayHit, maxInteractDistance) && rayHit.collider)
+                if (rayHit.transform.tag.Equals("Liftable")) GetComponent<ObjectPickup>().PickupObject();
+        }    
+    }   
 }
