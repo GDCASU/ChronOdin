@@ -9,6 +9,9 @@ public class RotateObject : MonoBehaviour
 
     [SerializeField]
     private float rotateSpeed = 2;
+
+    private float _rotateSpeed;
+
     //public GameObject pillar;
 
     // Start is called before the first frame update
@@ -16,12 +19,13 @@ public class RotateObject : MonoBehaviour
     {
         UpdateTime();
         MasterTime.singleton.updateTimeScaleEvent += UpdateTime;
+	    timeScale = MasterTime.singleton.timeScale;
     }
 
     // Update is called once per frame
     void Update()
     {
-        rotateSpeed = rotateSpeed * timeScale * Time.fixedDeltaTime;
+        _rotateSpeed = rotateSpeed * timeScale * Time.fixedDeltaTime;
 
         gameObject.transform.Rotate(0, rotateSpeed, 0, Space.Self);
     }

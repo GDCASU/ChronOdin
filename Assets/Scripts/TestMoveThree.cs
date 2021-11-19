@@ -190,7 +190,6 @@ public class TestMoveThree : MonoBehaviour
             Destroy(gameObject);
     }
     #endregion
-
     void Start()
     {
         capCollider = GetComponent<CapsuleCollider>();
@@ -226,6 +225,23 @@ public class TestMoveThree : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) || scrollWheelDelta > 0)
         {
             _jumpBuffer = jumpBuffer;
+        }
+    }
+    
+   private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Platform")
+        {
+            gameObject.transform.parent = collision.gameObject.transform;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Platform")
+        {
+            transform.parent = null;
+            transform.localScale = Vector3.one;
         }
     }
 
