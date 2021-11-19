@@ -8,6 +8,27 @@ using UnityEngine;
 /// </summary>
 public class PickupObject : MonoBehaviour
 {
+    private Transform pickupDest;
+
+    /// <summary>
+    /// Start on frame one by setting its pickupDest to null
+    /// </summary>
+    private void Start()
+    {
+        pickupDest = null;
+    }
+
+    /// <summary>
+    /// Every frame, the ball moves to the pickupDest position
+    /// </summary>
+    private void FixedUpdate()
+    {
+        if (pickupDest != null)
+        {
+            this.transform.position = pickupDest.position;
+        }
+    }
+
     /// <summary>
     /// The object is picked up by the player and held to its destination.
     /// </summary>
@@ -20,6 +41,7 @@ public class PickupObject : MonoBehaviour
         this.GetComponent<Collider>().enabled = false;
         this.transform.position = pickupDest.position;
         this.transform.parent = pickupDest.transform;
+        this.pickupDest = pickupDest;
     }
 
     /// <summary>
@@ -33,5 +55,6 @@ public class PickupObject : MonoBehaviour
         pickupDest.GetChild(0).GetComponent<Rigidbody>().freezeRotation = false;
         this.GetComponent<Collider>().enabled = true;
         pickupDest.DetachChildren();
+        this.pickupDest = null;
     }
 }
