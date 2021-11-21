@@ -35,6 +35,8 @@ public class ObjectReverse : ComplexReverse
     [Tooltip("Time between saving object information for reversing.")]
     private float timeBetweenSaves = 0.2f;
 
+    private float timeBetweenSavesDuringSlow;
+
     private float totalReverseTime;  // the duration the object shall reverse for
 
     private List<PastReference> references;  // saved references of the object
@@ -50,6 +52,8 @@ public class ObjectReverse : ComplexReverse
     /// </summary>
     private void Start()
     {
+        complexEntity.broadcastTransition += ReceiveTransition;
+
         references = new List<PastReference>();
         objectPhysics = transform.GetComponent<Rigidbody>();
 
@@ -81,7 +85,7 @@ public class ObjectReverse : ComplexReverse
             }
             else if (complexEntity.CurrentEffect == TimeEffect.Slow)
             {
-                if (timeSinceLastSave < (timeBetweenSaves * (1 / complexEntity.CurrentTimescale)))
+                if (timeSinceLastSave < timeBetweenSavesDuringSlow)
                 {
                     timeSinceLastSave += Time.fixedDeltaTime;
                 }
@@ -94,13 +98,26 @@ public class ObjectReverse : ComplexReverse
         }
     }
 
+    private void ReceiveTransition()
+    {
+        if (complexEntity.PreviousEffect == TimeEffect.Slow)
+        {
+            timeSinceLastSave = timeSinceLastSave * complexEntity.PreviousTimescale;
+        }
+        if (complexEntity.CurrentEffect == TimeEffect.Slow)
+        {
+            timeSinceLastSave = timeSinceLastSave / complexEntity.CurrentTimescale;
+            timeBetweenSavesDuringSlow = timeBetweenSaves / complexEntity.CurrentTimescale;
+        }
+    }
+
     /// <summary>
     /// Reverses the object to previous references for total reverse time assigned at the Start() function.
     /// </summary>
     /// <param name="reverseTime"> not utilized </param>
     public override void Reverse(float reverseTime)
     {
-        StartCoroutine(ReverseObject(0));
+        StartCoroutine(ReverseObject(reverseTime));
     }
     private IEnumerator ReverseObject(float reverseTime)
     {
@@ -118,7 +135,7 @@ public class ObjectReverse : ComplexReverse
         float elapsedTimeBetweenReferences = 0f;
 
         // Whilst there are saved references, lerp the object's position and rotation to its past references.
-        while (references.Count > 0 && complexEntity.IncomingEffect == TimeEffect.None)
+        while (references.Count > 0 && complexEntity.IntroducingNewEffect == false)
         {
             // Assign the closest past reference as the reference for the object to reach.
             referenceToReach = references[references.Count - 1];
@@ -146,7 +163,7 @@ public class ObjectReverse : ComplexReverse
             while(elapsedTimeBetweenReferences < timeToPreviousReference)
             {
                 // Check whether the object is done reversing.
-                if (elapsedTimeRewinding >= totalReverseTime || complexEntity.IncomingEffect != TimeEffect.None)
+                if (elapsedTimeRewinding >= totalReverseTime || complexEntity.IntroducingNewEffect == true)
                 {
                     goto StopRewinding;
                 }
@@ -174,13 +191,8 @@ public class ObjectReverse : ComplexReverse
         objectPhysics.angularVelocity = referenceToReach.angularVelocity;
         objectPhysics.isKinematic = false;
         timeSinceLastSave = timeBetweenSaves - elapsedTimeBetweenReferences;
-        
-        if (complexEntity.IncomingEffect == TimeEffect.Slow)
-        {
-            timeSinceLastSave = timeSinceLastSave * (1 / complexEntity.IncomingTimescale);
-        }
 
-        complexEntity.TransitionToEffect();
+        complexEntity.TransitionToNextEffect();
         isReversing = false;
     }
 

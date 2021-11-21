@@ -107,7 +107,7 @@ public class ReverseInvocation : MonoBehaviour
                     }
                     else if (complexObject != null)
                     {
-                        complexObject.AffectEntity(TimeEffect.Reverse, reverseObjectTime, 0);
+                        complexObject.AffectObject(TimeEffect.Reverse, reverseObjectTime, 0);
                         StartCoroutine(ActivateObjectCooldown());
                         return;
                     }

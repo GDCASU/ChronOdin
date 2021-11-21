@@ -17,6 +17,8 @@ public class ObjectFreeze : ComplexFreeze
     private Vector3 unfrozenVelocity, unfrozenAngularVelocity;
     private RigidbodyConstraints previousContraints;
 
+    public float timeTest = 0f;
+
     /// <summary>
     /// Collects the attached object's rigidbody and subscribes the StartFreeze method to the Player's freeze environment ability.
     /// </summary>
@@ -48,9 +50,11 @@ public class ObjectFreeze : ComplexFreeze
 
         //yield return new WaitForSeconds(freezeTime);
         float elapsedTime = 0f;
-        while (elapsedTime < freezeTime && complexEntity.IncomingEffect == TimeEffect.None)
+        timeTest = 0f;
+        while (elapsedTime < freezeTime && complexEntity.IntroducingNewEffect == false)
         {
             elapsedTime += Time.deltaTime;
+            timeTest += Time.deltaTime;
             yield return null;
         }
 
@@ -58,7 +62,7 @@ public class ObjectFreeze : ComplexFreeze
         objectPhysics.velocity = unfrozenVelocity;
         objectPhysics.angularVelocity = unfrozenAngularVelocity;
 
-        complexEntity.TransitionToEffect();
+        complexEntity.TransitionToNextEffect();
     }
 
     public override float[] GetData()

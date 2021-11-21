@@ -114,7 +114,7 @@ public class FreezeInvocation : MonoBehaviour
                     }
                     if (complexObject != null)
                     {
-                        complexObject.AffectEntity(TimeEffect.Freeze, freezeSingleTime, 0f);
+                        complexObject.AffectObject(TimeEffect.Freeze, freezeSingleTime, 0f);
                         StartCoroutine(ActivateSingleCooldown());
                         return;
                     }
@@ -141,7 +141,7 @@ public class FreezeInvocation : MonoBehaviour
         {
             // If there are freezeable objects existing in the scene, then freeze all of them and activate the freeze environment cooldown.
             MasterTime.singleton.UpdateTime(0);
-            if (freezeAllComplexObjects != null) freezeAllComplexObjects(0, freezeEnvironmentTime, 0);
+            if (freezeAllComplexObjects != null) freezeAllComplexObjects(TimeEffect.Freeze, freezeEnvironmentTime, 0);
             StartCoroutine(ActivateEnvironmentCooldown());
             StartCoroutine(CountdownEnvironmentReverse());
         }

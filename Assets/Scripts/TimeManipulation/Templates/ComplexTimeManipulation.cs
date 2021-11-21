@@ -1,7 +1,18 @@
+/*
+ * Handles the freeze, reverse, and slow mechanics for complex gameobjects.
+ * 
+ * Author: Cristion Dominguez
+ * Date: 20 November 2021
+ */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
+/// <summary>
+/// Time-related effects an object can experience.
+/// </summary>
 public enum TimeEffect
 {
     None,
@@ -12,102 +23,164 @@ public enum TimeEffect
 
 public class ComplexTimeManipulation : MonoBehaviour
 {
+    // Time mechanic scripts
     private ComplexFreeze objectToFreeze;
     private ComplexReverse objectToReverse;
     private ComplexSlow objectToSlow;
 
-    public bool NewEffectIntroduced { get; private set; }
+    /// <summary>
+    /// Event invoked when a transition to a new time effect occurs.
+    /// </summary>
+    public Action broadcastTransition;
 
+    /// <summary>
+    /// Is a new time effect being introduced?
+    /// </summary>
+    public bool IntroducingNewEffect { get; private set; }
+
+    private bool interruptingAnEffect = false;  // Is the new time effect interrupting another effect?
+
+    // Fields for the current time effect
+    /// <summary>
+    /// Time effect currently active.
+    /// </summary>
     public TimeEffect CurrentEffect { get; private set; }
+    /// <summary>
+    /// How long the current effect shall last.
+    /// </summary>
     public float CurrentActiveTime { get; private set; }
+    /// <summary>
+    /// Timescale of the current effect; relevant for reverse and slow effects.
+    /// I.E. a timescale of 0.3 shall slow an object more than a timescale of 0.5.
+    /// </summary>
     public float CurrentTimescale { get; private set; }
+    /// <summary>
+    /// Data of the current effect retrieved from its corresponding script.
+    /// </summary>
     public float[] CurrentData { get; private set; }
 
-    public TimeEffect IncomingEffect { get; private set; }
-    public float IncomingActiveTime { get; private set; }
-    public float IncomingTimescale { get; private set; }
-    public float[] IncomingData { get; private set; }
+    // Field for the previous time effect
+    /// <summary>
+    /// Time effect previously active.
+    /// </summary>
+    public TimeEffect PreviousEffect { get; private set; }
+    /// <summary>
+    /// How long the previous effect shall last.
+    /// </summary>
+    public float PreviousActiveTime { get; private set; }
+    /// <summary>
+    /// Timescale of the previous effect; relevant for reverse and slow effects.
+    /// I.E. a timescale of 0.3 shall slow an object more than a timescale of 0.5.
+    /// </summary>
+    public float PreviousTimescale { get; private set; }
+    /// <summary>
+    /// Data of the previous effect retrieved from its corresponding script.
+    /// </summary>
+    public float[] PreviousData { get; private set; }
 
+    /// <summary>
+    /// Acquires time mechanic scripts, subscribes the AffectEntity method to the freeze environment and slow environment events, and sets both the
+    /// current and previous effects.
+    /// </summary>
     private void Awake()
     {
         objectToFreeze = transform.GetComponent<ComplexFreeze>();
         objectToReverse = transform.GetComponent<ComplexReverse>();
         objectToSlow = transform.GetComponent<ComplexSlow>();
 
-        FreezeInvocation.freezeAllComplexObjects += AffectEntity;
-        SlowInvocation.slowAllComplexObjects += AffectEntity;
+        FreezeInvocation.freezeAllComplexObjects += AffectObject;
+        SlowInvocation.slowAllComplexObjects += AffectObject;
 
-        NewEffectIntroduced = false;
+        IntroducingNewEffect = false;
 
         CurrentEffect = TimeEffect.None;
         CurrentActiveTime = 0f;
         CurrentTimescale = 1f;
         CurrentData = null;
 
-        IncomingEffect = TimeEffect.None;
-        IncomingActiveTime = 0f;
-        IncomingTimescale = 1f;
-        IncomingData = null;
+        PreviousEffect = TimeEffect.None;
+        PreviousActiveTime = 0f;
+        PreviousTimescale = 1f;
+        PreviousData = null;
     }
 
-    public void AffectEntity(TimeEffect effect, float activeTime, float timescale)
+    /// <summary>
+    /// Saves the current effect as a previous effect and modifies the current effect, and transitions to the new effect.
+    /// If the new effect does not interrupt an active time effect (TimeEffect.None), then the transition is handled by this method.
+    /// If the new effect does not interrupt an active time effect, then the transition is handled by the script corresponding to the previous effect.
+    /// For example, if an object is reversing whilst it receives an order to slow in forward time, then a ComplexReverse child must invoke the TransitionToNextEffect() method.
+    /// </summary>
+    /// <param name="effect"> the new time effect the gameobject shall experience </param>
+    /// <param name="activeTime"> how long the effect shall last </param>
+    /// <param name="timescale"> the intensity of the effect (relevant for reverse and slow) </param>
+    public void AffectObject(TimeEffect effect, float activeTime, float timescale)
     {
-        Debug.Log("Hi");
-
-        IncomingEffect = effect;
-        IncomingActiveTime = activeTime;
-        IncomingTimescale = timescale;
-
-        if (IncomingEffect == TimeEffect.Freeze && objectToFreeze != null)
-        {
-            IncomingData = objectToFreeze.GetData();
-        }
-        else if (IncomingEffect == TimeEffect.Reverse && objectToReverse != null)
-        {
-            IncomingData = objectToReverse.GetData();
-        }
-        else if (IncomingEffect == TimeEffect.Slow && objectToSlow != null)
-        {
-            IncomingData = objectToSlow.GetData();
-        }
-
+        // Determine if the new effect is interrupting an active effect.
         if (CurrentEffect == TimeEffect.None)
         {
-            TransitionToEffect();
+            interruptingAnEffect = false;
         }
         else
         {
-            NewEffectIntroduced = true;
+            interruptingAnEffect = true;
         }
-    }
 
-    public void TransitionToEffect()
-    {
-        NewEffectIntroduced = false;
+        // Save the current effect.
+        PreviousEffect = CurrentEffect;
+        PreviousActiveTime = CurrentActiveTime;
+        PreviousTimescale = CurrentTimescale;
+        PreviousTimescale = CurrentTimescale;
 
-        CurrentEffect = IncomingEffect;
-        CurrentActiveTime = IncomingActiveTime;
-        CurrentTimescale = IncomingTimescale;
-        CurrentData = IncomingData;
-
-        IncomingEffect = TimeEffect.None;
-        IncomingActiveTime = 0f;
-        IncomingTimescale = 1f;
-        IncomingData = null;
-
+        CurrentEffect = effect;
+        CurrentActiveTime = activeTime;
+        CurrentTimescale = timescale;
         if (CurrentEffect == TimeEffect.Freeze && objectToFreeze != null)
         {
             CurrentData = objectToFreeze.GetData();
-            objectToFreeze.Freeze(CurrentActiveTime);
         }
         else if (CurrentEffect == TimeEffect.Reverse && objectToReverse != null)
         {
             CurrentData = objectToReverse.GetData();
-            objectToReverse.Reverse(CurrentActiveTime);
         }
         else if (CurrentEffect == TimeEffect.Slow && objectToSlow != null)
         {
             CurrentData = objectToSlow.GetData();
+        }
+
+        IntroducingNewEffect = true;
+        if (interruptingAnEffect == false)
+        {
+            TransitionToNextEffect();
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void TransitionToNextEffect()
+    {
+        if (IntroducingNewEffect == false)
+        {
+            CurrentEffect = TimeEffect.None;
+            CurrentTimescale = 1f;
+            CurrentActiveTime = 0f;
+            CurrentData = null;
+        }
+
+        IntroducingNewEffect = false;
+
+        broadcastTransition?.Invoke();
+
+        if (CurrentEffect == TimeEffect.Freeze && objectToFreeze != null)
+        {
+            objectToFreeze.Freeze(CurrentActiveTime);
+        }
+        else if (CurrentEffect == TimeEffect.Reverse && objectToReverse != null)
+        {
+            objectToReverse.Reverse(CurrentActiveTime);
+        }
+        else if (CurrentEffect == TimeEffect.Slow && objectToSlow != null)
+        {
             objectToSlow.Slow(CurrentActiveTime, CurrentTimescale);
         }
     }
