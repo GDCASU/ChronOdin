@@ -1,8 +1,9 @@
 /*
- * Handles the freeze, reverse, and slow mechanics for complex gameobjects.
+ * Facilitates the calling of and communication between freeze, reverse, and slow scripts for a complex gameobject.
+ * A complex gameobject can not be frozen, reversed, nor slowed by 1 value such as timescale (i.e. a physics-bound cube that saves points in time to reverse to).
  * 
  * Author: Cristion Dominguez
- * Date: 20 November 2021
+ * Date: 21 November 2021
  */
 
 using System.Collections;
@@ -21,7 +22,7 @@ public enum TimeEffect
     Slow
 }
 
-public class ComplexTimeManipulation : MonoBehaviour
+public class ComplexTimeHub : MonoBehaviour
 {
     // Time mechanic scripts
     private ComplexFreeze objectToFreeze;
@@ -112,9 +113,23 @@ public class ComplexTimeManipulation : MonoBehaviour
     /// </summary>
     /// <param name="effect"> the new time effect the gameobject shall experience </param>
     /// <param name="activeTime"> how long the effect shall last </param>
-    /// <param name="timescale"> the intensity of the effect (relevant for reverse and slow) </param>
+    /// <param name="timescale"> the timescale of the effect (relevant for reverse and slow) </param>
     public void AffectObject(TimeEffect effect, float activeTime, float timescale)
     {
+        // If the script for the corresponding effect does not exist, do nothing.
+        if (CurrentEffect == TimeEffect.Freeze && objectToFreeze == null)
+        {
+            return;
+        }
+        else if (CurrentEffect == TimeEffect.Reverse && objectToReverse == null)
+        {
+            return;
+        }
+        else if (CurrentEffect == TimeEffect.Slow && objectToSlow == null)
+        {
+            return;
+        }
+
         // Determine if the new effect is interrupting an active effect.
         if (CurrentEffect == TimeEffect.None)
         {
@@ -131,6 +146,7 @@ public class ComplexTimeManipulation : MonoBehaviour
         PreviousTimescale = CurrentTimescale;
         PreviousTimescale = CurrentTimescale;
 
+        // Modify the current effect.
         CurrentEffect = effect;
         CurrentActiveTime = activeTime;
         CurrentTimescale = timescale;
@@ -147,6 +163,7 @@ public class ComplexTimeManipulation : MonoBehaviour
             CurrentData = objectToSlow.GetData();
         }
 
+        // Indicate that a new effect was introduced and if the new effect was not introduced whilst another effect was occurring, transition to the new effect.
         IntroducingNewEffect = true;
         if (interruptingAnEffect == false)
         {
@@ -155,10 +172,12 @@ public class ComplexTimeManipulation : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Transitions to the next time effect. If a new effect was not introduced, then the next effect is the object moving normally with time.
+    /// Invokes broadcastTransition event.
     /// </summary>
     public void TransitionToNextEffect()
     {
+        // If a new effect was not introduced, then reset the current effect.
         if (IntroducingNewEffect == false)
         {
             CurrentEffect = TimeEffect.None;
@@ -167,10 +186,11 @@ public class ComplexTimeManipulation : MonoBehaviour
             CurrentData = null;
         }
 
+        // Indicate that the next effect has been transitioned to and broadcast this transition.
         IntroducingNewEffect = false;
-
         broadcastTransition?.Invoke();
 
+        // Apply the current time effect to the gameobject.
         if (CurrentEffect == TimeEffect.Freeze && objectToFreeze != null)
         {
             objectToFreeze.Freeze(CurrentActiveTime);

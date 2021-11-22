@@ -1,3 +1,12 @@
+/*
+ * Reverses an object or the Player for a specified amount of time.
+ * To reverse a single object, the Player must look at the object and press the reverse object button whilst the corresponding cooldown is inactive.
+ * To reverse the Player, the Player must press the reverse player button whilst the corresponding cooldown is inactive.
+ * 
+ * Author: Cristion Dominguez
+ * Date: 21 November 2021
+ */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -52,7 +61,7 @@ public class ReverseInvocation : MonoBehaviour
     private bool canInitiateObjectReverse = true;  // Is the object reverse cooldown inactive?
     private bool canInitiatePlayerReverse = true;  // Is the Player reverse cooldown inactive?
     SimpleTimeManipulation simpleObject = null;  // object with a simple reverse mechanism
-    ComplexTimeManipulation complexObject = null;  // object with a complex reverse mechanism
+    ComplexTimeHub complexObject = null;  // object with a complex reverse mechanism
     PlayerReverse playerReversal = null;  // script attached to Player responsible for reversing the Player
 
     /// <summary>
@@ -94,7 +103,7 @@ public class ReverseInvocation : MonoBehaviour
 
                     // If the ray does not hit the Player, attempt to detect an object that can be reversed.
                     simpleObject = rayHit.transform.GetComponent<SimpleTimeManipulation>();
-                    complexObject = rayHit.transform.GetComponent<ComplexTimeManipulation>();
+                    complexObject = rayHit.transform.GetComponent<ComplexTimeHub>();
 
                     // If the ray hits an object that can be reversed, then reverse the object, activate the reverse object cooldown, and stop casting rays.
                     if (simpleObject != null)
@@ -107,6 +116,12 @@ public class ReverseInvocation : MonoBehaviour
                     }
                     else if (complexObject != null)
                     {
+                        // If the object does not possess a reverse script, then do not activate cooldown.
+                        if (complexObject.transform.GetComponent<ComplexReverse>() == null)
+                        {
+                            return;
+                        }
+
                         complexObject.AffectObject(TimeEffect.Reverse, reverseObjectTime, 0);
                         StartCoroutine(ActivateObjectCooldown());
                         return;

@@ -1,5 +1,5 @@
 /*
- * Freezes the attached gameobject for a specified amount of time.
+ * Freezes an attached gameobject with a Rigidbody for a specified amount of time.
  * 
  * Author: Cristion Dominguez
  * Date: 15 September 2021
@@ -17,10 +17,8 @@ public class ObjectFreeze : ComplexFreeze
     private Vector3 unfrozenVelocity, unfrozenAngularVelocity;
     private RigidbodyConstraints previousContraints;
 
-    public float timeTest = 0f;
-
     /// <summary>
-    /// Collects the attached object's rigidbody and subscribes the StartFreeze method to the Player's freeze environment ability.
+    /// Collects the attached object's rigidbody..
     /// </summary>
     private void Start()
     {
@@ -29,7 +27,6 @@ public class ObjectFreeze : ComplexFreeze
 
     /// <summary>
     /// Commences the coroutine for freezing the gameobject.
-    /// Necessary for freeze environment event to function correctly.
     /// </summary>
     /// <param name="freezeTime"> time to freeze object </param>
     public override void Freeze(float freezeTime)
@@ -40,6 +37,7 @@ public class ObjectFreeze : ComplexFreeze
     /// <summary>
     /// Freezes the gameobject, saving its velocity, angular velocity, and contraints. After the freeze time is up, the velocity, angular
     /// velocity, and contraints are returned to the object.
+    /// If the effect hub communicates that a new effect was introduced, then the object is unfrozen and the next effect is transitioned to.
     /// </summary>
     private IEnumerator FreezeObject(float freezeTime)
     {
@@ -48,13 +46,10 @@ public class ObjectFreeze : ComplexFreeze
         previousContraints = objectPhysics.constraints;
         objectPhysics.constraints = RigidbodyConstraints.FreezeAll;
 
-        //yield return new WaitForSeconds(freezeTime);
         float elapsedTime = 0f;
-        timeTest = 0f;
-        while (elapsedTime < freezeTime && complexEntity.IntroducingNewEffect == false)
+        while (elapsedTime < freezeTime && effectHub.IntroducingNewEffect == false)
         {
             elapsedTime += Time.deltaTime;
-            timeTest += Time.deltaTime;
             yield return null;
         }
 
@@ -62,11 +57,6 @@ public class ObjectFreeze : ComplexFreeze
         objectPhysics.velocity = unfrozenVelocity;
         objectPhysics.angularVelocity = unfrozenAngularVelocity;
 
-        complexEntity.TransitionToNextEffect();
-    }
-
-    public override float[] GetData()
-    {
-        return null;
+        effectHub.TransitionToNextEffect();
     }
 }

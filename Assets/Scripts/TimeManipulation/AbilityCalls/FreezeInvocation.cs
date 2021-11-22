@@ -61,7 +61,7 @@ public class FreezeInvocation : MonoBehaviour
     private bool canInitiateSingleFreeze = true;  // Is the single freeze cooldown inactive?
     private bool canInitiateEnvironmentFreeze = true;  // Is the environment freeze cooldown inactive?
     SimpleTimeManipulation simpleObject = null;  // object with a simple freeze mechanism
-    ComplexTimeManipulation complexObject = null;  // objecct with a complex freeze mechanism
+    ComplexTimeHub complexObject = null;  // objecct with a complex freeze mechanism
     public static Action<TimeEffect, float, float> freezeAllComplexObjects;  // event container for freezing every freezeable object
 
     /// <summary>
@@ -102,7 +102,7 @@ public class FreezeInvocation : MonoBehaviour
 
                     // If the ray does not hit the Player, attempt to detect an object that can be frozen.
                     simpleObject = rayHit.transform.GetComponent<SimpleTimeManipulation>();
-                    complexObject = rayHit.transform.GetComponent<ComplexTimeManipulation>();
+                    complexObject = rayHit.transform.GetComponent<ComplexTimeHub>();
 
                     // If the ray hits an object that can be frozen, then freeze the object, activate the freeze single object cooldown, and stop casting rays.
                     if (simpleObject != null)
@@ -114,6 +114,12 @@ public class FreezeInvocation : MonoBehaviour
                     }
                     if (complexObject != null)
                     {
+                        // If the object does not possess a freeze script, then do not activate cooldown.
+                        if (complexObject.transform.GetComponent<ComplexFreeze>() == null)
+                        {
+                            return;
+                        }
+
                         complexObject.AffectObject(TimeEffect.Freeze, freezeSingleTime, 0f);
                         StartCoroutine(ActivateSingleCooldown());
                         return;

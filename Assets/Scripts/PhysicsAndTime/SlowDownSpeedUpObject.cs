@@ -1,7 +1,7 @@
 /*
  * Revision Author: Cristion Dominguez
  * Modification: 
- *  Subscribed the SlowDown method to the slowEveryObject event upon Scene start.
+ *  The SlowObject coroutine transitions to the next time effect.
  *  The slowDownFactor is set in the SlowInvocation script.
  */
 
@@ -32,15 +32,6 @@ public class SlowDownSpeedUpObject : ComplexSlow
             rb.AddForce(Physics.gravity * (slowDownFactor * slowDownFactor), ForceMode.Acceleration);
         if(speedingUp)
             rb.AddForce(Physics.gravity * (speedUpFactor * speedUpFactor), ForceMode.Acceleration);
-
-        //if (Input.GetKeyDown(KeyCode.E))
-        //{
-        //    SlowDown();
-        //}
-        //if (Input.GetKeyDown(KeyCode.Q))
-        //{
-        //    SpeedUp();
-        //}
     }
     public bool GetSpeedingStatus()
     {
@@ -60,19 +51,18 @@ public class SlowDownSpeedUpObject : ComplexSlow
         rb.angularVelocity *= slowDownFactor;
 
         float elapsedTime = 0f;
-        while (elapsedTime < slowTime && complexEntity.IntroducingNewEffect == false)
+        while (elapsedTime < slowTime && effectHub.IntroducingNewEffect == false)
         {
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        //yield return new WaitForSeconds(slowTime);
 
         rb.velocity = preVelocity;
         slowing = false;
         rb.useGravity = true;
         casting = false;
 
-        complexEntity.TransitionToNextEffect();
+        effectHub.TransitionToNextEffect();
     }
 
      IEnumerator SpeedObject()
@@ -91,9 +81,9 @@ public class SlowDownSpeedUpObject : ComplexSlow
         casting = false;
     }
 
-    public override void Slow(float slowTime, float newSlowDownFactor)
+    public override void Slow(float slowTime, float slowFactor)
     {
-        slowDownFactor = newSlowDownFactor;
+        slowDownFactor = slowFactor;
 
         if(!casting)
         {
@@ -109,10 +99,5 @@ public class SlowDownSpeedUpObject : ComplexSlow
             casting = true;
             StartCoroutine(SpeedObject());
         }
-    }
-
-    public override float[] GetData()
-    {
-        return null;
     }
 }

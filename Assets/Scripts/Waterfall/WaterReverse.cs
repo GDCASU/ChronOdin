@@ -16,20 +16,26 @@ public class WaterReverse : ComplexReverse
     private float reverseWaterForce;
 
     private bool isReversing = false;  // Is the waterfall in the reverse state?
+    private float elapsedTime = 0f;  // time the waterfall has been reversing for
 
     /// <summary>
     /// Sets the waterfall's state to reverse for reverse time.
     /// </summary>
     /// <param name="reverseTime"> time to reverse the waterfall for (in seconds) </param>
-    public override void Reverse(float reverseTime)
-    {
-        StartCoroutine(CountdownReverseActiveTime(reverseTime));
-    }
+    public override void Reverse(float reverseTime) => StartCoroutine(CountdownReverseActiveTime(reverseTime));
     private IEnumerator CountdownReverseActiveTime(float reverseTime)
     {
         isReversing = true;
-        yield return new WaitForSeconds(reverseTime);
+
+        elapsedTime = 0f;
+        while (elapsedTime < reverseTime && effectHub.IntroducingNewEffect == false)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
         isReversing = false;
+        effectHub.TransitionToNextEffect();
     }
 
     /// <summary>
