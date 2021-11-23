@@ -122,7 +122,7 @@ public class ReverseInvocation : MonoBehaviour
                             return;
                         }
 
-                        complexObject.AffectObject(TimeEffect.Reverse, reverseObjectTime, 0);
+                        complexObject.AffectObject(TimeEffect.Reverse, reverseObjectTime, -1f);
                         StartCoroutine(ActivateObjectCooldown());
                         return;
                     }

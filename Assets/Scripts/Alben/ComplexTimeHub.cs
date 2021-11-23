@@ -117,15 +117,15 @@ public class ComplexTimeHub : MonoBehaviour
     public void AffectObject(TimeEffect effect, float activeTime, float timescale)
     {
         // If the script for the corresponding effect does not exist, do nothing.
-        if (CurrentEffect == TimeEffect.Freeze && objectToFreeze == null)
+        if (effect == TimeEffect.Freeze && objectToFreeze == null)
         {
             return;
         }
-        else if (CurrentEffect == TimeEffect.Reverse && objectToReverse == null)
+        else if (effect == TimeEffect.Reverse && objectToReverse == null)
         {
             return;
         }
-        else if (CurrentEffect == TimeEffect.Slow && objectToSlow == null)
+        else if (effect == TimeEffect.Slow && objectToSlow == null)
         {
             return;
         }
@@ -150,15 +150,15 @@ public class ComplexTimeHub : MonoBehaviour
         CurrentEffect = effect;
         CurrentActiveTime = activeTime;
         CurrentTimescale = timescale;
-        if (CurrentEffect == TimeEffect.Freeze && objectToFreeze != null)
+        if (CurrentEffect == TimeEffect.Freeze)
         {
             CurrentData = objectToFreeze.GetData();
         }
-        else if (CurrentEffect == TimeEffect.Reverse && objectToReverse != null)
+        else if (CurrentEffect == TimeEffect.Reverse)
         {
             CurrentData = objectToReverse.GetData();
         }
-        else if (CurrentEffect == TimeEffect.Slow && objectToSlow != null)
+        else if (CurrentEffect == TimeEffect.Slow)
         {
             CurrentData = objectToSlow.GetData();
         }
