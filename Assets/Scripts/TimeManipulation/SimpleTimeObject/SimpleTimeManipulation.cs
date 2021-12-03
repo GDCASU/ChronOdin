@@ -27,11 +27,11 @@ public abstract class SimpleTimeManipulation : MonoBehaviour
     /// <summary>
     /// Subscribes the update timescale function to the MasterTime event for environment ability calls.
     /// </summary>
-    private void Awake() => MasterTime.singleton.updateTimeScaleEvent += UpdateTimescale;
+    protected virtual void Awake() => MasterTime.singleton.updateTimeScaleEvent += UpdateTimescale;
 
     /// <summary>
     /// Modifes the gameobject's timescale.
     /// </summary>
     /// <param name="newTimescale"> the new timescale value to adopt </param>
-    public abstract void UpdateTimescale(float newTimescale);
+    public virtual void UpdateTimescale(float newTimescale) => timescale = newTimescale;
 }

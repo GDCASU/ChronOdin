@@ -5,7 +5,7 @@ using UnityEngine;
 public class MasterTime : MonoBehaviour
 {
     public static MasterTime singleton;
-    public float timeScale = 1;
+    public float timescale = 1;
 
     public delegate void UpdateTimeScale(float newTimescale);
     public event UpdateTimeScale updateTimeScaleEvent;
@@ -31,21 +31,21 @@ public class MasterTime : MonoBehaviour
         switch(value)
         {
             case -1:
-                timeScale = -1f;    //reverse
+                timescale = -1f;    //reverse
                 break;
             case 0:
-                timeScale = 0f;     //stop
+                timescale = 0f;     //stop
                 break;
             case 1:
-                timeScale = 1f;     //reset
+                timescale = 1f;     //reset
                 break;
             case 2:
-                timeScale = 2f;     //accelerate
+                timescale = 2f;     //accelerate
                 break;
             case 5:
-                timeScale = .5f;    //slow down
+                timescale = .5f;    //slow down
                 break;
         }
-        if (updateTimeScaleEvent != null) updateTimeScaleEvent(timeScale);
+        if (updateTimeScaleEvent != null) updateTimeScaleEvent(timescale);
     }
 }

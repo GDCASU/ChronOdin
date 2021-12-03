@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovingPlatformPath : MonoBehaviour
+public class MovingPlatformPath : SimpleTimeManipulation
 {
     public GameObject platform;
     public float speed;
@@ -10,12 +10,10 @@ public class MovingPlatformPath : MonoBehaviour
     public bool loop;
     public Vector3[] points;
     private float speedMultiplier = 1f;
-    private float timeScale;
 
     void Start()
     {
-        UpdateTime();
-        MasterTime.singleton.updateTimeScaleEvent += UpdateTime;
+        timescale = MasterTime.singleton.timescale;
         if (points.Length > 1)
         {
             if (loop) StartCoroutine(LoopPlatform());
@@ -31,7 +29,7 @@ public class MovingPlatformPath : MonoBehaviour
             float step = 0;
             while (step < 1)
             {
-                step += speed * speedMultiplier * timeScale * Time.fixedDeltaTime * 1f / Vector3.Distance(points[i], points[i + 1]);
+                step += speed * speedMultiplier * timescale * Time.fixedDeltaTime * 1f / Vector3.Distance(points[i], points[i + 1]);
                 platform.transform.position = transform.position + Vector3.Lerp(points[i], points[i + 1], step);
                 yield return new WaitForFixedUpdate();
             }
@@ -47,7 +45,7 @@ public class MovingPlatformPath : MonoBehaviour
             float step = 0;
             while (step < 1)
             {
-                step += speed * speedMultiplier * timeScale *Time.fixedDeltaTime * 1f / Vector3.Distance(points[i], points[i - 1]);
+                step += speed * speedMultiplier * timescale *Time.fixedDeltaTime * 1f / Vector3.Distance(points[i], points[i - 1]);
                 platform.transform.position = transform.position + Vector3.Lerp(points[i], points[i - 1], step);
                 yield return new WaitForFixedUpdate();
 
@@ -64,7 +62,7 @@ public class MovingPlatformPath : MonoBehaviour
             float step = 0;
             while (step < 1)
             {
-                step += speed * speedMultiplier * timeScale * Time.fixedDeltaTime * 1f / Vector3.Distance(points[i], points[(i + 1 >= points.Length) ? 0 : i + 1]);
+                step += speed * speedMultiplier * timescale * Time.fixedDeltaTime * 1f / Vector3.Distance(points[i], points[(i + 1 >= points.Length) ? 0 : i + 1]);
                 platform.transform.position = transform.position + Vector3.Lerp(points[i], points[(i + 1 >= points.Length) ? 0 : i + 1], step);
                 yield return new WaitForFixedUpdate();
             }
@@ -73,5 +71,4 @@ public class MovingPlatformPath : MonoBehaviour
             if (delay > 0) yield return new WaitForSeconds(delay);
         }
     }
-    private void UpdateTime()=> timeScale = MasterTime.singleton.timeScale;
 }
