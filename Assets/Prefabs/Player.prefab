@@ -137,6 +137,10 @@ GameObject:
   - component: {fileID: 7964286914231739163}
   - component: {fileID: 8225854368876441686}
   - component: {fileID: 8225854368876441689}
+  - component: {fileID: 4608750026825196947}
+  - component: {fileID: 4392627425076173154}
+  - component: {fileID: -6349913996901185716}
+  - component: {fileID: -3204541696174789344}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -201,9 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd1ba6586b1e8b24a816bcc7d32a01bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 3610357520889994798}
   target: {fileID: 7964286912278766905}
-  maxPickupDistance: 6
   distanceFromPlayer: 3
   speed: 1500
   newLayer: 7
@@ -297,3 +299,76 @@ MonoBehaviour:
   mouseSensitvity: 100
   player: {fileID: 8225854368876441687}
   camera: {fileID: 3610357520889994798}
+--- !u!114 &4608750026825196947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8225854368876441680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66e004ddbfffe964d84e05622975546d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  freezeSingleObjectButton: 102
+  freezeEnvironmentButton: 103
+  freezeSingleTime: 5
+  freezeSingleCooldown: 5
+  freezeEnvironmentTime: 10
+  freezeEnvironmentCooldown: 10
+  playerCamera: {fileID: 3610357520889994798}
+--- !u!114 &4392627425076173154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8225854368876441680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffe7b00340e23974ba3501cc055aea74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reverseObjectButton: 114
+  reversePlayerButton: 101
+  reverseObjectTime: 5
+  reverseObjectCooldown: 5
+  reversePlayerCooldown: 10
+  playerCamera: {fileID: 3610357520889994798}
+--- !u!114 &-6349913996901185716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8225854368876441680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b724ad0227a8ac54b8fa639fe46a9b40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerMovement: {fileID: 8225854368876441686}
+  positionsSavedPerSecond: 10
+  amountOfTimeReversed: 3
+  reverseCooldown: 1
+  lerpBetweenPositionsRate: 0
+  timeBetweenPositions: 0
+  previousPositionsLimit: 0
+  timer: 0
+--- !u!114 &-3204541696174789344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8225854368876441680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae5017f1d8ae9674cb8d97b3662fca07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slowEnvironmentButton: 118
+  slowEnvironmentTime: 5
+  slowEnvironmentCooldown: 10
+  slowDownFactor: 0.5

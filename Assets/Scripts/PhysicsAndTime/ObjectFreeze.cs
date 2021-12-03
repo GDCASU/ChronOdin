@@ -1,5 +1,5 @@
 /*
- * Freezes the attached gameobject for a specified amount of time.
+ * Freezes an attached gameobject with a Rigidbody for a specified amount of time.
  * 
  * Author: Cristion Dominguez
  * Date: 15 September 2021
@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectFreeze : MonoBehaviour
+public class ObjectFreeze : ComplexFreeze
 {
     private Rigidbody objectPhysics;  // for collecting and saving velocity, angular velocity, and rigidbody contraints
 
@@ -18,20 +18,18 @@ public class ObjectFreeze : MonoBehaviour
     private RigidbodyConstraints previousContraints;
 
     /// <summary>
-    /// Collects the attached object's rigidbody and subscribes the StartFreeze method to the Player's freeze environment ability.
+    /// Collects the attached object's rigidbody..
     /// </summary>
     private void Start()
     {
         objectPhysics = transform.GetComponent<Rigidbody>();
-        FreezeInvocation.freezeEveryObject += StartFreeze;
     }
 
     /// <summary>
     /// Commences the coroutine for freezing the gameobject.
-    /// Necessary for freeze environment event to function correctly.
     /// </summary>
     /// <param name="freezeTime"> time to freeze object </param>
-    public void StartFreeze(float freezeTime)
+    public override void Freeze(float freezeTime)
     {
         StartCoroutine(FreezeObject(freezeTime));
     }
@@ -39,6 +37,7 @@ public class ObjectFreeze : MonoBehaviour
     /// <summary>
     /// Freezes the gameobject, saving its velocity, angular velocity, and contraints. After the freeze time is up, the velocity, angular
     /// velocity, and contraints are returned to the object.
+    /// If the effect hub communicates that a new effect was introduced, then the object is unfrozen and the next effect is transitioned to.
     /// </summary>
     private IEnumerator FreezeObject(float freezeTime)
     {
@@ -47,10 +46,17 @@ public class ObjectFreeze : MonoBehaviour
         previousContraints = objectPhysics.constraints;
         objectPhysics.constraints = RigidbodyConstraints.FreezeAll;
 
-        yield return new WaitForSeconds(freezeTime);
+        float elapsedTime = 0f;
+        while (elapsedTime < freezeTime && effectHub.IntroducingNewEffect == false)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
 
         objectPhysics.constraints = previousContraints;
         objectPhysics.velocity = unfrozenVelocity;
         objectPhysics.angularVelocity = unfrozenAngularVelocity;
+
+        effectHub.TransitionToNextEffect();
     }
 }
