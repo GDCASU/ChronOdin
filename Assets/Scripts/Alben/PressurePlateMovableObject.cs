@@ -27,7 +27,7 @@ public class PressurePlateMovableObject: SimpleTimeManipulation, LinkedToPressur
     /// <summary>
     /// Start at frame one to store the object's original position and it's new position.
     /// </summary>
-    private void Start()
+    protected override void Start()
     {
         timescale = MasterTime.singleton.timescale;
         originalPosition = transform.position;

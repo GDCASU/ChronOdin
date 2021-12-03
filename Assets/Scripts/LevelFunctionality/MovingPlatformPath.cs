@@ -11,7 +11,7 @@ public class MovingPlatformPath : SimpleTimeManipulation
     public Vector3[] points;
     private float speedMultiplier = 1f;
 
-    void Start()
+    protected override void Start()
     {
         timescale = MasterTime.singleton.timescale;
         if (points.Length > 1)
