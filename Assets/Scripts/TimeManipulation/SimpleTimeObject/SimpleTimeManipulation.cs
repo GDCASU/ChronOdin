@@ -22,7 +22,7 @@ public abstract class SimpleTimeManipulation : MonoBehaviour
     /// Value that determines the gameobject's passage through time. timescale = 1 denotes normal,timescale < 0 denotes reverse, 0 < timescale < 1 denotes slow,
     /// timescale > 1 denotes speed, timescale = 0 denotes freeze.
     /// </summary>
-    protected float timescale = 1f;
+    protected float timeScale = 1f;
 
     /// <summary>
     /// Subscribes the update timescale function to the MasterTime event for environment ability calls.
@@ -33,5 +33,5 @@ public abstract class SimpleTimeManipulation : MonoBehaviour
     /// Modifes the gameobject's timescale.
     /// </summary>
     /// <param name="newTimescale"> the new timescale value to adopt </param>
-    public virtual void UpdateTimescale(float newTimescale) => timescale = newTimescale;
+    public virtual void UpdateTimescale(float newTimescale) => timeScale = newTimescale;
 }
