@@ -13,8 +13,10 @@ public class RotateObject : SimpleTimeManipulation
     private float rotationSpeed = 2;
     private float _rotationSpeed;
     public bool stepRotation;
-    public bool isRotating;
+    [HideInInspector] public bool isRotating;
+    [Tooltip("Only worry about this if Step Rotation is enabled")]
     public float stepRotationAngle;
+    [Tooltip("Only worry about this if Step Rotation is enabled")]
     public float stopTime = 1;
     private float yRotation;
     private float interpolationValue;
