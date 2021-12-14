@@ -1,30 +1,22 @@
+/*
+ * Revision Author: Cristion Dominguez
+ * Modification: The script has 
+ */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RotateObject : MonoBehaviour
+public class RotateObject : SimpleTimeManipulation
 {
-
-    private float timeScale;
-
     [SerializeField]
     private float rotateSpeed = 2;
     //public GameObject pillar;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        UpdateTime();
-        MasterTime.singleton.updateTimeScaleEvent += UpdateTime;
-    }
-
     // Update is called once per frame
     void Update()
     {
-        rotateSpeed = rotateSpeed * timeScale * Time.fixedDeltaTime;
-
+        rotateSpeed = rotateSpeed * timescale * Time.fixedDeltaTime;
         gameObject.transform.Rotate(0, rotateSpeed, 0, Space.Self);
     }
-
-    private void UpdateTime() => timeScale = MasterTime.singleton.timeScale;
 }

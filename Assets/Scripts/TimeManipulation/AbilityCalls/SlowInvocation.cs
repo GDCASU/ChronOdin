@@ -32,17 +32,19 @@ public class SlowInvocation : MonoBehaviour
     [SerializeField]
     private float slowDownFactor = 0.5f;
 
-    // For suspending cooldown coroutines.
+    // For suspending active and cooldown coroutines.
+    private WaitForSeconds waitForEnvironmentActiveTime;
     private WaitForSeconds waitForEnvironmentCooldown;
 
     private bool canInitiateEnvironmentSlow = true;  // Is the environment slow cooldown inactive?
-    public static Action<float, float> slowEveryObject;  // event container for slowing every slowable object
+    public static Action<TimeEffect, float, float> slowAllComplexObjects;  // event container for slowing every slowable object
 
     /// <summary>
     /// Assigns coroutine suspension times.
     /// </summary>
     private void Start()
     {
+        waitForEnvironmentActiveTime = new WaitForSeconds(slowEnvironmentTime);
         waitForEnvironmentCooldown = new WaitForSeconds(slowEnvironmentCooldown);
     }
 
@@ -56,20 +58,28 @@ public class SlowInvocation : MonoBehaviour
         {
             // If there are slowable objects existing in the scene, then slow all of them and activate the slow environment cooldown.
             MasterTime.singleton.UpdateTime(5);
+            if (slowAllComplexObjects != null) slowAllComplexObjects(TimeEffect.Slow, slowEnvironmentTime, slowDownFactor);
             StartCoroutine(ActivateEnvironmentCooldown());
-            if (slowEveryObject != null) slowEveryObject(slowEnvironmentTime, slowDownFactor);
+            StartCoroutine(CountdownEnvironmentSlow());
         }
+    }
+
+    /// <summary>
+    /// Updates every simple object's timescale to the default value after the environment active time passes.
+    /// </summary>
+    private IEnumerator CountdownEnvironmentSlow()
+    {
+        yield return waitForEnvironmentActiveTime;
+        MasterTime.singleton.UpdateTime(1);
     }
 
     /// <summary>
     /// Denies the Player from slowing the environment throughout the slow environment cooldown.
     /// </summary>
-    /// <returns></returns>
     private IEnumerator ActivateEnvironmentCooldown()
     {
         canInitiateEnvironmentSlow = false;
         yield return waitForEnvironmentCooldown;
-        MasterTime.singleton.UpdateTime(1);
         canInitiateEnvironmentSlow = true;
     }
 }

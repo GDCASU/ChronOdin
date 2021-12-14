@@ -1,7 +1,7 @@
 /*
  * Revision Author: Cristion Dominguez
  * Modification: 
- *  Subscribed the SlowDown method to the slowEveryObject event upon Scene start.
+ *  The SlowObject coroutine transitions to the next time effect.
  *  The slowDownFactor is set in the SlowInvocation script.
  */
 
@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlowDownSpeedUpObject : MonoBehaviour
+public class SlowDownSpeedUpObject : ComplexSlow
 {
     private bool speedingUp = false;
     private WaitForSeconds waitTime = new WaitForSeconds(5f);
@@ -23,8 +23,6 @@ public class SlowDownSpeedUpObject : MonoBehaviour
     private void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
-
-        SlowInvocation.slowEveryObject += SlowDown;
     }
 
     private void FixedUpdate()
@@ -34,15 +32,6 @@ public class SlowDownSpeedUpObject : MonoBehaviour
             rb.AddForce(Physics.gravity * (slowDownFactor * slowDownFactor), ForceMode.Acceleration);
         if(speedingUp)
             rb.AddForce(Physics.gravity * (speedUpFactor * speedUpFactor), ForceMode.Acceleration);
-
-        //if (Input.GetKeyDown(KeyCode.E))
-        //{
-        //    SlowDown();
-        //}
-        //if (Input.GetKeyDown(KeyCode.Q))
-        //{
-        //    SpeedUp();
-        //}
     }
     public bool GetSpeedingStatus()
     {
@@ -53,7 +42,7 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         return slowing;
     }
     // Save velocity and turn off gravity for the object reduce velocity and angular velocity
-    IEnumerator Slow(float slowTime)
+    IEnumerator SlowObject(float slowTime)
     {
         slowing = true;
         rb.useGravity = false;
@@ -61,15 +50,22 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         rb.velocity *= slowDownFactor;
         rb.angularVelocity *= slowDownFactor;
 
-        yield return new WaitForSeconds(slowTime);
+        float elapsedTime = 0f;
+        while (elapsedTime < slowTime && effectHub.IntroducingNewEffect == false)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
 
         rb.velocity = preVelocity;
         slowing = false;
         rb.useGravity = true;
         casting = false;
+
+        effectHub.TransitionToNextEffect();
     }
 
-     IEnumerator Speed()
+     IEnumerator SpeedObject()
     {
         //all the same stuff as the Slow method but the opposite to have a speedup effect
         speedingUp = true;
@@ -85,14 +81,14 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         casting = false;
     }
 
-    public void SlowDown(float slowTime, float newSlowDownFactor)
+    public override void Slow(float slowTime, float slowFactor)
     {
-        slowDownFactor = newSlowDownFactor;
+        slowDownFactor = slowFactor;
 
         if(!casting)
         {
             casting = true;
-            StartCoroutine(Slow(slowTime));
+            StartCoroutine(SlowObject(slowTime));
         }
     }
 
@@ -101,7 +97,7 @@ public class SlowDownSpeedUpObject : MonoBehaviour
         if (!casting)
         {
             casting = true;
-            StartCoroutine(Speed());
+            StartCoroutine(SpeedObject());
         }
     }
 }

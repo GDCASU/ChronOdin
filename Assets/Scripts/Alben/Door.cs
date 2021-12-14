@@ -6,7 +6,7 @@ using UnityEngine;
 /// IMPORTANT: Be aware that the script is for the door itself while it's door pivot is a parent of the door.
 /// Author: Alben Trang
 /// </summary>
-public class Door : MonoBehaviour
+public class Door : SimpleTimeManipulation
 {
     [Tooltip("Put the pivot on one side of the door to let it turn like a real door")]
     public GameObject doorPivot;
@@ -14,7 +14,6 @@ public class Door : MonoBehaviour
 
     private bool isOpen, isMoving;
 
-    private float timeScale;
     /// <summary>
     /// Start at frame one to set the initial Boolean variables.
     /// </summary>
@@ -57,10 +56,10 @@ public class Door : MonoBehaviour
     private IEnumerator RotateDoor(Quaternion startAngle, Quaternion endAngle)
     {
         float slerp = 0;
-        float slerpRate = Time.deltaTime * timeScale * rotationSpeed * .1f;
+        float slerpRate = Time.deltaTime * timescale * rotationSpeed * .1f;
         while (slerpRate <= 1)
         {
-            slerpRate = Time.deltaTime * timeScale * rotationSpeed * .1f;
+            slerpRate = Time.deltaTime * timescale * rotationSpeed * .1f;
             doorPivot.transform.rotation = Quaternion.Slerp(startAngle, endAngle, slerpRate);
             slerp += slerpRate;
             yield return null;
