@@ -8,7 +8,7 @@ public class TrapDoor : SimpleTimeManipulation
     {
         // TODO: Sound Effect
         // Active trapdoor if not frozen
-        if(timescale != 0)
+        if(timeScale != 0)
             if(collision.gameObject.CompareTag("Player"))
             {
                 // Door is basically "crumbling"
