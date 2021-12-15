@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CeilingDebris : MonoBehaviour
+public class CeilingDebris : SimpleTimeManipulation
 {
     [SerializeField]
     private float minSpawnSeconds = 1.0f;
@@ -25,17 +25,18 @@ public class CeilingDebris : MonoBehaviour
     private float spawnZoneLength;
     private float spawnZoneWidth;
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         spawnZoneLength = transform.localScale.x / 2;
         spawnZoneWidth = transform.localScale.z / 2;
         determinedSpawnTimer = (int)Random.Range(minSpawnSeconds, maxSpawnSeconds);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        timer += Time.deltaTime;
+        timer += Time.deltaTime * timescale;
 
         if(timer >= determinedSpawnTimer)
         {
