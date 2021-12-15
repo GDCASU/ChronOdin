@@ -147,7 +147,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8225854368876441687
 Transform:
   m_ObjectHideFlags: 0
@@ -296,7 +296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13c8799e209a63f4d94a441629c98f75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitvity: 100
+  mouseSensitvity: 200
   player: {fileID: 8225854368876441687}
   camera: {fileID: 3610357520889994798}
 --- !u!114 &4608750026825196947
