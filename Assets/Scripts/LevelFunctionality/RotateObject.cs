@@ -18,7 +18,7 @@ public class RotateObject : SimpleTimeManipulation
     public float stepRotationAngle;
     [Tooltip("Only worry about this if Step Rotation is enabled")]
     public float stopTime = 1;
-    private float yRotation;
+    public float yRotation;
     private float interpolationValue;
     protected override void Start()
     {
@@ -48,6 +48,8 @@ public class RotateObject : SimpleTimeManipulation
                 {
                     isRotating = false;
                     yRotation += stepRotationAngle;
+                    yRotation %= 360;
+                    transform.rotation = transform.localRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, yRotation, transform.rotation.eulerAngles.z);
                     StartCoroutine(RotationCooldown());
                 }
             }
