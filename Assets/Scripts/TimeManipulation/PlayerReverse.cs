@@ -8,7 +8,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerReverse : MonoBehaviour
 {
-    public TestMoveThree playerMovement;
+    public PlayerController playerMovement;
     [Range(1, 50)]
     public int positionsSavedPerSecond;
     public float amountOfTimeReversed;

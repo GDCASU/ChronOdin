@@ -18,6 +18,7 @@ public class MovingPlatform : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             collision.gameObject.transform.parent = null;
+            collision.transform.localScale = Vector3.one;
         }
     }
 }
