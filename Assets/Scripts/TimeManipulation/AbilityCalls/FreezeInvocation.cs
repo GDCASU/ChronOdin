@@ -160,7 +160,7 @@ public class FreezeInvocation : MonoBehaviour
     private IEnumerator CountdownSingleReverse(SimpleTimeManipulation simpleObject)
     {
         yield return waitForSingleActiveTime;
-        simpleObject.UpdateTimescale(1f);
+        if (simpleObject != null) simpleObject.UpdateTimescale(1f);
     }
 
     /// <summary>

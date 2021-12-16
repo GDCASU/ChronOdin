@@ -11,7 +11,7 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
     private Vector3 originalRotation;
     private bool open;
 
-    protected override void Start()
+    protected void Start()
     {
         timescale = MasterTime.singleton.timescale;
         originalPosition = transform.position;

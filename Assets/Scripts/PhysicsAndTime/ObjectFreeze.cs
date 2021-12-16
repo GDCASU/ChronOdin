@@ -11,11 +11,11 @@ using UnityEngine;
 
 public class ObjectFreeze : ComplexFreeze
 {
-    private Rigidbody objectPhysics;  // for collecting and saving velocity, angular velocity, and rigidbody contraints
+    private Rigidbody objectPhysics;  // for collecting and saving velocity, angular velocity, and rigidbody constraints
 
     // Save before freezing gameobject.
     private Vector3 unfrozenVelocity, unfrozenAngularVelocity;
-    private RigidbodyConstraints previousContraints;
+    private RigidbodyConstraints previousConstraints;
 
     /// <summary>
     /// Collects the attached object's rigidbody..
@@ -35,15 +35,15 @@ public class ObjectFreeze : ComplexFreeze
     }
 
     /// <summary>
-    /// Freezes the gameobject, saving its velocity, angular velocity, and contraints. After the freeze time is up, the velocity, angular
-    /// velocity, and contraints are returned to the object.
+    /// Freezes the gameobject, saving its velocity, angular velocity, and constraints. After the freeze time is up, the velocity, angular
+    /// velocity, and constraints are returned to the object.
     /// If the effect hub communicates that a new effect was introduced, then the object is unfrozen and the next effect is transitioned to.
     /// </summary>
     private IEnumerator FreezeObject(float freezeTime)
     {
         unfrozenVelocity = objectPhysics.velocity;
         unfrozenAngularVelocity = objectPhysics.angularVelocity;
-        previousContraints = objectPhysics.constraints;
+        previousConstraints = objectPhysics.constraints;
         objectPhysics.constraints = RigidbodyConstraints.FreezeAll;
 
         float elapsedTime = 0f;
@@ -53,7 +53,7 @@ public class ObjectFreeze : ComplexFreeze
             yield return null;
         }
 
-        objectPhysics.constraints = previousContraints;
+        objectPhysics.constraints = previousConstraints;
         objectPhysics.velocity = unfrozenVelocity;
         objectPhysics.angularVelocity = unfrozenAngularVelocity;
 
