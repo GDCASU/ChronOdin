@@ -25,14 +25,14 @@ public class ShootingTrap : SimpleTimeManipulation
     /// <summary>
     /// Only permits the trap to be frozen.
     /// </summary>
-    /// <param name="newTimescale"></param>
-    public override void UpdateTimescale(float newTimescale)
+    /// <param name="newTimeScale"></param>
+    public override void UpdateTimescale(float newTimeScale)
     {
-        base.UpdateTimescale(newTimescale);
+        base.UpdateTimescale(newTimeScale);
 
-        if (timescale != 1 && timescale != 0)
+        if (timeScale != 1 && timeScale != 0)
         {
-            timescale = 1f;
+            timeScale = 1f;
         }
     }
 
@@ -46,6 +46,6 @@ public class ShootingTrap : SimpleTimeManipulation
             Instantiate(projectilePrefab, projectileSpawnpoint.position, projectileSpawnpoint.rotation).GetComponent<ShootingProjectile>().launch();
             elapsedTime = 0f;
         }
-        elapsedTime += (Time.deltaTime * timescale);
+        elapsedTime += (Time.deltaTime * timeScale);
     }
 }

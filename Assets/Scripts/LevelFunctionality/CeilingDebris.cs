@@ -25,9 +25,8 @@ public class CeilingDebris : SimpleTimeManipulation
     private float spawnZoneLength;
     private float spawnZoneWidth;
 
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
         spawnZoneLength = transform.localScale.x / 2;
         spawnZoneWidth = transform.localScale.z / 2;
         determinedSpawnTimer = (int)Random.Range(minSpawnSeconds, maxSpawnSeconds);

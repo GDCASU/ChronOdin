@@ -35,14 +35,14 @@ public class MovingTrap : SimpleTimeManipulation
     /// <summary>
     /// Updates the time scale for the trap and path if it exists.
     /// </summary>
-    /// <param name="newTimescale"></param>
-    public override void UpdateTimescale(float newTimescale)
+    /// <param name="newTimeScale"></param>
+    public override void UpdateTimescale(float newTimeScale)
     {
-        base.UpdateTimescale(newTimescale);
+        base.UpdateTimescale(newTimeScale);
 
         if (optionalPath != null)
         {
-            optionalPath.UpdateTimescale(timescale);
+            optionalPath.UpdateTimescale(timeScale);
         }
     }
 
@@ -62,7 +62,7 @@ public class MovingTrap : SimpleTimeManipulation
             elapsedTime = 0f;
         }
 
-        elapsedTime += (Time.deltaTime * timescale);
+        elapsedTime += (Time.deltaTime * timeScale);
     }
 
     /// <summary>
