@@ -13,7 +13,7 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
 
     protected void Start()
     {
-        timescale = MasterTime.singleton.timescale;
+        timeScale = MasterTime.singleton.timeScale;
         originalPosition = transform.position;
         originalRotation = transform.rotation.eulerAngles;
         if (!swingsOpen) moveToVector += originalPosition;
@@ -28,7 +28,7 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
         float step = 0;
         while (step < 1)
         {
-            step += speed * timescale * Time.fixedDeltaTime;
+            step += speed * timeScale * Time.fixedDeltaTime;
             lerpVector = Vector3.Lerp(startingPosition, endPosition, step);
             if (swingsOpen) transform.rotation = Quaternion.Euler(lerpVector);
             else transform.position = lerpVector;
