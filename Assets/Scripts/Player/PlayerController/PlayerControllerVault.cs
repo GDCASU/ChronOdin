@@ -25,6 +25,7 @@ public partial class PlayerController
         [Header("Vault Variables")]
         public float vaultClimbStrength = 10;
         public float vaultEndStrength = 6;
+        public float validDistanceAboveCamera = .25f;
         public float vaultDuration = .8f;
         #endregion
     }
@@ -33,7 +34,7 @@ public partial class PlayerController
         float maxDistance = capCollider.radius * (1 + ((isSprinting) ? (rb.velocity.magnitude / baseMovementVariables.maxSprintVelocity) : 0));
         if (playerState == PlayerState.Grounded) vaultVariables.feetSphereCheck = Physics.SphereCast(transform.position - Vector3.up * .5f, capCollider.radius + .01f, rb.velocity.normalized, out feetHit, maxDistance);
 
-        vaultVariables.headCheck = Physics.Raycast(Camera.main.transform.position + Vector3.up * .25f, transform.forward, capCollider.radius + ((surfaceSlope >= vaultVariables.minClimbSlope) ? vaultVariables.maxClimbCheckDistance * 2 : vaultVariables.minClimbCheckDistance));
+        vaultVariables.headCheck = Physics.Raycast(Camera.main.transform.position + Vector3.up * vaultVariables.validDistanceAboveCamera, transform.forward, capCollider.radius + ((surfaceSlope >= vaultVariables.minClimbSlope) ? vaultVariables.maxClimbCheckDistance * 2 : vaultVariables.minClimbCheckDistance));
         vaultVariables.forwardCheck = Physics.Raycast(transform.position, transform.forward, capCollider.radius + ((surfaceSlope >= vaultVariables.minClimbSlope) ? vaultVariables.maxClimbCheckDistance : vaultVariables.minClimbCheckDistance));
 
         if (vaultVariables.forwardCheck && currentForwardAndRight.magnitude > 1)

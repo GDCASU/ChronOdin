@@ -75,12 +75,12 @@ public partial class PlayerController
         else if (Input.GetKey(KeyCode.A)) x = -speedIncrease;
         else x = 0;
 
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            if (Time.timeScale == 1f) Time.timeScale = .1f;
-            else Time.timeScale = 1;
-        }
-        else if (Input.GetKeyDown(KeyCode.Q)) Time.timeScale = 0;
+        //if (Input.GetKeyDown(KeyCode.E))
+        //{
+        //    if (Time.timeScale == 1f) Time.timeScale = .1f;
+        //    else Time.timeScale = 1;
+        //}
+        //else if (Input.GetKeyDown(KeyCode.Q)) Time.timeScale = 0;
     }
     private void GroundCheck()
     {
@@ -254,7 +254,5 @@ public partial class PlayerController
         climbVariables._climbingCooldown = 0;
         lastViablePosition = transform.position;
         timeSinceGrounded = 0;
-        downLungeVariables.lungedUsed = false;
-        launchVariables.abilityUsed = false;
     }
 }
