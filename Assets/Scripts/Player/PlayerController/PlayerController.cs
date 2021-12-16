@@ -47,6 +47,7 @@ public partial class PlayerController : MonoBehaviour
     private float speedIncrease;
     private float friction;
     private float airControl;
+    [HideInInspector] public bool useGravity = true; 
     #endregion
 
     #region Jump
@@ -134,14 +135,17 @@ public partial class PlayerController : MonoBehaviour
         GroundCheck();
         Move();
         if (crouchMechanic) HandleCrouchInput();
-        if (jumpMechanic) HandleJumpInput();
-        ApplyGravity();
+        if (useGravity)
+        {
+            if (jumpMechanic) HandleJumpInput();
+            if (vaultMechanic) ClimbChecks();
+            ApplyGravity();
+        }
         rb.velocity += totalVelocityToAdd;
         if (rb.velocity.magnitude < baseMovementVariables.minVelocity && x == 0 && z == 0 && (isGrounded))        //If the player stops moving set its maxVelocity to walkingSpeed and set its rb velocity to 0
         {
             rb.velocity = Vector3.zero;
             isSprinting = false;
         }
-        if (vaultMechanic) ClimbChecks();
     }
 }

@@ -46,7 +46,7 @@ public class WaterReverse : ComplexReverse
     {
         if (other.tag.Equals("Player") && isReversing)
         {
-            TestMoveThree.singleton.ToggleGravity(false);
+            PlayerController.singleton.ToggleGravity(false);
         }
     }
 
@@ -61,14 +61,14 @@ public class WaterReverse : ComplexReverse
         {
             if (isReversing)
             {
-                TestMoveThree.singleton.ToggleGravity(false);
+                PlayerController.singleton.ToggleGravity(false);
                 other.attachedRigidbody.AddForce(0, reverseWaterForce, 0);
             }
             else
             {
-                if (TestMoveThree.singleton.useGravity == false)
+                if (PlayerController.singleton.useGravity == false)
                 {
-                    TestMoveThree.singleton.ToggleGravity(true);
+                    PlayerController.singleton.ToggleGravity(true);
                 }
             }
         }
@@ -80,9 +80,9 @@ public class WaterReverse : ComplexReverse
     /// <param name="other"> foreign collider in current collider </param>
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag.Equals("Player") && TestMoveThree.singleton.useGravity == false)
+        if (other.tag.Equals("Player") && PlayerController.singleton.useGravity == false)
         {
-            TestMoveThree.singleton.ToggleGravity(true);
+            PlayerController.singleton.ToggleGravity(true);
         }
     }
 

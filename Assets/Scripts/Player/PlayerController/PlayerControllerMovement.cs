@@ -221,13 +221,31 @@ public partial class PlayerController
     public void SetInitialGravity() => g = baseMovementVariables.initialGravity;
     private void ApplyGravity()
     {
-        if (playerState != PlayerState.Climbing)
+        if (useGravity)
         {
-            if (!isGrounded)
+            if (playerState != PlayerState.Climbing)
             {
-                totalVelocityToAdd += Vector3.up * g;
+                if (!isGrounded)
+                {
+                    totalVelocityToAdd += Vector3.up * g;
+                }
+                if (g > baseMovementVariables.maxGravity) g *= baseMovementVariables.gravityRate;
             }
-            if (g > baseMovementVariables.maxGravity) g *= baseMovementVariables.gravityRate;
+        }
+    }
+    public void ToggleGravity(bool active)
+    {
+        previousState = playerState;
+        playerState = PlayerState.InAir;
+        if (active)
+        {
+            useGravity = true;
+            SetInitialGravity();
+        }
+        else
+        {
+            useGravity = false;
+            g = 0;
         }
     }
     private IEnumerator FakeGround()
