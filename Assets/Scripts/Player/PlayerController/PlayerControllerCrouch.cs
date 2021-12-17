@@ -16,7 +16,7 @@ public partial class PlayerController
     void CrouchInput()=> crouchVariables.crouchBuffer = Input.GetKey(KeyCode.LeftControl);
     public void HandleCrouchInput()
     {
-        crouchVariables.topIsClear = !Physics.Raycast(transform.position - newForwardandRight.normalized * capCollider.radius, Vector3.up, capCollider.height + .01f); // Check if thee's nothing blocking the player from standing up
+        crouchVariables.topIsClear = !Physics.Raycast(transform.position - newForwardandRight.normalized * capCollider.radius, Vector3.up, capCollider.height + .01f, ~triggers); // Check if thee's nothing blocking the player from standing up
 
         if (isGrounded)
         {

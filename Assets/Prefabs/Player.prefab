@@ -401,8 +401,12 @@ MonoBehaviour:
   onFakeGround: 0
   playerState: 0
   previousState: 0
+  useGravity: 1
   _inAirJumps: 0
   playerCamera: {fileID: 8225854368876441689}
+  triggers:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &7964286914231739163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -455,7 +459,7 @@ MonoBehaviour:
   reverseObjectTime: 5
   reverseObjectCooldown: 5
   reversePlayerCooldown: 10
-  playerCamera: {fileID: 0}
+  playerCamera: {fileID: 3610357520889994798}
 --- !u!114 &-3204541696174789344
 MonoBehaviour:
   m_ObjectHideFlags: 0
