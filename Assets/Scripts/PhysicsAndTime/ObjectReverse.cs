@@ -57,7 +57,7 @@ public class ObjectReverse : ComplexReverse
         references = new List<PastReference>();
         objectPhysics = transform.GetComponent<Rigidbody>();
 
-        totalReverseTime = TestMoveThree.singleton.transform.GetComponent<ReverseInvocation>().GetReverseObjectTime();
+        totalReverseTime = PlayerController.singleton.transform.GetComponent<ReverseInvocation>().GetReverseObjectTime();
         maxReferences =  Mathf.Round(totalReverseTime / timeBetweenSaves);
         Record(TimeEffect.None);
     }
