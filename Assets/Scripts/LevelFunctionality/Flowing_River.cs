@@ -10,11 +10,8 @@ public class Flowing_River : SimpleTimeManipulation
     public float playerVelocity;
     private float originalPlayerSprint;
     private float originalPlayerWalk;
-    protected override void Start()
-    {
-        base.Start();
-        UpdateTimescale(MasterTime.singleton.timeScale);
-    }
+    public void Start() => UpdateTimescale(MasterTime.singleton.timeScale);
+
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.GetComponent<Rigidbody>())

@@ -16,9 +16,9 @@ public partial class PlayerController
         public float maxClimbCheckDistance = .6f;
         public float minClimbSlope = 65;
 
-         public bool feetCheck;
+        [HideInInspector] public bool feetCheck;
         [HideInInspector] public bool headCheck;
-         public bool forwardCheck;
+        [HideInInspector] public bool forwardCheck;
         #endregion
 
         #region Vault

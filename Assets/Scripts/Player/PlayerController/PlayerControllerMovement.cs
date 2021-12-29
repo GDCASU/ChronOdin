@@ -52,7 +52,7 @@ public partial class PlayerController
         public float fakeGroundTime = .1f;
         [HideInInspector] public float _fakeGroundTimer;
         [HideInInspector] public bool feetSphereCheck;
-        public bool kneesCheck;
+        [HideInInspector] public bool kneesCheck;
         #endregion
 
         #endregion
@@ -244,7 +244,6 @@ public partial class PlayerController
     }
     private IEnumerator FakeGround()
     {
-        print("did it");
         onFakeGround = true;
         transform.position = new Vector3(transform.position.x, feetHit.point.y + 1f, transform.position.z);
         g = 0;
