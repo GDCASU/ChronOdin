@@ -30,6 +30,11 @@ public class ShootingProjectile : SimpleTimeManipulation
     }
 
     /// <summary>
+    /// Updates the local timeScale variable before the first update is called
+    /// </summary>
+    private void Start() => UpdateTimescale(MasterTime.singleton.timeScale);
+
+    /// <summary>
     /// Alters the projectile's velocity based on the new time scale.
     /// </summary>
     /// <param name="newTimeScale"></param>

@@ -13,7 +13,6 @@ public class MovingPlatformPath : SimpleTimeManipulation
 
     protected void Start()
     {
-        base.Start();
         UpdateTimescale(MasterTime.singleton.timeScale);
         if (points.Length > 1)
         {

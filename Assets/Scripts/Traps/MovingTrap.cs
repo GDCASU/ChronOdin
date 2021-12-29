@@ -31,20 +31,10 @@ public class MovingTrap : SimpleTimeManipulation
     {
         physicalComponent = transform.GetChild(0);
     }
-
     /// <summary>
-    /// Updates the time scale for the trap and path if it exists.
+    /// Updates the local timeScale variable before the first update is called
     /// </summary>
-    /// <param name="newTimeScale"></param>
-    public override void UpdateTimescale(float newTimeScale)
-    {
-        base.UpdateTimescale(newTimeScale);
-
-        if (optionalPath != null)
-        {
-            optionalPath.UpdateTimescale(timeScale);
-        }
-    }
+    private void Start()=> UpdateTimescale(MasterTime.singleton.timeScale);
 
     /// <summary>
     /// Moves the physical component up and down.

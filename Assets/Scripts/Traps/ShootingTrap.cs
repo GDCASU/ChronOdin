@@ -23,6 +23,11 @@ public class ShootingTrap : SimpleTimeManipulation
     private float elapsedTime = 0f;  // time since the last projectile was fired
 
     /// <summary>
+    /// Updates the local timeScale variable before the first update is called
+    /// </summary>
+    private void Start() => UpdateTimescale(MasterTime.singleton.timeScale);
+
+    /// <summary>
     /// Only permits the trap to be frozen.
     /// </summary>
     /// <param name="newTimeScale"></param>
