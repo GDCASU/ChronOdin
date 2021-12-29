@@ -25,10 +25,14 @@ public class ShootingProjectile : SimpleTimeManipulation
     /// </summary>
     private void Awake()
     {
-        UpdateTimescale(MasterTime.singleton.timeScale);
         body = GetComponent<Rigidbody>();
         transform.Rotate(90f, 0f, 0f);
     }
+
+    /// <summary>
+    /// Updates the local timeScale variable before the first update is called
+    /// </summary>
+    private void Start() => UpdateTimescale(MasterTime.singleton.timeScale);
 
     /// <summary>
     /// Alters the projectile's velocity based on the new time scale.
