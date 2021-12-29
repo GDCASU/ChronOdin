@@ -20,9 +20,8 @@ public class RotateObject : SimpleTimeManipulation
     public float stopTime = 1;
     public float yRotation;
     private float interpolationValue;
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
         UpdateTimescale(MasterTime.singleton.timeScale);
         yRotation = transform.rotation.eulerAngles.y;
         isRotating = true;

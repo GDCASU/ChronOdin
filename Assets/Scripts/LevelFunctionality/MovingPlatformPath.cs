@@ -11,7 +11,7 @@ public class MovingPlatformPath : SimpleTimeManipulation
     public Vector3[] points;
     private float speedMultiplier = 1f;
 
-    protected override void Start()
+    protected void Start()
     {
         base.Start();
         UpdateTimescale(MasterTime.singleton.timeScale);

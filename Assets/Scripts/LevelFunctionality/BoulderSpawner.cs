@@ -17,9 +17,8 @@ public class BoulderSpawner : SimpleTimeManipulation
     private float determinedSpawnTimer;
 
     // Start is called before the first frame update
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
         determinedSpawnTimer = (int)Random.Range(minSpawnSeconds, maxSpawnSeconds);
     }
 
