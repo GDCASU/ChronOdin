@@ -25,9 +25,9 @@ public class ShootingProjectile : SimpleTimeManipulation
     /// </summary>
     private void Awake()
     {
+        UpdateTimescale(MasterTime.singleton.timeScale);
         body = GetComponent<Rigidbody>();
         transform.Rotate(90f, 0f, 0f);
-        UpdateTimescale(MasterTime.singleton.timeScale);
     }
 
     /// <summary>

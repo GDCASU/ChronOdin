@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class TrapDoor : SimpleTimeManipulation
 {
+    /// <summary>
+    /// Updates the local timeScale variable before the first update is called
+    /// </summary>
+    private void Start() => UpdateTimescale(MasterTime.singleton.timeScale);
     private void OnCollisionStay(Collision collision)
     {
         // TODO: Sound Effect
