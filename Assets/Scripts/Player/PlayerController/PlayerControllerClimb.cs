@@ -53,7 +53,7 @@ public partial class PlayerController
         climbVariables._climbingTime = climbVariables.climbingDuration;
         if (jumpMechanic) _justJumpedCooldown = 0;
         climbVariables._climbingGravity = climbVariables.initialClimbingGravity;
-        Physics.BoxCast(transform.position - transform.forward.normalized * capCollider.radius * .5f, Vector3.one * capCollider.radius, transform.forward, out forwardHit, Quaternion.identity, 1f);
+        Physics.BoxCast(transform.position - transform.forward.normalized * capCollider.radius * .5f, Vector3.one * capCollider.radius, transform.forward, out forwardHit, Quaternion.identity, 1f, ~triggers);
         climbVariables._climbingStrafe = climbVariables.climbingStrafe;
         Vector3 playerOnWallRightDirection = Vector3.Cross(forwardHit.normal, Vector3.up).normalized;
         Vector3 originalHorizontalClimbingDirection = Vector3.Project(velocityAtCollision, playerOnWallRightDirection);

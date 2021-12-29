@@ -100,6 +100,7 @@ public partial class PlayerController : MonoBehaviour
     #region Other
     private WaitForFixedUpdate fixedUpdate;
     public static PlayerController singleton;
+    public LayerMask triggers;
     #endregion
 
     #endregion
