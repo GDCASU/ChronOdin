@@ -25,9 +25,14 @@ public abstract class SimpleTimeManipulation : MonoBehaviour
     protected float timeScale = 1f;
 
     /// <summary>
-    /// Subscribes the update timescale function to the MasterTime event for environment ability calls.
+    /// Subscribes the update timescale function to the MasterTime event for environment ability calls when the gameobject is enabled.
     /// </summary>
-    protected virtual void Start() => MasterTime.singleton.updateTimeScaleEvent += UpdateTimescale;
+    protected virtual void OnEnable() => MasterTime.singleton.updateTimeScaleEvent += UpdateTimescale;
+
+    /// <summary>
+    /// Unsubscribes the update timescale function to the MasterTime event for environment ability calls when the gameobject is disabled.
+    /// </summary>
+    protected virtual void OnDisable() => MasterTime.singleton.updateTimeScaleEvent -= UpdateTimescale;
 
     /// <summary>
     /// Modifes the gameobject's timescale.

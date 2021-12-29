@@ -160,7 +160,7 @@ public class ReverseInvocation : MonoBehaviour
     private IEnumerator CountdownObjectReverse(SimpleTimeManipulation simpleObject)
     {
         yield return waitForObjectActiveTime;
-        simpleObject.UpdateTimescale(1f);
+        if (simpleObject != null) simpleObject.UpdateTimescale(1f);
     }
 
     /// <summary>

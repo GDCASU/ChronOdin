@@ -80,17 +80,13 @@ public class ComplexTimeHub : MonoBehaviour
     public float[] PreviousData { get; private set; }
 
     /// <summary>
-    /// Acquires time mechanic scripts, subscribes the AffectEntity method to the freeze environment and slow environment events, and sets both the
-    /// current and previous effects.
+    /// Acquires time mechanic scripts, and sets both the current and previous effects.
     /// </summary>
     private void Awake()
     {
         objectToFreeze = transform.GetComponent<ComplexFreeze>();
         objectToReverse = transform.GetComponent<ComplexReverse>();
         objectToSlow = transform.GetComponent<ComplexSlow>();
-
-        FreezeInvocation.freezeAllComplexObjects += AffectObject;
-        SlowInvocation.slowAllComplexObjects += AffectObject;
 
         IntroducingNewEffect = false;
 
@@ -103,6 +99,24 @@ public class ComplexTimeHub : MonoBehaviour
         PreviousActiveTime = 0f;
         PreviousTimescale = 1f;
         PreviousData = null;
+    }
+
+    /// <summary>
+    /// Subscribes the AffectEntity method to the freeze environment and slow environment events when the gameobject is enabled.
+    /// </summary>
+    private void OnEnable()
+    {
+        FreezeInvocation.freezeAllComplexObjects += AffectObject;
+        SlowInvocation.slowAllComplexObjects += AffectObject;
+    }
+
+    /// <summary>
+    /// Unsubscribes the AffectEntity method to the freeze environment and slow environment events when the gameobject is disabled.
+    /// </summary>
+    private void OnDisable()
+    {
+        FreezeInvocation.freezeAllComplexObjects -= AffectObject;
+        SlowInvocation.slowAllComplexObjects -= AffectObject;
     }
 
     /// <summary>

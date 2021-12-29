@@ -262,10 +262,11 @@ public partial class PlayerController
         g = 0;
         transform.position = lastViablePosition;
     }
+    public void UpdateRespawnPoint()=>lastViablePosition = transform.position;
+
     private void PlayerLanded()
     {
         climbVariables._climbingCooldown = 0;
-        lastViablePosition = transform.position;
         timeSinceGrounded = 0;
     }
 }
