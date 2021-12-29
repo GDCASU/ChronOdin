@@ -19,7 +19,7 @@ public class Pendulum : SimpleTimeManipulation
     [SerializeField, Tooltip("How quickly the pendulum ball swings side to side.")]
     private float angularFrequency = 0.5f;
 
-    [SerializeField, Tooltip("The time (in seconds) after the pendulum ball was dropped; resets to 0 when the ball reaches its initial position.")]
+    //[SerializeField, Tooltip("The time (in seconds) after the pendulum ball was dropped; resets to 0 when the ball reaches its initial position.")]
     private float time = 0f;
 
     [Header("Collision")]
@@ -46,6 +46,8 @@ public class Pendulum : SimpleTimeManipulation
     private float maxBallVelocity;
     private bool wasTimeResetSinceMaxHeight = false;  // Was the time reset since the ball reached max height?
 
+    private Vector3 initialRotation;
+
     /// <summary>
     /// Acquires the rigidbody of the pendulum, sets its center of mass, acquires the ball's collider, calculates the max velocity of the ball, and initializes collision contacts.
     /// </summary>
@@ -60,14 +62,21 @@ public class Pendulum : SimpleTimeManipulation
 
         collisionContacts = new List<ContactPoint>();
     }
-
+    /// <summary>
+    /// Updates the local timeScale variable before the first update is called
+    /// </summary>
+    private void Start() 
+    {
+        UpdateTimescale(MasterTime.singleton.timeScale);
+        initialRotation = transform.localRotation.eulerAngles;
+    } 
     /// <summary>
     /// Calculates the angle the ball should be at with respect to the y-axis.
     /// </summary>
     private void FixedUpdate()
     {
         currentAngle = initialAngle * Mathf.Cos(angularFrequency * time);
-        pendulumBody.MoveRotation(Quaternion.Euler(0f, 0f, currentAngle));
+        pendulumBody.MoveRotation(Quaternion.Euler(initialRotation + Vector3.forward * currentAngle));
 
         // Ensure time does not grow too large.
         if (time >= 0f)
@@ -132,16 +141,16 @@ public class Pendulum : SimpleTimeManipulation
         float collisionAngle = Vector3.Angle(collideDir, velocity);
 
         // Determine which min and max hit force values to utilize.
-        // The forge magnitude is determined by the velocity of the ball, the angle the entity collided with the ball, and the hit forces.
-        float forceMagnitude;
+        // The force magnitude is determined by the velocity of the ball, the angle the entity collided with the ball, and the hit forces.
+        float forceMagnitude = 0;
         if (collision.transform.CompareTag("Player"))
         {
-            forceMagnitude = (velocity.magnitude * (1f / maxBallVelocity)) * Mathf.Lerp(maxPlayerHitForce, minPlayerHitForce, collisionAngle * (1f / 90f));
+            forceMagnitude = (velocity.magnitude * (1f / (maxBallVelocity == 0 ? .001f : maxBallVelocity) ) ) * Mathf.Lerp(maxPlayerHitForce, minPlayerHitForce, collisionAngle * (1f / 90f));
             collidedBody.AddForce(launchDirection * forceMagnitude);
         }
         else if (collidedBody != null)
         {
-            forceMagnitude = (velocity.magnitude * (1f / maxBallVelocity)) * Mathf.Lerp(maxObjectHitForce, minObjectHitForce, collisionAngle * (1f / 90f));
+            forceMagnitude = (velocity.magnitude * (1f / (maxBallVelocity == 0 ? .001f : maxBallVelocity) ) ) * Mathf.Lerp(maxObjectHitForce, minObjectHitForce, collisionAngle * (1f / 90f));
             collidedBody.AddForce(launchDirection * forceMagnitude);
         }
     }
