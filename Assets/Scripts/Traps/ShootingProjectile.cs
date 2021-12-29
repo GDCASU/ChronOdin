@@ -27,6 +27,7 @@ public class ShootingProjectile : SimpleTimeManipulation
     {
         body = GetComponent<Rigidbody>();
         transform.Rotate(90f, 0f, 0f);
+        UpdateTimescale(MasterTime.singleton.timeScale);
     }
 
     /// <summary>

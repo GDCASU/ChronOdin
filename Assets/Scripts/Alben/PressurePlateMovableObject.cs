@@ -29,7 +29,7 @@ public class PressurePlateMovableObject: SimpleTimeManipulation, LinkedToPressur
     /// </summary>
     protected void Start()
     {
-        timeScale = MasterTime.singleton.timeScale;
+        UpdateTimescale(MasterTime.singleton.timeScale);
         originalPosition = transform.position;
         newPosition = originalPosition + newPosition;
     }

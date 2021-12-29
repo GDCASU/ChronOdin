@@ -33,20 +33,6 @@ public class MovingTrap : SimpleTimeManipulation
     }
 
     /// <summary>
-    /// Updates the time scale for the trap and path if it exists.
-    /// </summary>
-    /// <param name="newTimeScale"></param>
-    public override void UpdateTimescale(float newTimeScale)
-    {
-        base.UpdateTimescale(newTimeScale);
-
-        if (optionalPath != null)
-        {
-            optionalPath.UpdateTimescale(timeScale);
-        }
-    }
-
-    /// <summary>
     /// Moves the physical component up and down.
     /// </summary>
     private void Update()
