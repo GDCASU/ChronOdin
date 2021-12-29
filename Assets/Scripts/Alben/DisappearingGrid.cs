@@ -33,7 +33,7 @@ public class DisappearingGrid : MonoBehaviour
             {
                 newPos = new Vector3(transform.position.x + (disapperingPlatformPrefab.transform.localScale.x * j), newPos.y, newPos.z);
                 platforms[i, j] = Instantiate(disapperingPlatformPrefab, newPos, Quaternion.identity, this.gameObject.transform);
-                platforms[i, j].GetComponent<DisappearWhenPlayerTouch>().SetDisappearTrigger(boolArray2D.booleanArrays[i].boolArray[j]);
+                platforms[i, j].GetComponent<DisappearWhenPlayerTouch>().SetDisappearTrigger(!boolArray2D.booleanArrays[i].boolArray[j]);
             }
         }
     }
@@ -48,12 +48,12 @@ public class DisappearingGrid : MonoBehaviour
         Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         Vector3 platformSize = disapperingPlatformPrefab.transform.localScale;
 
-        for (int i = 0; i < boolArray2D.info.rows; i++)
+        for (int r = 0; r < boolArray2D.info.rows; r++)
         {
-            newPos = new Vector3(newPos.x, newPos.y, transform.position.z - (disapperingPlatformPrefab.transform.localScale.z * i));
-            for (int j = 0; j < boolArray2D.booleanArrays[i].boolArray.Length; j++)
+            newPos = new Vector3(newPos.x, newPos.y, transform.position.z - (disapperingPlatformPrefab.transform.localScale.z * r));
+            for (int c = 0; c < boolArray2D.info.columns; c++)
             {
-                newPos = new Vector3(transform.position.x + (disapperingPlatformPrefab.transform.localScale.x * j), newPos.y, newPos.z);
+                newPos = new Vector3(transform.position.x + (disapperingPlatformPrefab.transform.localScale.x * c), newPos.y, newPos.z);
                 Gizmos.DrawWireCube(newPos, platformSize);
             }
         }
