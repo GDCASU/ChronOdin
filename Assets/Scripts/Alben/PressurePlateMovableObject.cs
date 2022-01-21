@@ -7,7 +7,7 @@ using UnityEngine;
 /// is not pressed.
 /// Author: Alben Trang
 /// </summary>
-public class PressurePlateMovableObject: MonoBehaviour, LinkedToPressurePlate
+public class PressurePlateMovableObject: SimpleTimeManipulation, LinkedToPressurePlate
 {
     [Tooltip("The objects new position")]
     public Vector3 newPosition;
@@ -21,16 +21,15 @@ public class PressurePlateMovableObject: MonoBehaviour, LinkedToPressurePlate
     [Tooltip("Set how many seconds before the object is deactivated (Tip: if the pressure plate is pressed briefly, set this higher than activationDelay for better effect)")]
     public float deactivationDelay = 1f;
 
-    private float timeScale;
+    //private float timeScale;
     private Vector3 originalPosition;
 
     /// <summary>
     /// Start at frame one to store the object's original position and it's new position.
     /// </summary>
-    private void Start()
+    protected void Start()
     {
-        UpdateTime();
-        MasterTime.singleton.updateTimeScaleEvent += UpdateTime;
+        UpdateTimescale(MasterTime.singleton.timeScale);
         originalPosition = transform.position;
         newPosition = originalPosition + newPosition;
     }
@@ -86,6 +85,4 @@ public class PressurePlateMovableObject: MonoBehaviour, LinkedToPressurePlate
             yield return new WaitForFixedUpdate();
         }
     }
-
-    private void UpdateTime() => timeScale = MasterTime.singleton.timeScale;
 }

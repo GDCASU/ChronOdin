@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovingPlatformPath : MonoBehaviour
+public class MovingPlatformPath : SimpleTimeManipulation
 {
     public GameObject platform;
     public float speed;
@@ -10,12 +10,10 @@ public class MovingPlatformPath : MonoBehaviour
     public bool loop;
     public Vector3[] points;
     private float speedMultiplier = 1f;
-    private float timeScale;
 
-    void Start()
+    protected void Start()
     {
-        UpdateTime();
-        MasterTime.singleton.updateTimeScaleEvent += UpdateTime;
+        UpdateTimescale(MasterTime.singleton.timeScale);
         if (points.Length > 1)
         {
             if (loop) StartCoroutine(LoopPlatform());
@@ -73,5 +71,4 @@ public class MovingPlatformPath : MonoBehaviour
             if (delay > 0) yield return new WaitForSeconds(delay);
         }
     }
-    private void UpdateTime()=> timeScale = MasterTime.singleton.timeScale;
 }

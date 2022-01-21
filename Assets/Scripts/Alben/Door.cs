@@ -6,7 +6,7 @@ using UnityEngine;
 /// IMPORTANT: Be aware that the script is for the door itself while it's door pivot is a parent of the door.
 /// Author: Alben Trang
 /// </summary>
-public class Door : MonoBehaviour
+public class Door : SimpleTimeManipulation
 {
     [Tooltip("Put the pivot on one side of the door to let it turn like a real door")]
     public GameObject doorPivot;
@@ -14,12 +14,12 @@ public class Door : MonoBehaviour
 
     private bool isOpen, isMoving;
 
-    private float timeScale;
     /// <summary>
     /// Start at frame one to set the initial Boolean variables.
     /// </summary>
     private void Start()
     {
+        UpdateTimescale(MasterTime.singleton.timeScale);
         isOpen = false;
         isMoving = false;
     }

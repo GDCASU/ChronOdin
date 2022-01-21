@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PressButtonDoor :MonoBehaviour, LinkedToPressButton
+public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
 {
     public Vector3 moveToVector;
     public bool swingsOpen;
@@ -10,12 +10,10 @@ public class PressButtonDoor :MonoBehaviour, LinkedToPressButton
     private Vector3 originalPosition;
     private Vector3 originalRotation;
     private bool open;
-    private float timeScale;
 
-    private void Start()
+    protected void Start()
     {
-        UpdateTime();
-        MasterTime.singleton.updateTimeScaleEvent += UpdateTime;
+        UpdateTimescale(MasterTime.singleton.timeScale);
         originalPosition = transform.position;
         originalRotation = transform.rotation.eulerAngles;
         if (!swingsOpen) moveToVector += originalPosition;
@@ -38,5 +36,4 @@ public class PressButtonDoor :MonoBehaviour, LinkedToPressButton
         }
         open = !open;
     }
-    private void UpdateTime() => timeScale = MasterTime.singleton.timeScale;
 }
