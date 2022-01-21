@@ -7,7 +7,7 @@ public class MasterTime : MonoBehaviour
     public static MasterTime singleton;
     public float timeScale = 1;
 
-    public delegate void UpdateTimeScale();
+    public delegate void UpdateTimeScale(float newTimescale);
     public event UpdateTimeScale updateTimeScaleEvent;
     private void Awake()
     {
@@ -46,6 +46,6 @@ public class MasterTime : MonoBehaviour
                 timeScale = .5f;    //slow down
                 break;
         }
-        if (updateTimeScaleEvent != null) updateTimeScaleEvent();
+        if (updateTimeScaleEvent != null) updateTimeScaleEvent(timeScale);
     }
 }

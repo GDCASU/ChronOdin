@@ -7,15 +7,16 @@ TagManager:
   - targetObject
   - Liftable
   - Enemy
+  - Interactable
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - Triggers
-  - 
+  - IgnorePlayer
   - 
   - 
   - 
