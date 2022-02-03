@@ -326,7 +326,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minSpawnSeconds: 3
   maxSpawnSeconds: 6
-  forceAppliedToBoulder: 500
+  forceAppliedToBoulder: 2000
   boulderTypes:
   - {fileID: 7393767803939768113, guid: 1678e7762ffeaf74eb6b607cfd180134, type: 3}
 --- !u!4 &135196446
@@ -336,13 +336,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 135196444}
-  m_LocalRotation: {x: -0, y: 0.7172991, z: -0, w: 0.6967654}
+  m_LocalRotation: {x: 0.18010277, y: 0.6929221, z: -0.18541043, w: 0.6730861}
   m_LocalPosition: {x: -69.98619, y: 6.1720715, z: -20.618874}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1373235398}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 91.664, z: 0}
+  m_LocalEulerAnglesHint: {x: 29.96, y: 91.664, z: 0}
 --- !u!4 &147928903 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 735261811173727196, guid: b836e2460e21f08488a81e7febc19ad3, type: 3}
@@ -3051,15 +3051,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8225854368876441687, guid: 84edb829044563e40a96a9579f6a350c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -72.1
+      value: -71.1
       objectReference: {fileID: 0}
     - target: {fileID: 8225854368876441687, guid: 84edb829044563e40a96a9579f6a350c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 35.1
+      value: 4.5
       objectReference: {fileID: 0}
     - target: {fileID: 8225854368876441687, guid: 84edb829044563e40a96a9579f6a350c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 20.9
+      value: -37.1
       objectReference: {fileID: 0}
     - target: {fileID: 8225854368876441687, guid: 84edb829044563e40a96a9579f6a350c, type: 3}
       propertyPath: m_LocalRotation.w
