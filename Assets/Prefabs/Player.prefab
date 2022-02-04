@@ -441,7 +441,7 @@ MonoBehaviour:
   freezeSingleCooldown: 5
   freezeEnvironmentTime: 10
   freezeEnvironmentCooldown: 10
-  playerCamera: {fileID: 0}
+  playerCamera: {fileID: 3610357520889994798}
 --- !u!114 &4392627425076173154
 MonoBehaviour:
   m_ObjectHideFlags: 0
