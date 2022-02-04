@@ -29,6 +29,13 @@ public class ComplexTimeHub : MonoBehaviour
     private ComplexReverse objectToReverse;
     private ComplexSlow objectToSlow;
 
+    // The Player's ability scripts
+    private FreezeInvocation freezeAbility;
+    private SlowInvocation slowAbility;
+
+    // Has this script been enabled before?
+    private bool hasBeenEnabled = false;
+
     /// <summary>
     /// Event invoked when a transition to a new time effect occurs.
     /// </summary>
@@ -80,13 +87,17 @@ public class ComplexTimeHub : MonoBehaviour
     public float[] PreviousData { get; private set; }
 
     /// <summary>
-    /// Acquires time mechanic scripts, and sets both the current and previous effects.
+    /// Acquires time mechanic and Player ability scripts, and sets both the current and previous effects.
     /// </summary>
     private void Awake()
     {
         objectToFreeze = transform.GetComponent<ComplexFreeze>();
         objectToReverse = transform.GetComponent<ComplexReverse>();
         objectToSlow = transform.GetComponent<ComplexSlow>();
+
+        Transform player = PlayerController.singleton.transform;
+        freezeAbility = player.GetComponent<FreezeInvocation>();
+        slowAbility = player.GetComponent<SlowInvocation>();
 
         IntroducingNewEffect = false;
 
@@ -103,11 +114,17 @@ public class ComplexTimeHub : MonoBehaviour
 
     /// <summary>
     /// Subscribes the AffectEntity method to the freeze environment and slow environment events when the gameobject is enabled.
+    /// Also checks if the Player has an environmental ability active when the script is enabled for 2+ instances.
     /// </summary>
     private void OnEnable()
     {
         FreezeInvocation.freezeAllComplexObjects += AffectObject;
         SlowInvocation.slowAllComplexObjects += AffectObject;
+
+        if (hasBeenEnabled)
+        {
+            CheckForEnvironmentEffects();
+        }
     }
 
     /// <summary>
@@ -117,6 +134,30 @@ public class ComplexTimeHub : MonoBehaviour
     {
         FreezeInvocation.freezeAllComplexObjects -= AffectObject;
         SlowInvocation.slowAllComplexObjects -= AffectObject;
+    }
+
+    /// <summary>
+    /// Checks if the Player has an environmental ability active when the script is enabled for the 1st time.
+    /// </summary>
+    private void Start()
+    {
+        hasBeenEnabled = true;
+        CheckForEnvironmentEffects();
+    }
+
+    /// <summary>
+    /// Applies the time effect currently experienced by the environment to the gameobject for the remaning time that effect is active, if there is one.
+    /// </summary>
+    private void CheckForEnvironmentEffects()
+    {
+        if (MasterTime.singleton.timeScale == 0f)
+        {
+            AffectObject(TimeEffect.Freeze, freezeAbility.RemainingEnvironmentActiveTime, 0f);
+        }
+        else if (MasterTime.singleton.timeScale < 1f)
+        {
+            AffectObject(TimeEffect.Slow, slowAbility.RemainingEnvironmentActiveTime, MasterTime.singleton.timeScale);
+        }
     }
 
     /// <summary>

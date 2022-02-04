@@ -13,7 +13,7 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
 
     protected void Start()
     {
-        UpdateTimescale(MasterTime.singleton.timeScale);
+        UpdateTimeScale(MasterTime.singleton.timeScale);
         originalPosition = transform.position;
         originalRotation = transform.rotation.eulerAngles;
         if (!swingsOpen) moveToVector += originalPosition;

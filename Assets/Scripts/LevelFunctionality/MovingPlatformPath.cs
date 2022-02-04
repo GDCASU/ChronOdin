@@ -13,7 +13,7 @@ public class MovingPlatformPath : SimpleTimeManipulation
 
     protected void Start()
     {
-        UpdateTimescale(MasterTime.singleton.timeScale);
+        UpdateTimeScale(MasterTime.singleton.timeScale);
         if (points.Length > 1)
         {
             if (loop) StartCoroutine(LoopPlatform());

@@ -67,7 +67,7 @@ public class Pendulum : SimpleTimeManipulation
     /// </summary>
     private void Start() 
     {
-        UpdateTimescale(MasterTime.singleton.timeScale);
+        UpdateTimeScale(MasterTime.singleton.timeScale);
         initialRotation = transform.localRotation.eulerAngles;
     } 
     /// <summary>

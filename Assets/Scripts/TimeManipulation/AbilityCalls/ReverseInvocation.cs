@@ -53,10 +53,13 @@ public class ReverseInvocation : MonoBehaviour
     private int maxRayCasts = 2;
     private float rayPositionOffset = 0.000006f;
 
-    // For suspending active and cooldown coroutines.
-    private WaitForSeconds waitForObjectActiveTime;
-    private WaitForSeconds waitForObjectCooldown;
-    private WaitForSeconds waitForPlayerCooldown;
+    // The remaining times for active reverse sub-abilities and cooldowns
+    [HideInInspector]
+    public float RemainingObjectActiveTime { get; private set; }
+    [HideInInspector]
+    public float RemainingObjectCooldown { get; private set; }
+    [HideInInspector]
+    public float RemainingPlayerCooldown { get; private set; }
 
     private bool canInitiateObjectReverse = true;  // Is the object reverse cooldown inactive?
     private bool canInitiatePlayerReverse = true;  // Is the Player reverse cooldown inactive?
@@ -65,14 +68,10 @@ public class ReverseInvocation : MonoBehaviour
     PlayerReverse playerReversal = null;  // script attached to Player responsible for reversing the Player
 
     /// <summary>
-    /// Assigns coroutine suspension times and collects the PlayerReverse script.
+    /// Collects the PlayerReverse script.
     /// </summary>
     private void Start()
     {
-        waitForObjectActiveTime = new WaitForSeconds(reverseObjectTime);
-        waitForObjectCooldown = new WaitForSeconds(reverseObjectCooldown);
-        waitForPlayerCooldown = new WaitForSeconds(reversePlayerCooldown);
-
         playerReversal = transform.GetComponent<PlayerReverse>();
     }
 
@@ -108,7 +107,7 @@ public class ReverseInvocation : MonoBehaviour
                     // If the ray hits an object that can be reversed, then reverse the object, activate the reverse object cooldown, and stop casting rays.
                     if (simpleObject != null)
                     {
-                        simpleObject.UpdateTimescale(-1f);
+                        simpleObject.UpdateTimeScale(-1f);
                         StartCoroutine(ActivateObjectCooldown());
                         StartCoroutine(CountdownObjectReverse(simpleObject));
                         return;
@@ -151,16 +150,27 @@ public class ReverseInvocation : MonoBehaviour
             StartCoroutine(ActivatePlayerCooldown());
         }
     }
-    
+
     /// <summary>
     /// Updates the simple object's timescale to the default value after the object active time passes.
+    /// Notifies the SimpleTargetAbilityTracker to forgot the saved reversing object.
     /// </summary>
     /// <param name="simpleObject"> object with a simple reverse mechanism </param>
     /// <returns></returns>
     private IEnumerator CountdownObjectReverse(SimpleTimeManipulation simpleObject)
     {
-        yield return waitForObjectActiveTime;
-        if (simpleObject != null) simpleObject.UpdateTimescale(1f);
+        RemainingObjectActiveTime = reverseObjectTime;
+        while (RemainingObjectActiveTime > 0)
+        {
+            RemainingObjectActiveTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        if (simpleObject != null)
+        {
+            SimpleTargetAbilityTracker.singleton.ResetReversingObject();
+            simpleObject.UpdateTimeScale(1f);
+        }
     }
 
     /// <summary>
@@ -169,7 +179,14 @@ public class ReverseInvocation : MonoBehaviour
     private IEnumerator ActivateObjectCooldown()
     {
         canInitiateObjectReverse = false;
-        yield return waitForObjectCooldown;
+
+        RemainingObjectCooldown = reverseObjectCooldown;
+        while (RemainingObjectCooldown > 0)
+        {
+            RemainingObjectCooldown -= Time.deltaTime;
+            yield return null;
+        }
+
         canInitiateObjectReverse = true;
     }
 
@@ -179,7 +196,14 @@ public class ReverseInvocation : MonoBehaviour
     private IEnumerator ActivatePlayerCooldown()
     {
         canInitiatePlayerReverse = false;
-        yield return waitForPlayerCooldown;
+
+        RemainingPlayerCooldown = reversePlayerCooldown;
+        while (RemainingPlayerCooldown > 0)
+        {
+            RemainingPlayerCooldown -= Time.deltaTime;
+            yield return null;
+        }
+
         canInitiatePlayerReverse = true;
     }
 

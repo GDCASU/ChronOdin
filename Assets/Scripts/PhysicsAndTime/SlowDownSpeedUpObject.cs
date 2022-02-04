@@ -20,9 +20,9 @@ public class SlowDownSpeedUpObject : ComplexSlow
     private bool casting = false;
 
     Rigidbody rb;
-    private void Start()
+    private void OnEnable()
     {
-        rb = gameObject.GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()

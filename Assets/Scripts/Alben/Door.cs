@@ -19,7 +19,7 @@ public class Door : SimpleTimeManipulation
     /// </summary>
     private void Start()
     {
-        UpdateTimescale(MasterTime.singleton.timeScale);
+        UpdateTimeScale(MasterTime.singleton.timeScale);
         isOpen = false;
         isMoving = false;
     }

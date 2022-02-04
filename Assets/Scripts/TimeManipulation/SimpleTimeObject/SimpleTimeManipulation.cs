@@ -24,19 +24,34 @@ public abstract class SimpleTimeManipulation : MonoBehaviour
     /// </summary>
     protected float timeScale = 1f;
 
+    protected bool hasBeenEnabled = false;
+
     /// <summary>
     /// Subscribes the update timescale function to the MasterTime event for environment ability calls when the gameobject is enabled.
     /// </summary>
-    protected virtual void OnEnable() => MasterTime.singleton.updateTimeScaleEvent += UpdateTimescale;
+    protected virtual void OnEnable()
+    {
+        MasterTime.singleton.updateTimeScaleEvent += UpdateTimeScale;
+
+        if (hasBeenEnabled)
+        {
+            UpdateTimeScale(MasterTime.singleton.timeScale);
+        }
+    }
 
     /// <summary>
     /// Unsubscribes the update timescale function to the MasterTime event for environment ability calls when the gameobject is disabled.
     /// </summary>
-    protected virtual void OnDisable() => MasterTime.singleton.updateTimeScaleEvent -= UpdateTimescale;
+    protected virtual void OnDisable() => MasterTime.singleton.updateTimeScaleEvent -= UpdateTimeScale;
+
+    protected virtual void Start()
+    {
+        UpdateTimeScale(MasterTime.singleton.timeScale);
+    }
 
     /// <summary>
     /// Modifes the gameobject's timescale.
     /// </summary>
-    /// <param name="newTimescale"> the new timescale value to adopt </param>
-    public virtual void UpdateTimescale(float newTimescale) => timeScale = newTimescale;
+    /// <param name="newTimeScale"> the new timescale value to adopt </param>
+    public virtual void UpdateTimeScale(float newTimeScale) => timeScale = newTimeScale;
 }

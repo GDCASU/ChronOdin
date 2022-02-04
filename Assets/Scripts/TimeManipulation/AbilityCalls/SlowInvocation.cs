@@ -32,21 +32,14 @@ public class SlowInvocation : MonoBehaviour
     [SerializeField]
     private float slowDownFactor = 0.5f;
 
-    // For suspending active and cooldown coroutines.
-    private WaitForSeconds waitForEnvironmentActiveTime;
-    private WaitForSeconds waitForEnvironmentCooldown;
+    // The remaining times for active slow sub-abilities and cooldowns
+    [HideInInspector]
+    public float RemainingEnvironmentActiveTime { get; private set; }
+    [HideInInspector]
+    public float RemainingEnvironmentCooldown { get; private set; }
 
     private bool canInitiateEnvironmentSlow = true;  // Is the environment slow cooldown inactive?
     public static Action<TimeEffect, float, float> slowAllComplexObjects;  // event container for slowing every slowable object
-
-    /// <summary>
-    /// Assigns coroutine suspension times.
-    /// </summary>
-    private void Start()
-    {
-        waitForEnvironmentActiveTime = new WaitForSeconds(slowEnvironmentTime);
-        waitForEnvironmentCooldown = new WaitForSeconds(slowEnvironmentCooldown);
-    }
 
     /// <summary>
     /// Slows the environment when Player presses the slow environment button and the slow cooldown is inactive.
@@ -56,6 +49,9 @@ public class SlowInvocation : MonoBehaviour
         // If the Player presses the slow environment button and the corresponding cooldown is inactive, attempt to slow all slowable objects.
         if (Input.GetKeyDown(slowEnvironmentButton) && canInitiateEnvironmentSlow)
         {
+            // Prepare simple objects affected by the Player's single targeting abilities for the environmental ability.
+            SimpleTargetAbilityTracker.singleton.ResetObjects();
+
             // If there are slowable objects existing in the scene, then slow all of them and activate the slow environment cooldown.
             MasterTime.singleton.UpdateTime(5);
             if (slowAllComplexObjects != null) slowAllComplexObjects(TimeEffect.Slow, slowEnvironmentTime, slowDownFactor);
@@ -69,7 +65,13 @@ public class SlowInvocation : MonoBehaviour
     /// </summary>
     private IEnumerator CountdownEnvironmentSlow()
     {
-        yield return waitForEnvironmentActiveTime;
+        RemainingEnvironmentActiveTime = slowEnvironmentTime;
+        while (RemainingEnvironmentActiveTime > 0)
+        {
+            RemainingEnvironmentActiveTime -= Time.deltaTime;
+            yield return null;
+        }
+
         MasterTime.singleton.UpdateTime(1);
     }
 
@@ -79,7 +81,14 @@ public class SlowInvocation : MonoBehaviour
     private IEnumerator ActivateEnvironmentCooldown()
     {
         canInitiateEnvironmentSlow = false;
-        yield return waitForEnvironmentCooldown;
+
+        RemainingEnvironmentCooldown = slowEnvironmentCooldown;
+        while (RemainingEnvironmentCooldown > 0)
+        {
+            RemainingEnvironmentCooldown -= Time.deltaTime;
+            yield return null;
+        }
+
         canInitiateEnvironmentSlow = true;
     }
 }

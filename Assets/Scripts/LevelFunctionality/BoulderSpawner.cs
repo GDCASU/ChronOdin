@@ -19,7 +19,7 @@ public class BoulderSpawner : SimpleTimeManipulation
     // Start is called before the first frame update
     private void Start()
     {
-        UpdateTimescale(MasterTime.singleton.timeScale);
+        UpdateTimeScale(MasterTime.singleton.timeScale);
         determinedSpawnTimer = (int)Random.Range(minSpawnSeconds, maxSpawnSeconds);
     }
 

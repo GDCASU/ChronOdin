@@ -52,28 +52,21 @@ public class FreezeInvocation : MonoBehaviour
     private int maxRayCasts = 2;
     private float rayPositionOffset = 0.000006f;
 
-    // For suspending active and cooldown coroutines.
-    private WaitForSeconds waitForSingleActiveTime;
-    private WaitForSeconds waitForEnvironmentActiveTime;
-    private WaitForSeconds waitForSingleCooldown;
-    private WaitForSeconds waitForEnvironmentCooldown;
+    // The remaining times for active freeze sub-abilities and cooldowns
+    [HideInInspector]
+    public float RemainingSingleActiveTime { get; private set; }
+    [HideInInspector]
+    public float RemainingEnvironmentActiveTime { get; private set; }
+    [HideInInspector]
+    public float RemainingSingleCooldown { get; private set; }
+    [HideInInspector]
+    public float RemainingEnvironmentCooldown { get; private set; }
 
     private bool canInitiateSingleFreeze = true;  // Is the single freeze cooldown inactive?
     private bool canInitiateEnvironmentFreeze = true;  // Is the environment freeze cooldown inactive?
     SimpleTimeManipulation simpleObject = null;  // object with a simple freeze mechanism
     ComplexTimeHub complexObject = null;  // objecct with a complex freeze mechanism
     public static Action<TimeEffect, float, float> freezeAllComplexObjects;  // event container for freezing every freezeable object
-
-    /// <summary>
-    /// Assigns coroutine suspension times.
-    /// </summary>
-    private void Start()
-    {
-        waitForSingleActiveTime = new WaitForSeconds(freezeSingleTime);
-        waitForEnvironmentActiveTime = new WaitForSeconds(freezeEnvironmentTime);
-        waitForSingleCooldown = new WaitForSeconds(freezeSingleCooldown);
-        waitForEnvironmentCooldown = new WaitForSeconds(freezeEnvironmentCooldown);
-    }
 
     /// <summary>
     /// Freezes a single object or the environment depending on Player input and the ability to freeze a specific object(s).
@@ -107,9 +100,9 @@ public class FreezeInvocation : MonoBehaviour
                     // If the ray hits an object that can be frozen, then freeze the object, activate the freeze single object cooldown, and stop casting rays.
                     if (simpleObject != null)
                     {
-                        simpleObject.UpdateTimescale(0f);
+                        simpleObject.UpdateTimeScale(0f);
                         StartCoroutine(ActivateSingleCooldown());
-                        StartCoroutine(CountdownSingleReverse(simpleObject));
+                        SimpleTargetAbilityTracker.singleton.SetFrozenObject(simpleObject, StartCoroutine(CountdownSingleReverse(simpleObject)));
                         return;
                     }
                     if (complexObject != null)
@@ -145,6 +138,9 @@ public class FreezeInvocation : MonoBehaviour
         // If the Player presses the freeze environment button and the corresponding cooldown is inactive, attempt to freeze all freezeable objects.
         if (Input.GetKeyDown(freezeEnvironmentButton) && canInitiateEnvironmentFreeze)
         {
+            // Prepare simple objects affected by the Player's single targeting abilities for the environmental ability.
+            SimpleTargetAbilityTracker.singleton.ResetObjects();
+
             // If there are freezeable objects existing in the scene, then freeze all of them and activate the freeze environment cooldown.
             MasterTime.singleton.UpdateTime(0);
             if (freezeAllComplexObjects != null) freezeAllComplexObjects(TimeEffect.Freeze, freezeEnvironmentTime, 0);
@@ -155,12 +151,23 @@ public class FreezeInvocation : MonoBehaviour
 
     /// <summary>
     /// Updates the simple object's timescale to the default value after the single active time passes.
+    /// Notifies the SimpleTargetAbilityTracker to forgot the saved frozen object.
     /// </summary>
     /// <param name="simpleObject"> object with a simple freeze mechanism </param>
     private IEnumerator CountdownSingleReverse(SimpleTimeManipulation simpleObject)
     {
-        yield return waitForSingleActiveTime;
-        if (simpleObject != null) simpleObject.UpdateTimescale(1f);
+        RemainingSingleActiveTime = freezeSingleTime;
+        while(RemainingSingleActiveTime > 0)
+        {
+            RemainingSingleActiveTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        if (simpleObject != null)
+        {
+            SimpleTargetAbilityTracker.singleton.ResetFrozenObject();
+            simpleObject.UpdateTimeScale(1f);
+        }
     }
 
     /// <summary>
@@ -168,7 +175,13 @@ public class FreezeInvocation : MonoBehaviour
     /// </summary>
     private IEnumerator CountdownEnvironmentReverse()
     {
-        yield return waitForEnvironmentActiveTime;
+        RemainingEnvironmentActiveTime = freezeEnvironmentTime;
+        while (RemainingEnvironmentActiveTime > 0)
+        {
+            RemainingEnvironmentActiveTime -= Time.deltaTime;
+            yield return null;
+        }
+
         MasterTime.singleton.UpdateTime(1);
     }
 
@@ -178,7 +191,14 @@ public class FreezeInvocation : MonoBehaviour
     private IEnumerator ActivateSingleCooldown()
     {
         canInitiateSingleFreeze = false;
-        yield return waitForSingleCooldown;
+
+        RemainingSingleCooldown = freezeSingleCooldown;
+        while (RemainingSingleCooldown > 0)
+        {
+            RemainingSingleCooldown -= Time.deltaTime;
+            yield return null;
+        }
+
         canInitiateSingleFreeze = true;
     }
 
@@ -188,7 +208,14 @@ public class FreezeInvocation : MonoBehaviour
     private IEnumerator ActivateEnvironmentCooldown()
     {
         canInitiateEnvironmentFreeze = false;
-        yield return waitForEnvironmentCooldown;
+
+        RemainingEnvironmentCooldown = freezeEnvironmentCooldown;
+        while (RemainingEnvironmentCooldown > 0)
+        {
+            RemainingEnvironmentCooldown -= Time.deltaTime;
+            yield return null;
+        }
+
         canInitiateEnvironmentFreeze = true;
     }
 }
