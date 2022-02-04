@@ -4,6 +4,16 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
+/// An enum for levels that is correlated to their build index from
+/// the build settings.
+/// </summary>
+public enum Levels
+{
+    title = 0,
+    testLevel = 1
+}
+
+/// <summary>
 /// Handles changing levels (scenes)
 /// </summary>
 public class LevelManager : MonoBehaviour
@@ -62,6 +72,15 @@ public class LevelManager : MonoBehaviour
     public void PickLevel(int sceneIndex)
     {
         SceneManager.LoadScene(sceneIndex);
+    }
+
+    /// <summary>
+    /// Pick a level/scene based on the level enum given
+    /// </summary>
+    /// <param name="level">Level enum that will take it's associated value</param>
+    public void PickLevel(Levels level)
+    {
+        SceneManager.LoadScene((int)level);
     }
 
     /// <summary>
