@@ -98,7 +98,7 @@ public class FreezeInvocation : MonoBehaviour
                     complexObject = rayHit.transform.GetComponent<ComplexTimeHub>();
 
                     // If the ray hits an object that can be frozen, then freeze the object, activate the freeze single object cooldown, and stop casting rays.
-                    if (simpleObject != null)
+                    if (simpleObject != null || rayHit.transform.GetComponentInParent<SimpleTimeManipulation>())
                     {
                         simpleObject.UpdateTimescale(0f);
                         StartCoroutine(ActivateSingleCooldown());
