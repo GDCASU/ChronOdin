@@ -9,6 +9,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 public class SlowInvocation : MonoBehaviour
@@ -32,21 +33,14 @@ public class SlowInvocation : MonoBehaviour
     [SerializeField]
     private float slowDownFactor = 0.5f;
 
-    // For suspending active and cooldown coroutines.
-    private WaitForSeconds waitForEnvironmentActiveTime;
-    private WaitForSeconds waitForEnvironmentCooldown;
+    [SerializeField]
+    private Text globalActiveTimerText;
+    [SerializeField]
+    private Text globalCooldownTimerText;
 
     private bool canInitiateEnvironmentSlow = true;  // Is the environment slow cooldown inactive?
     public static Action<TimeEffect, float, float> slowAllComplexObjects;  // event container for slowing every slowable object
 
-    /// <summary>
-    /// Assigns coroutine suspension times.
-    /// </summary>
-    private void Start()
-    {
-        waitForEnvironmentActiveTime = new WaitForSeconds(slowEnvironmentTime);
-        waitForEnvironmentCooldown = new WaitForSeconds(slowEnvironmentCooldown);
-    }
 
     /// <summary>
     /// Slows the environment when Player presses the slow environment button and the slow cooldown is inactive.
@@ -69,7 +63,14 @@ public class SlowInvocation : MonoBehaviour
     /// </summary>
     private IEnumerator CountdownEnvironmentSlow()
     {
-        yield return waitForEnvironmentActiveTime;
+        float timer = slowEnvironmentTime;
+        while (timer > 0)
+        {
+            globalActiveTimerText.text = timer.ToString("0.00") + "";
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        globalActiveTimerText.text = "";
         MasterTime.singleton.UpdateTime(1);
     }
 
@@ -79,7 +80,14 @@ public class SlowInvocation : MonoBehaviour
     private IEnumerator ActivateEnvironmentCooldown()
     {
         canInitiateEnvironmentSlow = false;
-        yield return waitForEnvironmentCooldown;
+        float timer = slowEnvironmentCooldown;
+        while (timer > 0)
+        {
+            globalCooldownTimerText.text = timer.ToString("0.00") + "";
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        globalCooldownTimerText.text = "";
         canInitiateEnvironmentSlow = true;
     }
 }
