@@ -28,24 +28,26 @@ public class MasterTime : MonoBehaviour
     /// <returns></returns>
     public void UpdateTime(int value)
     {
-        switch(value)
-        {
-            case -1:
-                timeScale = -1f;    //reverse
-                break;
-            case 0:
-                timeScale = 0f;     //stop
-                break;
-            case 1:
-                timeScale = 1f;     //reset
-                break;
-            case 2:
-                timeScale = 2f;     //accelerate
-                break;
-            case 5:
-                timeScale = .5f;    //slow down
-                break;
-        }
+        timeScale = value / 10f;
+        print(timeScale);
+        //switch(value)
+        //{
+        //    case -1:
+        //        timeScale  = -1f;    //reverse
+        //        break;
+        //    case 0:
+        //        timeScale = 0f;     //stop
+        //        break;
+        //    case 1:
+        //        timeScale = 1f;     //reset
+        //        break;
+        //    case 2:
+        //        timeScale = 2f;     //accelerate
+        //        break;
+        //    case 5:
+        //        timeScale = .5f;    //slow down
+        //        break;
+        //}
         if (updateTimeScaleEvent != null) updateTimeScaleEvent(timeScale);
     }
 }

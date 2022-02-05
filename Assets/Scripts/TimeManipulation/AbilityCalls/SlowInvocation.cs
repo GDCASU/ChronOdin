@@ -51,7 +51,7 @@ public class SlowInvocation : MonoBehaviour
         if (Input.GetKeyDown(slowEnvironmentButton) && canInitiateEnvironmentSlow)
         {
             // If there are slowable objects existing in the scene, then slow all of them and activate the slow environment cooldown.
-            MasterTime.singleton.UpdateTime(5);
+            MasterTime.singleton.UpdateTime((int)TimeEffect.Slow);
             if (slowAllComplexObjects != null) slowAllComplexObjects(TimeEffect.Slow, slowEnvironmentTime, slowDownFactor);
             StartCoroutine(ActivateEnvironmentCooldown());
             StartCoroutine(CountdownEnvironmentSlow());
@@ -71,7 +71,7 @@ public class SlowInvocation : MonoBehaviour
             yield return null;
         }
         globalActiveTimerText.text = "";
-        MasterTime.singleton.UpdateTime(1);
+        MasterTime.singleton.UpdateTime((int)TimeEffect.None);
     }
 
     /// <summary>

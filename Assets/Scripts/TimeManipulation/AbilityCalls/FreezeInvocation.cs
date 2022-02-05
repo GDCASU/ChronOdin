@@ -100,7 +100,7 @@ public class FreezeInvocation : MonoBehaviour
                     // If the ray hits an object that can be frozen, then freeze the object, activate the freeze single object cooldown, and stop casting rays.
                     if (simpleObject != null)
                     {
-                        simpleObject.UpdateTimescale(0f);
+                        simpleObject.UpdateWithGlobalTimescale(0f);
                         StartCoroutine(ActivateSingleCooldown());
                         StartCoroutine(CountdownSimpleFreeze(simpleObject));
                         return;
@@ -139,7 +139,7 @@ public class FreezeInvocation : MonoBehaviour
         if (Input.GetKeyDown(freezeEnvironmentButton) && canInitiateEnvironmentFreeze)
         {
             // If there are freezeable objects existing in the scene, then freeze all of them and activate the freeze environment cooldown.
-            MasterTime.singleton.UpdateTime(0);
+            MasterTime.singleton.UpdateTime((int)TimeEffect.Freeze);
             if (freezeAllComplexObjects != null) freezeAllComplexObjects(TimeEffect.Freeze, freezeEnvironmentTime, 0);
             StartCoroutine(ActivateEnvironmentCooldown());
             StartCoroutine(CountdownEnvironmentFreeze());
@@ -160,7 +160,7 @@ public class FreezeInvocation : MonoBehaviour
             yield return null;
         }
         localActiveTimerText.text = "";
-        if (simpleObject != null) simpleObject.UpdateTimescale(1f);
+        if (simpleObject != null) simpleObject.UpdateWithGlobalTimescale(1f);
     }
 
     /// <summary>
@@ -176,7 +176,7 @@ public class FreezeInvocation : MonoBehaviour
             yield return null;
         }
         globalActiveTimerText.text = "";
-        MasterTime.singleton.UpdateTime(1);
+        MasterTime.singleton.UpdateTime((int)TimeEffect.None);
     }
 
     /// <summary>

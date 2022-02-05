@@ -22,7 +22,7 @@ public class RotateObject : SimpleTimeManipulation
     private float interpolationValue;
     private void Start()
     {
-        UpdateTimescale(MasterTime.singleton.timeScale);
+        UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
         yRotation = transform.rotation.eulerAngles.y;
         isRotating = true;
     }

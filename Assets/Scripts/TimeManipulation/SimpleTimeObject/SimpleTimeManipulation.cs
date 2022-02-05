@@ -22,21 +22,38 @@ public abstract class SimpleTimeManipulation : MonoBehaviour
     /// Value that determines the gameobject's passage through time. timescale = 1 denotes normal,timescale < 0 denotes reverse, 0 < timescale < 1 denotes slow,
     /// timescale > 1 denotes speed, timescale = 0 denotes freeze.
     /// </summary>
-    protected float timeScale = 1f;
+    [SerializeField]protected float timeScale = 1f;
 
     /// <summary>
     /// Subscribes the update timescale function to the MasterTime event for environment ability calls when the gameobject is enabled.
     /// </summary>
-    protected virtual void OnEnable() => MasterTime.singleton.updateTimeScaleEvent += UpdateTimescale;
+    protected virtual void OnEnable() => MasterTime.singleton.updateTimeScaleEvent += UpdateWithGlobalTimescale;
 
     /// <summary>
     /// Unsubscribes the update timescale function to the MasterTime event for environment ability calls when the gameobject is disabled.
     /// </summary>
-    protected virtual void OnDisable() => MasterTime.singleton.updateTimeScaleEvent -= UpdateTimescale;
+    protected virtual void OnDisable() => MasterTime.singleton.updateTimeScaleEvent -= UpdateWithGlobalTimescale;
 
     /// <summary>
     /// Modifes the gameobject's timescale.
     /// </summary>
-    /// <param name="newTimescale"> the new timescale value to adopt </param>
-    public virtual void UpdateTimescale(float newTimescale) => timeScale = newTimescale;
+    /// <param name="globalScale"> the new timescale value to adopt </param>
+    public virtual void UpdateWithGlobalTimescale(float globalScale)
+    {
+        timeScale *= globalScale;
+    }
+    public virtual void ActivateSingleObjectEffect(float activeTime, TimeEffect effect)
+    { 
+       
+    }
+    private IEnumerator SingleObjectEffect( float activeTime, TimeEffect effect)
+    {
+        float timer = activeTime;
+        while (timer < 0)
+        {
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+    }
+
 }

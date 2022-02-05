@@ -16,10 +16,10 @@ using System;
 /// </summary>
 public enum TimeEffect
 {
-    None,
-    Freeze,
-    Reverse,
-    Slow
+    None = 10,
+    Freeze = 0,
+    Reverse = -10,
+    Slow = 5
 }
 
 public class ComplexTimeHub : MonoBehaviour
