@@ -106,7 +106,7 @@ public class ReverseInvocation : MonoBehaviour
                     // If the ray hits an object that can be reversed, then reverse the object, activate the reverse object cooldown, and stop casting rays.
                     if (simpleObject != null)
                     {
-                        simpleObject.UpdateWithGlobalTimescale(-1f);
+                        simpleObject.ActivateSingleObjectEffect(reverseObjectTime, TimeEffect.Reverse);
                         StartCoroutine(ActivateObjectCooldown());
                         StartCoroutine(CountdownObjectReverse(simpleObject));
                         return;

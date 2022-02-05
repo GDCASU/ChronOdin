@@ -100,7 +100,7 @@ public class FreezeInvocation : MonoBehaviour
                     // If the ray hits an object that can be frozen, then freeze the object, activate the freeze single object cooldown, and stop casting rays.
                     if (simpleObject != null)
                     {
-                        simpleObject.UpdateWithGlobalTimescale(0f);
+                        simpleObject.ActivateSingleObjectEffect(freezeSingleTime, TimeEffect.Freeze);
                         StartCoroutine(ActivateSingleCooldown());
                         StartCoroutine(CountdownSimpleFreeze(simpleObject));
                         return;
