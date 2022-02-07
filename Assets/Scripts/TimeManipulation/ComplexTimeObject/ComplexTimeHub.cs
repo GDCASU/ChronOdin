@@ -29,10 +29,6 @@ public class ComplexTimeHub : MonoBehaviour
     private ComplexReverse objectToReverse;
     private ComplexSlow objectToSlow;
 
-    // The Player's ability scripts
-    private FreezeInvocation freezeAbility;
-    private SlowInvocation slowAbility;
-
     // Has this script been enabled before?
     private bool hasBeenEnabled = false;
 
@@ -96,8 +92,6 @@ public class ComplexTimeHub : MonoBehaviour
         objectToSlow = transform.GetComponent<ComplexSlow>();
 
         Transform player = PlayerController.singleton.transform;
-        freezeAbility = player.GetComponent<FreezeInvocation>();
-        slowAbility = player.GetComponent<SlowInvocation>();
 
         IntroducingNewEffect = false;
 
@@ -146,17 +140,17 @@ public class ComplexTimeHub : MonoBehaviour
     }
 
     /// <summary>
-    /// Applies the time effect currently experienced by the environment to the gameobject for the remaning time that effect is active, if there is one.
+    /// Applies the time effect currently experienced by the environment to the gameobject for the remaning drain time.
     /// </summary>
     private void CheckForEnvironmentEffects()
     {
         if (MasterTime.singleton.timeScale == 0f)
         {
-            AffectObject(TimeEffect.Freeze, freezeAbility.RemainingEnvironmentActiveTime, 0f);
+            AffectObject(TimeEffect.Freeze, TimeStamina.singleton.RemainingDrainTime, 0f);
         }
         else if (MasterTime.singleton.timeScale < 1f)
         {
-            AffectObject(TimeEffect.Slow, slowAbility.RemainingEnvironmentActiveTime, MasterTime.singleton.timeScale);
+            AffectObject(TimeEffect.Slow, TimeStamina.singleton.RemainingDrainTime, MasterTime.singleton.timeScale);
         }
     }
 

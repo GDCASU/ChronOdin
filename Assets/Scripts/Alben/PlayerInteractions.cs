@@ -5,6 +5,8 @@ using UnityEngine;
 /// <summary>
 /// This script lets the player interact with objects in the scene such as doors or pickup objects.
 /// Author: Alben Trang
+/// 
+/// 
 /// </summary>
 [RequireComponent(typeof(ObjectPickup))]
 public class PlayerInteractions : MonoBehaviour
@@ -46,6 +48,18 @@ public class PlayerInteractions : MonoBehaviour
         {
             if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out rayHit, maxInteractDistance) && rayHit.collider)
                 if (rayHit.transform.tag.Equals("Liftable")) GetComponent<ObjectPickup>().PickupObject();
-        }    
-    }   
+        }
+    }
+
+    public Transform RaycastTransform()
+    {
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out rayHit, maxInteractDistance) && rayHit.collider)
+        {
+            return rayHit.transform;
+        }
+        else
+        {
+            return null;
+        }
+    }
 }

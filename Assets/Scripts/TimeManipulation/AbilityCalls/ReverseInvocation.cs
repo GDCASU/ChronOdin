@@ -168,7 +168,6 @@ public class ReverseInvocation : MonoBehaviour
 
         if (simpleObject != null)
         {
-            SimpleTargetAbilityTracker.singleton.ResetReversingObject();
             simpleObject.UpdateTimeScale(1f);
         }
     }

@@ -49,8 +49,7 @@ public class SlowInvocation : MonoBehaviour
         // If the Player presses the slow environment button and the corresponding cooldown is inactive, attempt to slow all slowable objects.
         if (Input.GetKeyDown(slowEnvironmentButton) && canInitiateEnvironmentSlow)
         {
-            // Prepare simple objects affected by the Player's single targeting abilities for the environmental ability.
-            SimpleTargetAbilityTracker.singleton.ResetObjects();
+            
 
             // If there are slowable objects existing in the scene, then slow all of them and activate the slow environment cooldown.
             MasterTime.singleton.UpdateTime(5);
