@@ -47,7 +47,8 @@ public partial class PlayerController : MonoBehaviour
     private float speedIncrease;
     private float friction;
     private float airControl;
-    [HideInInspector] public bool useGravity = true; 
+    private float _gravityRate;
+    [HideInInspector] public bool useGravity = true;
     #endregion
 
     #region Jump
@@ -55,12 +56,11 @@ public partial class PlayerController : MonoBehaviour
     private float _highestPointHoldTimer;
     private float _justJumpedCooldown;
     private float _coyoteTimer;
-    public int _inAirJumps;
+    private int _inAirJumps;
     #endregion
 
     #region InAirVariables
-    private float distanceToGround;
-    private float timeSinceGrounded;
+    private int stuckBetweenSurfacesHelper;
     #endregion
 
     #endregion
@@ -94,14 +94,25 @@ public partial class PlayerController : MonoBehaviour
     #region Components
     Rigidbody rb;
     CapsuleCollider capCollider;
-    public MoveCamera playerCamera;
+    public PlayerCamera playerCamera;
     #endregion
 
     #region Other
     private WaitForFixedUpdate fixedUpdate;
     public static PlayerController singleton;
-    public LayerMask triggers;
+    public LayerMask ignores;
     #endregion
+
+    public enum PlayerState
+    {
+        NotMoving,
+        Grounded,
+        Sliding,
+        Jumping,
+        Climbing,
+        Vaulting,
+        InAir,
+    };
 
     #endregion
     private void Awake()
@@ -115,29 +126,31 @@ public partial class PlayerController : MonoBehaviour
     {
         capCollider = GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
-        //moveCamera = GetComponent<MoveCamera>();
         fixedUpdate = new WaitForFixedUpdate();
         friction = baseMovementVariables.inAirFriction;
         airControl = baseMovementVariables.inAirControl;
-        g = baseMovementVariables.initialGravity;
+        SetInitialGravity(baseMovementVariables.initialGravity);
+        _gravityRate = baseMovementVariables.gravityRate;
         playerState = PlayerState.InAir;
-        baseMovementVariables.StartVariables(capCollider);
+        baseMovementVariables.StartVariables(capCollider, transform);
+        if (capCollider.radius * 2 * transform.lossyScale.x >=
+            transform.lossyScale.y * capCollider.height) crouchMechanic = false;
     }
 
     void Update()
     {
-        if(crouchMechanic)CrouchInput();
+        if (crouchMechanic) CrouchInput();
         MovementInput();
-        if(jumpMechanic)JumpInput();
+        if (jumpMechanic) JumpInput();
     }
-
     private void FixedUpdate()
     {
+        transform.rotation = Quaternion.Euler(0f, playerCamera.transform.localEulerAngles.y, 0f);
         GroundCheck();
         Move();
-        if (crouchMechanic) HandleCrouchInput();
         if (useGravity)
         {
+            if (crouchMechanic) HandleCrouchInput();
             if (jumpMechanic) HandleJumpInput();
             if (vaultMechanic) ClimbChecks();
             ApplyGravity();
@@ -148,5 +161,9 @@ public partial class PlayerController : MonoBehaviour
             rb.velocity = Vector3.zero;
             isSprinting = false;
         }
+        if (stuckBetweenSurfacesHelper >= 2) rb.velocity -= rb.velocity.y * Vector3.up;     //Allows the palyer to slide around when stuck between two or more surfaces
+        if (vaultMechanic) ClimbChecks();
     }
+
+    public void UpdateRespawnPoint() => lastViablePosition = transform.position;
 }

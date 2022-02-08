@@ -22,7 +22,7 @@ public partial class PlayerController
         previousState = playerState;
         playerState = PlayerState.Sliding;
         totalVelocityToAdd += rb.velocity * ((angle > 90) ? slideVariables.downwardSlideForce : slideVariables.slideForce);
-        maxVelocity =baseMovementVariables.maxWalkVelocity;
+        maxVelocity = baseMovementVariables.maxWalkVelocity;
         isSprinting = false;
         while (rb.velocity.magnitude > maxVelocity)
         {

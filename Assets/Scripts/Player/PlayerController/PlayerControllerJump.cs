@@ -2,16 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PlayerState
-{
-    NotMoving,
-    Grounded,
-    Sliding,
-    Jumping,
-    Climbing,
-    Vaulting,
-    InAir,
-};
 public partial class PlayerController
 {
     [System.Serializable]
@@ -59,7 +49,7 @@ public partial class PlayerController
         previousState = playerState;
         playerState = PlayerState.Jumping;
         y = jumpVariables.jumpStrength;
-        g = jumpVariables.jumpingInitialGravity;
+        SetInitialGravity(jumpVariables.jumpingInitialGravity);
         totalVelocityToAdd += newForwardandRight;
         airControl = jumpVariables.jumpInAirControl;
         if (inAirJump)
@@ -77,14 +67,14 @@ public partial class PlayerController
         if (playerState != PlayerState.Grounded)
         {
             _highestPointHoldTimer = jumpVariables.highestPointHoldTime;
-            g = 0;
+            SetInitialGravity(0);
             rb.velocity -= Vector3.up * rb.velocity.y;
             while (_highestPointHoldTimer > 0)
             {
                 _highestPointHoldTimer -= Time.fixedDeltaTime;
                 yield return fixedUpdate;
             }
-            g = baseMovementVariables.initialGravity;
+            SetInitialGravity(baseMovementVariables.initialGravity);
         }
         airControl = baseMovementVariables.inAirControl;
         if (rb.velocity.magnitude >= baseMovementVariables.maxSprintVelocity) isSprinting = true;
