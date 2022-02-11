@@ -48,7 +48,7 @@ public class ObjectReverse : ComplexReverse
     private bool isReversing = false;  // Is the object reversing?
 
     /// <summary>
-    /// Subscribes a method to an event; initializes reference list and object physics; calculates the max amount of references to be saved; records the first reference.
+    /// Subscribes a method to an event and initializes reference list and object physics.
     /// </summary>
     protected override void Awake()
     {
@@ -57,9 +57,15 @@ public class ObjectReverse : ComplexReverse
 
         references = new List<PastReference>();
         objectPhysics = transform.GetComponent<Rigidbody>();
+    }
 
+    /// <summary>
+    /// Calculates the max amount of references to be saved and records the first reference.
+    /// </summary>
+    private void Start()
+    {
         totalReverseTime = ReverseInvocation.singleton.ReverseSingleTime;
-        maxReferences =  Mathf.Round(totalReverseTime / timeBetweenSaves);
+        maxReferences = Mathf.Round(totalReverseTime / timeBetweenSaves);
         Record(TimeEffect.None);
     }
 

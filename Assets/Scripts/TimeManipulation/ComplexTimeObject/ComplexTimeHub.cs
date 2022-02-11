@@ -91,8 +91,6 @@ public class ComplexTimeHub : MonoBehaviour
         objectToReverse = transform.GetComponent<ComplexReverse>();
         objectToSlow = transform.GetComponent<ComplexSlow>();
 
-        Transform player = PlayerController.singleton.transform;
-
         IntroducingNewEffect = false;
 
         CurrentEffect = TimeEffect.None;
