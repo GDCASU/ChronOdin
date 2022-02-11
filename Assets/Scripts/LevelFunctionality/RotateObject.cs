@@ -28,7 +28,7 @@ public class RotateObject : SimpleTimeManipulation
     }
     void Update()
     {
-        _rotationSpeed = rotationSpeed * timeScale * Time.fixedDeltaTime;
+        _rotationSpeed = rotationSpeed * _timeScale * Time.fixedDeltaTime;
         if (!stepRotation)
         {
             transform.Rotate(0, _rotationSpeed, 0, Space.Self);
@@ -41,7 +41,7 @@ public class RotateObject : SimpleTimeManipulation
                 {
                     float setToAngle = yRotation + Mathf.Lerp(0, 1, interpolationValue) * stepRotationAngle;                    
                     transform.rotation = transform.localRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, setToAngle, transform.rotation.eulerAngles.z);
-                    interpolationValue += _rotationSpeed  * timeScale * Time.fixedDeltaTime;
+                    interpolationValue += _rotationSpeed  * _timeScale * Time.fixedDeltaTime;
                 }
                 else
                 {

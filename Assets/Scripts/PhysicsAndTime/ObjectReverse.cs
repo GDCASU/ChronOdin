@@ -50,14 +50,15 @@ public class ObjectReverse : ComplexReverse
     /// <summary>
     /// Subscribes a method to an event; initializes reference list and object physics; calculates the max amount of references to be saved; records the first reference.
     /// </summary>
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
         effectHub.broadcastTransition += ReceiveTransition;
 
         references = new List<PastReference>();
         objectPhysics = transform.GetComponent<Rigidbody>();
 
-        totalReverseTime = PlayerController.singleton.transform.GetComponent<ReverseInvocation>().GetReverseObjectTime();
+        totalReverseTime = ReverseInvocation.singleton.ReverseSingleTime;
         maxReferences =  Mathf.Round(totalReverseTime / timeBetweenSaves);
         Record(TimeEffect.None);
     }
@@ -120,6 +121,8 @@ public class ObjectReverse : ComplexReverse
     /// <summary>
     /// Reverses the object to previous references for total reverse time assigned at the Start() function.
     /// If the effect hub communicates that a new effect was introduced, then the object is unreversed and the next effect is transitioned to.
+    /// Environment Stacking: environment freeze stops the object from reversing whilst active and environment slow decreases the speed at which
+    /// the object reverses; both increase the reverse time.
     /// </summary>
     /// <param name="reverseTime"> not utilized </param>
     public override void Reverse(float reverseTime) => StartCoroutine(ReverseObject(reverseTime));
@@ -177,8 +180,8 @@ public class ObjectReverse : ComplexReverse
                 transform.rotation = Quaternion.Lerp(initialRotation, finalRotation, elapsedTimeBetweenReferences / timeToPreviousReference);
 
                 // Update time.
-                elapsedTimeBetweenReferences += Time.deltaTime;
-                elapsedTimeRewinding += Time.deltaTime;
+                elapsedTimeBetweenReferences += Time.deltaTime * MasterTime.singleton.timeScale;
+                elapsedTimeRewinding += Time.deltaTime * MasterTime.singleton.timeScale;
                 yield return null;
             }
 

@@ -36,7 +36,7 @@ public class CeilingDebris : SimpleTimeManipulation
     // Update is called once per frame
     private void Update()
     {
-        timer += Time.deltaTime * timeScale;
+        timer += Time.deltaTime * _timeScale;
 
         if(timer >= determinedSpawnTimer)
         {

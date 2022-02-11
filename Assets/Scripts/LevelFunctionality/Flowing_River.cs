@@ -15,10 +15,10 @@ public class Flowing_River : SimpleTimeManipulation
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.GetComponent<Rigidbody>())
-            other.gameObject.GetComponent<Rigidbody>().velocity += (overrideDirection) ? forceDirection : transform.forward * streamForce * timeScale;
+            other.gameObject.GetComponent<Rigidbody>().velocity += (overrideDirection) ? forceDirection : transform.forward * streamForce * _timeScale;
         if (other.gameObject.tag == "Player")
         {
-            if (timeScale == 2 || timeScale == 1)
+            if (_timeScale == 2 || _timeScale == 1)
             {
                 PlayerController.singleton.baseMovementVariables.maxWalkVelocity = playerVelocity;
                 PlayerController.singleton.baseMovementVariables.maxSprintVelocity = playerVelocity;

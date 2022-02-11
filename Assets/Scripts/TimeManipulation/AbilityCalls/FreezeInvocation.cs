@@ -1,8 +1,8 @@
 /*
  * Freezes objects for a specified amount of time.
  * The Player has the option to freeze a single object or the environment.
- * To freeze a single object, the Player must look at the object and press the freeze single object button, which instantly consumes a chunk of stamina.
- * To freeze the environment, the Player must press the freeze environment button, which drains stamina until the Player presses the button again or stamina runs out.
+ * To freeze a single object, the Player must look at the object and press the single object freeze button, which instantly consumes a chunk of stamina.
+ * To freeze the environment, the Player must press the environment freeze button, which drains stamina until the Player presses the button again or stamina runs out.
  * 
  * Author: Cristion Dominguez
  * Date: 10 September 2021
@@ -15,45 +15,43 @@ using System;
 
 public class FreezeInvocation : MonoBehaviour
 {
-    [Header("Button")]
-    [Tooltip("The button to freeze a single object")]
-    [SerializeField]
-    private KeyCode freezeSingleObjectButton = KeyCode.F;
+    [Header("Buttons")]
+    [SerializeField, Tooltip("The button to freeze a single object")]
+    private KeyCode singleFreezeButton = KeyCode.F;
 
-    [Tooltip("The button to freeze the entire environment")]
-    [SerializeField]
-    private KeyCode freezeEnvironmentButton = KeyCode.G;
+    [SerializeField, Tooltip("The button to freeze the entire environment")]
+    private KeyCode environmentFreezeButton = KeyCode.G;
 
-    [Header("Time Values")]
-    [Tooltip("The time the object shall be frozen for")]
-    [SerializeField]
-    private float freezeSingleTime = 5f;
+    [Header("Quantities")]
+    [SerializeField, Tooltip("The time the object shall be frozen for")]
+    private float _singleFreezeTime = 3f;
+    public float SingleFreezeTime { get => _singleFreezeTime; }
 
-    [Header("Transforms")]
-    [Tooltip("The camera providing the Player vision")]
-    [SerializeField]
-    private Transform playerCamera;
+    [SerializeField, Tooltip("Chunk of stamina consumed upon freezing a single object")]
+    private float singleFreezeStaminaCost = 1f;
 
-    // The remaining times for active freeze sub-abilities and cooldowns
-    [HideInInspector]
-    public float RemainingSingleActiveTime { get; private set; }
-    [HideInInspector]
-    public float RemainingSingleCooldown { get; private set; }
-    [HideInInspector]
-    public float RemainingEnvironmentCooldown { get; private set; }
+    [SerializeField, Tooltip("Stamina drained per second after freezing the environment")]
+    private float environmentFreezeStaminaRate = 1f;
 
-    private bool canInitiateSingleFreeze = true;  // Is the single freeze cooldown inactive?
-    private bool canInitiateEnvironmentFreeze = true;  // Is the environment freeze cooldown inactive?
-    SimpleTimeManipulation simpleObject = null;  // object with a simple freeze mechanism
-    ComplexTimeHub complexObject = null;  // objecct with a complex freeze mechanism
-    public static Action<TimeEffect, float, float> freezeAllComplexObjects;  // event container for freezing every freezeable object
+    SimpleTimeManipulation simpleObject = null;  // simple time object
+    ComplexTimeHub complexObject = null;  // complex time object
+    public static Action<TimeEffect, float, float, bool> freezeAllComplexObjects;  // event container for freezing every complex time object
 
-    // NEW
-    private bool environmentActive = false;
-    private WaitForFixedUpdate waitForFixedUpdate;
+    private bool environmentFreezeToggledOn = false;  // Has the Player toggled environment freeze on?
+    private WaitForFixedUpdate waitForFixedUpdate;  // coroutine suspension
 
+    public static FreezeInvocation singleton;
+
+    /// <summary>
+    /// Sets up singleton and initializes the coroutine suspension.
+    /// </summary>
     private void Awake()
     {
+        if (singleton == null)
+            singleton = this;
+        else
+            Destroy(gameObject);
+
         waitForFixedUpdate = new WaitForFixedUpdate();
     }
 
@@ -62,92 +60,88 @@ public class FreezeInvocation : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        // If the Player presses the freeze single object button and the corresponding cooldown is inactive, attempt to freeze a single object.
-        if (Input.GetKeyDown(freezeSingleObjectButton) && canInitiateSingleFreeze)
+        // If the Player presses the single freeze button, attempt to freeze a single object.
+        if (Input.GetKeyDown(singleFreezeButton))
         {
-            // 
-            Transform someObject = PlayerInteractions.singleton.RaycastTransform();
+            // If the environment is undergoing a time effect, do not attempt to freeze a single object.
+            if (MasterTime.singleton.timeScale != 1f)
+                return;
 
-            // 
+            // Acquire the transform of the object observed by the Player. If a transform is not acquired, do nothing.
+            Transform someObject = PlayerInteractions.singleton.RaycastTransform();
+            if (someObject == null)
+                return;
+
+
+            // If the transform belongs to a simple time object and the Player has stamina, freeze the object.
             simpleObject = someObject.transform.GetComponent<SimpleTimeManipulation>();
             if (simpleObject != null)
             {
-                if (TimeStamina.singleton.ConsumeChunk())
+                if (TimeStamina.singleton.ConsumeChunk(singleFreezeStaminaCost))
                     simpleObject.UpdateTimeScale(0f);
 
                 return;
             }
 
+            // If the transform belongs to a complex time object that can be frozen and the Player has stamina, freeze the object.
             complexObject = someObject.transform.GetComponent<ComplexTimeHub>();
             if (complexObject != null)
             {
-                // If the object does not possess a freeze script, then do not activate cooldown.
                 if (complexObject.transform.GetComponent<ComplexFreeze>() == null)
-                {
                     return;
-                }
 
-                if (TimeStamina.singleton.ConsumeChunk())
-                    complexObject.AffectObject(TimeEffect.Freeze, freezeSingleTime, 0f);
-
-                return;
+                if (TimeStamina.singleton.ConsumeChunk(singleFreezeStaminaCost))
+                    complexObject.AffectObject(TimeEffect.Freeze, _singleFreezeTime, 0f, true);
             }
         }
 
-        // If the Player presses the freeze environment button and the corresponding cooldown is inactive, attempt to freeze all freezeable objects.
-        if (Input.GetKeyDown(freezeEnvironmentButton) && canInitiateEnvironmentFreeze)
+        // If the Player presses the environment freeze button, attempt to freeze or unfreeze the environment.
+        else if (Input.GetKeyDown(environmentFreezeButton))
         {
-            if (!environmentActive)
+            // If the environment is undergoing a time effect that is not environment freeze, do not attempt to freeze the environment.
+            if (MasterTime.singleton.timeScale != 1f && MasterTime.singleton.timeScale != 0f)
+                return;
+
+            // If the environment freeze ability is toggled off and the Player has stamina, freeze the environment and commence draining stamina.
+            if (!environmentFreezeToggledOn)
             {
-                if (TimeStamina.singleton.CommenceDraining())
+                if (TimeStamina.singleton.CommenceDraining(environmentFreezeStaminaRate))
                 {
-                    // If there are freezeable objects existing in the scene, then freeze all of them and activate the freeze environment cooldown.
                     MasterTime.singleton.UpdateTime(0);
-                    if (freezeAllComplexObjects != null) freezeAllComplexObjects(TimeEffect.Freeze, TimeStamina.singleton.RemainingDrainTime, 0);
-                    StartCoroutine(TrackEnvironmentReverse());
+                    freezeAllComplexObjects?.Invoke(TimeEffect.Freeze, TimeStamina.singleton.RemainingDrainTime, 0, false);
+                    environmentFreezeToggledOn = true;
+                    StartCoroutine(TrackEnvironmentFreeze());
                 }
             }
+            // If the environment freeze ability is toggled on, then unfreeze the environment.
             else
             {
-                environmentActive = false;
+                environmentFreezeToggledOn = false;
             }
         }
     }
 
     /// <summary>
-    /// Updates the simple object's timescale to the default value after the single active time passes.
-    /// Notifies the SimpleTargetAbilityTracker to forgot the saved frozen object.
+    /// Constantly checks that the conditions for environment freeze are satisfied.
+    /// If the Player toggled off environment freeze or has no more stamina, then the environment is unfrozen and stamina is no longer draining.
     /// </summary>
-    /// <param name="simpleObject"> object with a simple freeze mechanism </param>
-    private IEnumerator CountdownSingleReverse(SimpleTimeManipulation simpleObject)
+    private IEnumerator TrackEnvironmentFreeze()
     {
-        RemainingSingleActiveTime = freezeSingleTime;
-        while(RemainingSingleActiveTime > 0)
-        {
-            RemainingSingleActiveTime -= Time.deltaTime;
-            yield return null;
-        }
-
-        if (simpleObject != null)
-        {
-            
-            simpleObject.UpdateTimeScale(1f);
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    private IEnumerator TrackEnvironmentReverse()
-    {
-        environmentActive = true;
-
-        while (environmentActive && TimeStamina.singleton.Stamina > 0)
-        {
+        while (environmentFreezeToggledOn && TimeStamina.singleton.Stamina > 0f)
             yield return waitForFixedUpdate;
-        }
 
-        environmentActive = false;
         MasterTime.singleton.UpdateTime(1);
+        freezeAllComplexObjects?.Invoke(TimeEffect.None, 0f, 1f, false);
+
+        // If the Player toggled off environment freeze, then halt draining.
+        // Otherwise, toggle off the environment freeze automatically.
+        if (!environmentFreezeToggledOn)
+        {
+            TimeStamina.singleton.HaltDraining();
+        }
+        else
+        {
+            environmentFreezeToggledOn = false;
+        }
     }
 }

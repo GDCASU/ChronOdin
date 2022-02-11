@@ -35,9 +35,9 @@ public class ShootingTrap : SimpleTimeManipulation
     {
         base.UpdateTimeScale(newTimeScale);
 
-        if (timeScale != 1 && timeScale != 0)
+        if (_timeScale != 1 && _timeScale != 0)
         {
-            timeScale = 1f;
+            _timeScale = 1f;
         }
     }
 
@@ -51,6 +51,6 @@ public class ShootingTrap : SimpleTimeManipulation
             Instantiate(projectilePrefab, projectileSpawnpoint.position, projectileSpawnpoint.rotation).GetComponent<ShootingProjectile>().launch();
             elapsedTime = 0f;
         }
-        elapsedTime += (Time.deltaTime * timeScale);
+        elapsedTime += (Time.deltaTime * _timeScale);
     }
 }

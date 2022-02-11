@@ -3,6 +3,7 @@
  * Modification: 
  *  The SlowObject coroutine transitions to the next time effect.
  *  The slowDownFactor is set in the SlowInvocation script.
+ *  The timeScale of MasterTime is multiplied to elapsedTime for environment effect stacking.
  */
 
 using System.Collections;
@@ -20,8 +21,9 @@ public class SlowDownSpeedUpObject : ComplexSlow
     private bool casting = false;
 
     Rigidbody rb;
-    private void OnEnable()
+    protected override void Awake()
     {
+        base.Awake();
         rb = GetComponent<Rigidbody>();
     }
 
@@ -41,7 +43,12 @@ public class SlowDownSpeedUpObject : ComplexSlow
     {
         return slowing;
     }
-    // Save velocity and turn off gravity for the object reduce velocity and angular velocity
+
+    /// <summary>
+    /// Slows the object for a specified amount of time by reducing velocity.
+    /// Stacking Environment: environment freeze ceases the object from moving whilst active and environment slow decreases the object's speed further.
+    /// </summary>
+    /// <param name="slowTime"> time to slow the object </param>
     IEnumerator SlowObject(float slowTime)
     {
         slowing = true;
@@ -53,7 +60,7 @@ public class SlowDownSpeedUpObject : ComplexSlow
         float elapsedTime = 0f;
         while (elapsedTime < slowTime && effectHub.IntroducingNewEffect == false)
         {
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.deltaTime * MasterTime.singleton.timeScale;
             yield return null;
         }
 

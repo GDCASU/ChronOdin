@@ -26,7 +26,7 @@ public class BoulderSpawner : SimpleTimeManipulation
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime * timeScale;
+        timer += Time.deltaTime * _timeScale;
 
         if (timer >= determinedSpawnTimer)
         {

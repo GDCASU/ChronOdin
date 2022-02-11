@@ -28,7 +28,7 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
         float step = 0;
         while (step < 1)
         {
-            step += speed * timeScale * Time.fixedDeltaTime;
+            step += speed * _timeScale * Time.fixedDeltaTime;
             lerpVector = Vector3.Lerp(startingPosition, endPosition, step);
             if (swingsOpen) transform.rotation = Quaternion.Euler(lerpVector);
             else transform.position = lerpVector;

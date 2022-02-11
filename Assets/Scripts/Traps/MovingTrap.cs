@@ -52,7 +52,7 @@ public class MovingTrap : SimpleTimeManipulation
             elapsedTime = 0f;
         }
 
-        elapsedTime += (Time.deltaTime * timeScale);
+        elapsedTime += (Time.deltaTime * _timeScale);
     }
 
     /// <summary>
