@@ -29,6 +29,7 @@ namespace PlayerInput {
         Interact,
         Jump,
         Crouch,
+        Sprint,
         Freeze,
         Reverse,
         Slow,
@@ -72,23 +73,23 @@ public class InputManager : MonoBehaviour {
     };
     public static Dictionary<PlayerButton, PlayerAction> playerButtons = new Dictionary<PlayerButton, PlayerAction> { };
     public static Dictionary<PlayerAxis, string > joyAxis = new Dictionary <PlayerAxis, string> {
-        {PlayerAxis.MoveHorizontal, "X Axis"},
-        {PlayerAxis.MoveVertical, "Y Axis"},
-        {PlayerAxis.CameraHorizontal, "4th Axis"},
-        {PlayerAxis.CameraVertical, "5th Axis"},
-        {PlayerAxis.LeftTrigger, "9th Axis"},
-        {PlayerAxis.RightTrigger, "10th Axis"},
-        {PlayerAxis.UI_Horizontal, "4th Axis"},
-        {PlayerAxis.UI_Vertical, "5th Axis"},
+        {PlayerAxis.MoveHorizontal, "Left Joystick Horizontal"},
+        {PlayerAxis.MoveVertical, "Left Joystick Vertical"},
+        {PlayerAxis.CameraHorizontal, "Right Joystick Horizontal"},
+        {PlayerAxis.CameraVertical, "Right Joystick Vertical"},
+        {PlayerAxis.LeftTrigger, "Left Trigger"},
+        {PlayerAxis.RightTrigger, "Right Trigger"},
+        {PlayerAxis.UI_Horizontal, "Right Joystick Horizontal"},
+        {PlayerAxis.UI_Vertical, "Right Joystick Vertical"},
     };
 
     public static Dictionary<PlayerAxis, string > mouseAxis = new Dictionary <PlayerAxis, string> {
-        {PlayerAxis.MoveHorizontal, "KeyboardX"},
-        {PlayerAxis.MoveVertical, "KeyboardY"},
-        {PlayerAxis.CameraHorizontal, "MouseX"},
-        {PlayerAxis.CameraVertical, "MouseY"},
-        {PlayerAxis.UI_Horizontal, "KeyboardX"},
-        {PlayerAxis.UI_Vertical, "KeyboardY"},
+        {PlayerAxis.MoveHorizontal, "Horizontal"},
+        {PlayerAxis.MoveVertical, "Vertical"},
+        {PlayerAxis.CameraHorizontal, "Mouse X"},
+        {PlayerAxis.CameraVertical, "Mouse Y"},
+        {PlayerAxis.UI_Horizontal, "Horizontal"},
+        {PlayerAxis.UI_Vertical, "Vertical"},
     };
 
     private void Start()
@@ -102,33 +103,36 @@ public class InputManager : MonoBehaviour {
         playerActions[1].xboxKey = KeyCode.JoystickButton0;
         playerActions[2].keyboardKey = KeyCode.LeftControl;
         playerActions[2].xboxKey = KeyCode.JoystickButton1;
-        playerActions[3].keyboardKey = KeyCode.F;
-        playerActions[3].xboxKey = KeyCode.JoystickButton3;
-        playerActions[4].keyboardKey = KeyCode.R;
-        playerActions[4].xboxKey = KeyCode.JoystickButton4;
-        playerActions[5].keyboardKey = KeyCode.Q;
-        playerActions[5].xboxKey = KeyCode.JoystickButton5;
-        playerActions[6].keyboardKey = KeyCode.Mouse0;
-        playerActions[6].xboxKey = KeyCode.None;
-        playerActions[7].keyboardKey = KeyCode.Mouse1;
+        playerActions[3].keyboardKey = KeyCode.LeftShift;
+        playerActions[3].xboxKey = KeyCode.Joystick1Button8;
+        playerActions[4].keyboardKey = KeyCode.F;
+        playerActions[4].xboxKey = KeyCode.JoystickButton3;
+        playerActions[5].keyboardKey = KeyCode.R;
+        playerActions[5].xboxKey = KeyCode.JoystickButton4;
+        playerActions[6].keyboardKey = KeyCode.Q;
+        playerActions[6].xboxKey = KeyCode.JoystickButton5;
+        playerActions[7].keyboardKey = KeyCode.Mouse0;
         playerActions[7].xboxKey = KeyCode.None;
-        playerActions[8].keyboardKey = KeyCode.Mouse0;
-        playerActions[8].xboxKey = KeyCode.JoystickButton0;
-        playerActions[9].keyboardKey = KeyCode.Escape;
-        playerActions[9].xboxKey = KeyCode.JoystickButton1;
+        playerActions[8].keyboardKey = KeyCode.Mouse1;
+        playerActions[8].xboxKey = KeyCode.None;
+        playerActions[9].keyboardKey = KeyCode.Mouse0;
+        playerActions[9].xboxKey = KeyCode.JoystickButton0;
         playerActions[10].keyboardKey = KeyCode.Escape;
-        playerActions[10].xboxKey = KeyCode.JoystickButton6;
+        playerActions[10].xboxKey = KeyCode.JoystickButton1;
+        playerActions[11].keyboardKey = KeyCode.Escape;
+        playerActions[11].xboxKey = KeyCode.JoystickButton6;
         playerButtons[PlayerButton.Interact] = playerActions[0];
         playerButtons[PlayerButton.Jump] = playerActions[1];
         playerButtons[PlayerButton.Crouch] = playerActions[2];
-        playerButtons[PlayerButton.Freeze] = playerActions[3];
-        playerButtons[PlayerButton.Reverse] = playerActions[4];
-        playerButtons[PlayerButton.Slow] = playerActions[5];
-        playerButtons[PlayerButton.Global] = playerActions[6];
-        playerButtons[PlayerButton.Local] = playerActions[7];
-        playerButtons[PlayerButton.UI_Submit] = playerActions[8];
-        playerButtons[PlayerButton.UI_Cancel] = playerActions[9];
-        playerButtons[PlayerButton.Pause] = playerActions[10];
+        playerButtons[PlayerButton.Sprint] = playerActions[3];
+        playerButtons[PlayerButton.Freeze] = playerActions[4];
+        playerButtons[PlayerButton.Reverse] = playerActions[5];
+        playerButtons[PlayerButton.Slow] = playerActions[6];
+        playerButtons[PlayerButton.Global] = playerActions[7];
+        playerButtons[PlayerButton.Local] = playerActions[8];
+        playerButtons[PlayerButton.UI_Submit] = playerActions[9];
+        playerButtons[PlayerButton.UI_Cancel] = playerActions[10];
+        playerButtons[PlayerButton.Pause] = playerActions[11];
         if (inputType == 1) inputMode = InputMode.controller;
         if (inputType == 2) inputMode = InputMode.keyboard;
     }
