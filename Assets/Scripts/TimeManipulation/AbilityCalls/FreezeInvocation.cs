@@ -78,7 +78,7 @@ public class FreezeInvocation : MonoBehaviour
             if (simpleObject != null)
             {
                 if (TimeStamina.singleton.ConsumeChunk(singleFreezeStaminaCost))
-                    simpleObject.UpdateTimeScale(0f);
+                    simpleObject.ActivateSingleObjectEffect(_singleFreezeTime, TimeEffect.Freeze);
 
                 return;
             }
@@ -107,7 +107,7 @@ public class FreezeInvocation : MonoBehaviour
             {
                 if (TimeStamina.singleton.CommenceDraining(environmentFreezeStaminaRate))
                 {
-                    MasterTime.singleton.UpdateTime(0);
+                    MasterTime.singleton.UpdateTime((int) TimeEffect.Freeze);
                     freezeAllComplexObjects?.Invoke(TimeEffect.Freeze, TimeStamina.singleton.RemainingDrainTime, 0, false);
                     environmentFreezeToggledOn = true;
                     StartCoroutine(TrackEnvironmentFreeze());
@@ -130,7 +130,7 @@ public class FreezeInvocation : MonoBehaviour
         while (environmentFreezeToggledOn && TimeStamina.singleton.Stamina > 0f)
             yield return waitForFixedUpdate;
 
-        MasterTime.singleton.UpdateTime(1);
+        MasterTime.singleton.UpdateTime((int)TimeEffect.None);
         freezeAllComplexObjects?.Invoke(TimeEffect.None, 0f, 1f, false);
 
         // If the Player toggled off environment freeze, then halt draining.

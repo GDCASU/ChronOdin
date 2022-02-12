@@ -80,7 +80,7 @@ public class SlowInvocation : MonoBehaviour
             if (simpleObject != null)
             {
                 if (TimeStamina.singleton.ConsumeChunk(singleSlowStaminaCost))
-                    simpleObject.UpdateTimeScale(slowFactor);
+                    simpleObject.ActivateSingleObjectEffect(_singleSlowTime, TimeEffect.Slow);
 
                 return;
             }
@@ -109,7 +109,7 @@ public class SlowInvocation : MonoBehaviour
             {
                 if (TimeStamina.singleton.CommenceDraining(environmentSlowStaminaRate))
                 {
-                    MasterTime.singleton.UpdateTime(5);
+                    MasterTime.singleton.UpdateTime((int) TimeEffect.Slow);
                     slowAllComplexObjects?.Invoke(TimeEffect.Slow, TimeStamina.singleton.RemainingDrainTime, slowFactor, false);
                     environmentSlowToggledOn = true;
                     StartCoroutine(TrackEnvironmentSlow());
@@ -132,7 +132,7 @@ public class SlowInvocation : MonoBehaviour
         while (environmentSlowToggledOn && TimeStamina.singleton.Stamina > 0)
             yield return waitForFixedUpdate;
 
-        MasterTime.singleton.UpdateTime(1);
+        MasterTime.singleton.UpdateTime((int)TimeEffect.None);
         slowAllComplexObjects?.Invoke(TimeEffect.None, 0f, 1f, false);
 
         // If the Player toggled off environment slow, then halt draining.

@@ -22,13 +22,13 @@ public class RotateObject : SimpleTimeManipulation
     private float interpolationValue;
     private void Start()
     {
-        UpdateTimeScale(MasterTime.singleton.timeScale);
+        UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
         yRotation = transform.rotation.eulerAngles.y;
         isRotating = true;
     }
     void Update()
     {
-        _rotationSpeed = rotationSpeed * _timeScale * Time.fixedDeltaTime;
+        _rotationSpeed = rotationSpeed * timeScale * Time.fixedDeltaTime;
         if (!stepRotation)
         {
             transform.Rotate(0, _rotationSpeed, 0, Space.Self);
@@ -41,7 +41,7 @@ public class RotateObject : SimpleTimeManipulation
                 {
                     float setToAngle = yRotation + Mathf.Lerp(0, 1, interpolationValue) * stepRotationAngle;                    
                     transform.rotation = transform.localRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, setToAngle, transform.rotation.eulerAngles.z);
-                    interpolationValue += _rotationSpeed  * _timeScale * Time.fixedDeltaTime;
+                    interpolationValue += _rotationSpeed  * timeScale * Time.fixedDeltaTime;
                 }
                 else
                 {

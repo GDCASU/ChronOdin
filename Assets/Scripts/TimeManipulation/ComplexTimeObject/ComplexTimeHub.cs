@@ -11,17 +11,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-/// <summary>
-/// Time-related effects an object can experience.
-/// </summary>
-public enum TimeEffect
-{
-    None,
-    Freeze,
-    Reverse,
-    Slow
-}
-
 public class ComplexTimeHub : MonoBehaviour
 {
     // Time mechanic scripts

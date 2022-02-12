@@ -7,12 +7,12 @@ public class TrapDoor : SimpleTimeManipulation
     /// <summary>
     /// Updates the local timeScale variable before the first update is called
     /// </summary>
-    private void Start() => UpdateTimeScale(MasterTime.singleton.timeScale);
+    private void Start() => UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
     private void OnCollisionStay(Collision collision)
     {
         // TODO: Sound Effect
         // Active trapdoor if not frozen
-        if(_timeScale != 0)
+        if(timeScale != 0)
             if(collision.gameObject.CompareTag("Player"))
             {
                 // Door is basically "crumbling"

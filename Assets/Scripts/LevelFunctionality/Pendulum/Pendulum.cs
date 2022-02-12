@@ -67,7 +67,7 @@ public class Pendulum : SimpleTimeManipulation
     /// </summary>
     private void Start() 
     {
-        UpdateTimeScale(MasterTime.singleton.timeScale);
+        UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
         initialRotation = transform.localRotation.eulerAngles;
     } 
     /// <summary>
@@ -92,7 +92,7 @@ public class Pendulum : SimpleTimeManipulation
             }
         }
 
-        time += (Time.fixedDeltaTime * _timeScale);
+        time += (Time.fixedDeltaTime * timeScale);
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ public class Pendulum : SimpleTimeManipulation
     private void OnCollisionEnter(Collision collision)
     {
         // Do not apply a force if the pendulum is frozen.
-        if (_timeScale == 0f)
+        if (timeScale == 0f)
             return;
 
         // Only apply a force to an object with a rigidbody.
@@ -132,7 +132,7 @@ public class Pendulum : SimpleTimeManipulation
         // Calculate the velocity of the ball.
         Vector3 angularVelocity = transform.forward * -(initialAngle * Mathf.Deg2Rad) * angularFrequency * Mathf.Sin(angularFrequency * time);
         Vector3 radius = (ballCollider.transform.position - transform.position).normalized * -Physics.gravity.y * (1f / Mathf.Pow(angularFrequency, 2));
-        Vector3 velocity = Vector3.Cross(angularVelocity, radius) * _timeScale;
+        Vector3 velocity = Vector3.Cross(angularVelocity, radius) * timeScale;
 
         // Calculate the launch direction of the entity.
         Vector3 launchDirection = (collideDir + velocity).normalized;

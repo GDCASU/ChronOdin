@@ -22,14 +22,16 @@ public class ReverseInvocation : MonoBehaviour
     private KeyCode playerReverseButton = KeyCode.E;
 
     [Header("Quantities")]
-    [Tooltip("The duration the object shall be reversed for")]
-    [SerializeField]
+    [SerializeField, Tooltip("The duration the object shall be reversed for")]
     private float _singleReverseTime = 3f;
     public float ReverseSingleTime { get => _singleReverseTime; }
 
     [SerializeField, Tooltip("Chunk of stamina consumed upon reversing a single object")]
     private float singleReverseStaminaCost = 1f;
-    
+
+    [SerializeField, Tooltip("Chunk of stamina consumed upon reversing the Player")]
+    private float playerReverseStaminaCost = 1.5f;
+
     SimpleTimeManipulation simpleObject = null;  // object with a simple reverse mechanism
     ComplexTimeHub complexObject = null;  // object with a complex reverse mechanism
     PlayerReverse playerReversal = null;  // script attached to Player responsible for reversing the Player
@@ -70,16 +72,16 @@ public class ReverseInvocation : MonoBehaviour
             simpleObject = someObject.transform.GetComponent<SimpleTimeManipulation>();
             if (simpleObject != null)
             {
-                if (simpleObject.TimeScale < 0f)
+                if (simpleObject.SingleTimeScale < 0f)
                     return;
 
                 if (TimeStamina.singleton.ConsumeChunk(singleReverseStaminaCost))
-                    simpleObject.UpdateTimeScale(-1f);
+                    simpleObject.ActivateSingleObjectEffect(_singleReverseTime, TimeEffect.Reverse);
 
                 return;
             }
 
-            // If the transform belongs to a complex time object that can be reversed, it is not reversing, and the Player has stamina, reverse the object. [CHANGE]
+            // If the transform belongs to a complex time object that can be reversed, is not reversing, and the Player has stamina, reverse the object.
             complexObject = someObject.transform.GetComponent<ComplexTimeHub>();
             if (complexObject != null)
             {
@@ -91,10 +93,13 @@ public class ReverseInvocation : MonoBehaviour
             }
         }
 
-        // If the Player presses the reverse Player button and has stamina, reverse the Player and expend all their stamina.
+        // If the Player presses the reverse Player button, has enough prevoious positions to reverse to, and has stamina, reverse the Player.
         else if (Input.GetKeyDown(playerReverseButton))
         {
-            if (TimeStamina.singleton.ConsumeChunk(-1f))
+            if (playerReversal.PreviousPositionsCount < playerReversal.previousPositionsLimit)
+                return;
+
+            if (TimeStamina.singleton.ConsumeChunk(playerReverseStaminaCost))
                 playerReversal.CallReverse();
         }
     }

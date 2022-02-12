@@ -10,15 +10,15 @@ public class Flowing_River : SimpleTimeManipulation
     public float playerVelocity;
     private float originalPlayerSprint;
     private float originalPlayerWalk;
-    public void Start() => UpdateTimeScale(MasterTime.singleton.timeScale);
+    public void Start() => UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
 
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.GetComponent<Rigidbody>())
-            other.gameObject.GetComponent<Rigidbody>().velocity += (overrideDirection) ? forceDirection : transform.forward * streamForce * _timeScale;
+            other.gameObject.GetComponent<Rigidbody>().velocity += (overrideDirection) ? forceDirection : transform.forward * streamForce * timeScale;
         if (other.gameObject.tag == "Player")
         {
-            if (_timeScale == 2 || _timeScale == 1)
+            if (timeScale == 2 || timeScale == 1)
             {
                 PlayerController.singleton.baseMovementVariables.maxWalkVelocity = playerVelocity;
                 PlayerController.singleton.baseMovementVariables.maxSprintVelocity = playerVelocity;

@@ -17,7 +17,7 @@ public class TimeStamina : MonoBehaviour
     public float MaxStamina { get => _maxStamina; }
 
     [SerializeField, Tooltip("Rate at which stamina regenerates per second")]
-    private float regenRate = 2f;
+    private float regenRate = 1f;
 
     [SerializeField, Tooltip("Time required for stamina to regenerate after expending it")]
     private float regenDelay = 2f;

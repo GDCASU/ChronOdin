@@ -32,16 +32,16 @@ public class ShootingProjectile : SimpleTimeManipulation
     /// <summary>
     /// Updates the local timeScale variable before the first update is called
     /// </summary>
-    private void Start() => UpdateTimeScale(MasterTime.singleton.timeScale);
+    private void Start() => UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
 
     /// <summary>
     /// Alters the projectile's velocity based on the new time scale.
     /// </summary>
     /// <param name="newTimeScale"></param>
-    public override void UpdateTimeScale(float newTimeScale)
+    public override void UpdateWithGlobalTimescale(float newTimeScale)
     {
-        base.UpdateTimeScale(newTimeScale);
-        body.velocity = transform.TransformDirection(Vector3.up) * speed * _timeScale;
+        base.UpdateWithGlobalTimescale(newTimeScale);
+        body.velocity = transform.TransformDirection(Vector3.up) * speed * timeScale;
     }
 
     /// <summary>
@@ -53,12 +53,12 @@ public class ShootingProjectile : SimpleTimeManipulation
     }
     public IEnumerator launchProjectile()
     {
-        body.velocity = transform.TransformDirection(Vector3.up) * speed * _timeScale;
+        body.velocity = transform.TransformDirection(Vector3.up) * speed * timeScale;
 
         float elapsedTime = 0f;
         while (elapsedTime < lifespan)
         {
-            elapsedTime += (Time.deltaTime * _timeScale);
+            elapsedTime += (Time.deltaTime * timeScale);
 
             // Prevent the reverse effect from extending the projectile's lifespan outside a time effect.
             // For example, if the projectile has a lifespan of 3 seconds and the reverse effect lasts for 5 seconds, the bullet shall exist for a maximum of 7 seconds.

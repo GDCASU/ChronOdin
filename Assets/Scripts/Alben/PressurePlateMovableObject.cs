@@ -29,7 +29,7 @@ public class PressurePlateMovableObject: SimpleTimeManipulation, LinkedToPressur
     /// </summary>
     protected void Start()
     {
-        UpdateTimeScale(MasterTime.singleton.timeScale);
+        UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
         originalPosition = transform.position;
         newPosition = originalPosition + newPosition;
     }
@@ -63,7 +63,7 @@ public class PressurePlateMovableObject: SimpleTimeManipulation, LinkedToPressur
         float step = 0;
         while (step < 1)
         {
-            step += speed * _timeScale * Time.fixedDeltaTime;
+            step += speed * timeScale * Time.fixedDeltaTime;
             transform.position = Vector3.Lerp(startingPosition, newPosition, step);
             yield return new WaitForFixedUpdate();
         }
@@ -80,7 +80,7 @@ public class PressurePlateMovableObject: SimpleTimeManipulation, LinkedToPressur
         float step = 0;
         while (step < 1)
         {
-            step += speed * _timeScale * Time.fixedDeltaTime;
+            step += speed * timeScale * Time.fixedDeltaTime;
             transform.position = Vector3.Lerp(startingPosition, originalPosition, step);
             yield return new WaitForFixedUpdate();
         }

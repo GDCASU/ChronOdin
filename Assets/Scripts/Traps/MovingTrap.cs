@@ -34,7 +34,7 @@ public class MovingTrap : SimpleTimeManipulation
     /// <summary>
     /// Updates the local timeScale variable before the first update is called
     /// </summary>
-    private void Start()=> UpdateTimeScale(MasterTime.singleton.timeScale);
+    private void Start()=> UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
 
     /// <summary>
     /// Moves the physical component up and down.
@@ -52,7 +52,7 @@ public class MovingTrap : SimpleTimeManipulation
             elapsedTime = 0f;
         }
 
-        elapsedTime += (Time.deltaTime * _timeScale);
+        elapsedTime += (Time.deltaTime * timeScale);
     }
 
     /// <summary>

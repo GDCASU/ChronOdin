@@ -27,7 +27,7 @@ public class CeilingDebris : SimpleTimeManipulation
 
     private void Start()
     {
-        UpdateTimeScale(MasterTime.singleton.timeScale);
+        UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
         spawnZoneLength = transform.localScale.x / 2;
         spawnZoneWidth = transform.localScale.z / 2;
         determinedSpawnTimer = (int)Random.Range(minSpawnSeconds, maxSpawnSeconds);
@@ -36,7 +36,7 @@ public class CeilingDebris : SimpleTimeManipulation
     // Update is called once per frame
     private void Update()
     {
-        timer += Time.deltaTime * _timeScale;
+        timer += Time.deltaTime * timeScale;
 
         if(timer >= determinedSpawnTimer)
         {

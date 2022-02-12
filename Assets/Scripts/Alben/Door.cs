@@ -19,7 +19,7 @@ public class Door : SimpleTimeManipulation
     /// </summary>
     private void Start()
     {
-        UpdateTimeScale(MasterTime.singleton.timeScale);
+        UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
         isOpen = false;
         isMoving = false;
     }
@@ -57,10 +57,10 @@ public class Door : SimpleTimeManipulation
     private IEnumerator RotateDoor(Quaternion startAngle, Quaternion endAngle)
     {
         float slerp = 0;
-        float slerpRate = Time.deltaTime * _timeScale * rotationSpeed * .1f;
+        float slerpRate = Time.deltaTime * timeScale * rotationSpeed * .1f;
         while (slerpRate <= 1)
         {
-            slerpRate = Time.deltaTime * _timeScale * rotationSpeed * .1f;
+            slerpRate = Time.deltaTime * timeScale * rotationSpeed * .1f;
             doorPivot.transform.rotation = Quaternion.Slerp(startAngle, endAngle, slerpRate);
             slerp += slerpRate;
             yield return null;

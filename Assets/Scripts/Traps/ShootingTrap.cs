@@ -25,19 +25,19 @@ public class ShootingTrap : SimpleTimeManipulation
     /// <summary>
     /// Updates the local timeScale variable before the first update is called
     /// </summary>
-    private void Start() => UpdateTimeScale(MasterTime.singleton.timeScale);
+    private void Start() => UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
 
     /// <summary>
     /// Only permits the trap to be frozen.
     /// </summary>
     /// <param name="newTimeScale"></param>
-    public override void UpdateTimeScale(float newTimeScale)
+    public override void UpdateWithGlobalTimescale(float newTimeScale)
     {
-        base.UpdateTimeScale(newTimeScale);
+        base.UpdateWithGlobalTimescale(newTimeScale);
 
-        if (_timeScale != 1 && _timeScale != 0)
+        if (timeScale != 1 && timeScale != 0)
         {
-            _timeScale = 1f;
+            timeScale = 1f;
         }
     }
 
@@ -51,6 +51,6 @@ public class ShootingTrap : SimpleTimeManipulation
             Instantiate(projectilePrefab, projectileSpawnpoint.position, projectileSpawnpoint.rotation).GetComponent<ShootingProjectile>().launch();
             elapsedTime = 0f;
         }
-        elapsedTime += (Time.deltaTime * _timeScale);
+        elapsedTime += (Time.deltaTime * timeScale);
     }
 }
