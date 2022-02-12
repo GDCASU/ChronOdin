@@ -32,15 +32,15 @@ public class ShootingProjectile : SimpleTimeManipulation
     /// <summary>
     /// Updates the local timeScale variable before the first update is called
     /// </summary>
-    private void Start() => UpdateTimescale(MasterTime.singleton.timeScale);
+    private void Start() => UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
 
     /// <summary>
     /// Alters the projectile's velocity based on the new time scale.
     /// </summary>
     /// <param name="newTimeScale"></param>
-    public override void UpdateTimescale(float newTimeScale)
+    public override void UpdateWithGlobalTimescale(float newTimeScale)
     {
-        base.UpdateTimescale(newTimeScale);
+        base.UpdateWithGlobalTimescale(newTimeScale);
         body.velocity = transform.TransformDirection(Vector3.up) * speed * timeScale;
     }
 

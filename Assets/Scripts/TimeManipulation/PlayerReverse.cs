@@ -5,6 +5,10 @@ using UnityEngine;
 /// <summary>
 /// Adds the ability for the player to move back to where they were.
 /// Author: Alben Trang
+/// 
+/// Editor: Cristion Dominguez
+/// Modification:
+///     Added a property that returns the amount of positions saved.
 /// </summary>
 public class PlayerReverse : MonoBehaviour
 {
@@ -23,6 +27,8 @@ public class PlayerReverse : MonoBehaviour
     private bool storePositions;
     private bool isAbleToReverse;
     private bool reversing;
+
+    public float PreviousPositionsCount { get => previousPositions.Count; }
 
     private WaitForSeconds timeBetweenSaves;
     private WaitForFixedUpdate fixedUpdate;
@@ -132,4 +138,6 @@ public class PlayerReverse : MonoBehaviour
         isAbleToReverse = true;        //canReverseText.SetText("Reverse is ready!");
         StartCoroutine(AddPosition());
     }
+
+
 }
