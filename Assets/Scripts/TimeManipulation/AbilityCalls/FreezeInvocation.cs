@@ -8,10 +8,10 @@
  * Date: 10 September 2021
  */
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class FreezeInvocation : MonoBehaviour
 {
@@ -45,6 +45,15 @@ public class FreezeInvocation : MonoBehaviour
     [Tooltip("The camera providing the Player vision")]
     [SerializeField]
     private Transform playerCamera;
+    [SerializeField]
+    private Text globalActiveTimerText;
+    [SerializeField]
+    private Text globalCooldownTimerText;
+    [SerializeField]
+    private Text localActiveTimerText;
+    [SerializeField]
+    private Text localCooldownTimerText;
+
 
     // Values for casting a ray to detect collisions.
     RaycastHit rayHit;
@@ -52,28 +61,12 @@ public class FreezeInvocation : MonoBehaviour
     private int maxRayCasts = 2;
     private float rayPositionOffset = 0.000006f;
 
-    // For suspending active and cooldown coroutines.
-    private WaitForSeconds waitForSingleActiveTime;
-    private WaitForSeconds waitForEnvironmentActiveTime;
-    private WaitForSeconds waitForSingleCooldown;
-    private WaitForSeconds waitForEnvironmentCooldown;
-
     private bool canInitiateSingleFreeze = true;  // Is the single freeze cooldown inactive?
     private bool canInitiateEnvironmentFreeze = true;  // Is the environment freeze cooldown inactive?
     SimpleTimeManipulation simpleObject = null;  // object with a simple freeze mechanism
     ComplexTimeHub complexObject = null;  // objecct with a complex freeze mechanism
     public static Action<TimeEffect, float, float> freezeAllComplexObjects;  // event container for freezing every freezeable object
 
-    /// <summary>
-    /// Assigns coroutine suspension times.
-    /// </summary>
-    private void Start()
-    {
-        waitForSingleActiveTime = new WaitForSeconds(freezeSingleTime);
-        waitForEnvironmentActiveTime = new WaitForSeconds(freezeEnvironmentTime);
-        waitForSingleCooldown = new WaitForSeconds(freezeSingleCooldown);
-        waitForEnvironmentCooldown = new WaitForSeconds(freezeEnvironmentCooldown);
-    }
 
     /// <summary>
     /// Freezes a single object or the environment depending on Player input and the ability to freeze a specific object(s).
@@ -109,7 +102,7 @@ public class FreezeInvocation : MonoBehaviour
                     {
                         simpleObject.UpdateTimescale(0f);
                         StartCoroutine(ActivateSingleCooldown());
-                        StartCoroutine(CountdownSingleReverse(simpleObject));
+                        StartCoroutine(CountdownSimpleFreeze(simpleObject));
                         return;
                     }
                     if (complexObject != null)
@@ -119,9 +112,9 @@ public class FreezeInvocation : MonoBehaviour
                         {
                             return;
                         }
-
                         complexObject.AffectObject(TimeEffect.Freeze, freezeSingleTime, 0f);
                         StartCoroutine(ActivateSingleCooldown());
+                        StartCoroutine(CountdownSimpleFreeze(simpleObject));
                         return;
                     }
                     // If the ray hits nothing, stop casting rays.
@@ -149,7 +142,7 @@ public class FreezeInvocation : MonoBehaviour
             MasterTime.singleton.UpdateTime(0);
             if (freezeAllComplexObjects != null) freezeAllComplexObjects(TimeEffect.Freeze, freezeEnvironmentTime, 0);
             StartCoroutine(ActivateEnvironmentCooldown());
-            StartCoroutine(CountdownEnvironmentReverse());
+            StartCoroutine(CountdownEnvironmentFreeze());
         }
     }
 
@@ -157,18 +150,32 @@ public class FreezeInvocation : MonoBehaviour
     /// Updates the simple object's timescale to the default value after the single active time passes.
     /// </summary>
     /// <param name="simpleObject"> object with a simple freeze mechanism </param>
-    private IEnumerator CountdownSingleReverse(SimpleTimeManipulation simpleObject)
+    private IEnumerator CountdownSimpleFreeze(SimpleTimeManipulation simpleObject)
     {
-        yield return waitForSingleActiveTime;
+        float timer = freezeSingleTime;
+        while (timer > 0)
+        {
+            localActiveTimerText.text = timer.ToString("0.00") + "";
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        localActiveTimerText.text = "";
         if (simpleObject != null) simpleObject.UpdateTimescale(1f);
     }
 
     /// <summary>
     /// Updates every simple object's timescale to the default value after the environment active time passes.
     /// </summary>
-    private IEnumerator CountdownEnvironmentReverse()
+    private IEnumerator CountdownEnvironmentFreeze()
     {
-        yield return waitForEnvironmentActiveTime;
+        float timer = freezeEnvironmentTime;
+        while (timer > 0)
+        {
+            globalActiveTimerText.text = timer.ToString("0.00") + "";
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        globalActiveTimerText.text = "";
         MasterTime.singleton.UpdateTime(1);
     }
 
@@ -178,7 +185,14 @@ public class FreezeInvocation : MonoBehaviour
     private IEnumerator ActivateSingleCooldown()
     {
         canInitiateSingleFreeze = false;
-        yield return waitForSingleCooldown;
+        float timer = freezeSingleCooldown;
+        while (timer > 0)
+        {
+            localCooldownTimerText.text = timer.ToString("0.00") + "";
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        localCooldownTimerText.text = "";
         canInitiateSingleFreeze = true;
     }
 
@@ -188,7 +202,14 @@ public class FreezeInvocation : MonoBehaviour
     private IEnumerator ActivateEnvironmentCooldown()
     {
         canInitiateEnvironmentFreeze = false;
-        yield return waitForEnvironmentCooldown;
+        float timer = freezeEnvironmentCooldown;
+        while (timer > 0)
+        {
+            globalCooldownTimerText.text = timer.ToString("0.00") + "";
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        globalCooldownTimerText.text = "";
         canInitiateEnvironmentFreeze = true;
     }
 }

@@ -10,6 +10,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 public class ReverseInvocation : MonoBehaviour
@@ -53,10 +54,13 @@ public class ReverseInvocation : MonoBehaviour
     private int maxRayCasts = 2;
     private float rayPositionOffset = 0.000006f;
 
-    // For suspending active and cooldown coroutines.
-    private WaitForSeconds waitForObjectActiveTime;
-    private WaitForSeconds waitForObjectCooldown;
-    private WaitForSeconds waitForPlayerCooldown;
+    [SerializeField]
+    private Text objectActiveTimerText;
+    [SerializeField]
+    private Text objectCooldownTimerText;
+    [SerializeField]
+    private Text playerCooldownTimerText;
+
 
     private bool canInitiateObjectReverse = true;  // Is the object reverse cooldown inactive?
     private bool canInitiatePlayerReverse = true;  // Is the Player reverse cooldown inactive?
@@ -67,14 +71,8 @@ public class ReverseInvocation : MonoBehaviour
     /// <summary>
     /// Assigns coroutine suspension times and collects the PlayerReverse script.
     /// </summary>
-    private void Start()
-    {
-        waitForObjectActiveTime = new WaitForSeconds(reverseObjectTime);
-        waitForObjectCooldown = new WaitForSeconds(reverseObjectCooldown);
-        waitForPlayerCooldown = new WaitForSeconds(reversePlayerCooldown);
+    private void Start() => playerReversal = transform.GetComponent<PlayerReverse>();
 
-        playerReversal = transform.GetComponent<PlayerReverse>();
-    }
 
     /// <summary>
     /// Reverses a single object or the Player depending on Player input and the ability to reverse.
@@ -159,7 +157,14 @@ public class ReverseInvocation : MonoBehaviour
     /// <returns></returns>
     private IEnumerator CountdownObjectReverse(SimpleTimeManipulation simpleObject)
     {
-        yield return waitForObjectActiveTime;
+        float timer = reverseObjectTime;
+        while (timer > 0)
+        {
+            objectActiveTimerText.text = timer.ToString("0.00") + "";
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        objectActiveTimerText.text = "";
         if (simpleObject != null) simpleObject.UpdateTimescale(1f);
     }
 
@@ -169,7 +174,14 @@ public class ReverseInvocation : MonoBehaviour
     private IEnumerator ActivateObjectCooldown()
     {
         canInitiateObjectReverse = false;
-        yield return waitForObjectCooldown;
+        float timer = reverseObjectCooldown;
+        while (timer > 0)
+        {
+            objectCooldownTimerText.text = timer.ToString("0.00") + "";
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        objectCooldownTimerText.text = "";
         canInitiateObjectReverse = true;
     }
 
@@ -179,7 +191,14 @@ public class ReverseInvocation : MonoBehaviour
     private IEnumerator ActivatePlayerCooldown()
     {
         canInitiatePlayerReverse = false;
-        yield return waitForPlayerCooldown;
+        float timer = reversePlayerCooldown;
+        while (timer > 0)
+        {
+            playerCooldownTimerText.text = timer.ToString("0.00") + "";
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        playerCooldownTimerText.text = "";
         canInitiatePlayerReverse = true;
     }
 

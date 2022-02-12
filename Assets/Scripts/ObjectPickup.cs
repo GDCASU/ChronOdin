@@ -90,7 +90,7 @@ public class ObjectPickup : MonoBehaviour
         }
         // If the ray hits nothing, stop casting rays.
         // FOR TESTING PURPOSES, comment this "else" block out.
-        else if (PlayerInteractions.singleton.rayHit.transform.tag.Equals("Interactable")) PlayerInteractions.singleton.rayHit.transform.GetComponent<InteractiveObject>().Interact();
+        //else if (PlayerInteractions.singleton.rayHit.transform.tag.Equals("Interactable")) PlayerInteractions.singleton.rayHit.transform.GetComponent<InteractiveObject>().Interact();
     }
 
     /// <summary>

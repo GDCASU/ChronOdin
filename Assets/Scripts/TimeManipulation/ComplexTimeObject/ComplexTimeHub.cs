@@ -45,7 +45,7 @@ public class ComplexTimeHub : MonoBehaviour
     /// <summary>
     /// Time effect currently active.
     /// </summary>
-    public TimeEffect CurrentEffect { get; private set; }
+    public TimeEffect CurrentEffect { get; set; }
     /// <summary>
     /// How long the current effect shall last.
     /// </summary>
@@ -143,7 +143,6 @@ public class ComplexTimeHub : MonoBehaviour
         {
             return;
         }
-
         // Determine if the new effect is interrupting an active effect.
         if (CurrentEffect == TimeEffect.None)
         {
