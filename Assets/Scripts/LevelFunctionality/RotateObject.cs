@@ -10,7 +10,7 @@ using UnityEngine;
 public class RotateObject : SimpleTimeManipulation
 {
     [SerializeField]
-    private float rotationSpeed = 2;
+    public float rotationSpeed = 2;
     private float _rotationSpeed;
     public bool stepRotation;
     [HideInInspector] public bool isRotating;
