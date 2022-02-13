@@ -85,8 +85,11 @@ public class ReverseInvocation : MonoBehaviour
             complexObject = someObject.transform.GetComponent<ComplexTimeHub>();
             if (complexObject != null)
             {
-                if (complexObject.CurrentEffect == TimeEffect.Reverse || complexObject.transform.GetComponent<ComplexReverse>() == null)
+                ComplexReverse complexReverse = complexObject.transform.GetComponent<ComplexReverse>();
+
+                if (complexReverse == null || !complexReverse.ShouldReverse())
                     return;
+                    
 
                 if (TimeStamina.singleton.ConsumeChunk(singleReverseStaminaCost))
                     complexObject.AffectObject(TimeEffect.Reverse, _singleReverseTime, -1f, true);
