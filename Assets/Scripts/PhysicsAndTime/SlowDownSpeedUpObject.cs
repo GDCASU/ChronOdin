@@ -3,7 +3,7 @@
  * Modification: 
  *  The SlowObject coroutine transitions to the next time effect.
  *  The slowDownFactor is set in the SlowInvocation script.
- *  The timeScale of MasterTime is multiplied to elapsedTime for environment effect stacking.
+ *  Environment stacking is implemeneted.
  */
 
 using System.Collections;
@@ -25,6 +25,7 @@ public class SlowDownSpeedUpObject : ComplexSlow
     {
         base.Awake();
         rb = GetComponent<Rigidbody>();
+        MasterTime.singleton.updateTimeScaleEvent += StackEnvironmentEffect;
     }
 
     private void FixedUpdate()
@@ -59,20 +60,65 @@ public class SlowDownSpeedUpObject : ComplexSlow
 
         float elapsedTime = 0f;
         while (elapsedTime < slowTime && effectHub.IntroducingNewEffect == false)
-        {
+        {            
             elapsedTime += Time.deltaTime * MasterTime.singleton.timeScale;
             yield return null;
         }
 
-        rb.velocity = preVelocity;
         slowing = false;
+        rb.velocity = preVelocity;
         rb.useGravity = true;
         casting = false;
 
         effectHub.TransitionToNextEffect();
     }
 
-     IEnumerator SpeedObject()
+    private bool environmentWasSlowed = false;
+    private bool environmentWasFrozen = false;
+    private Vector3 unfrozenVelocity;
+    private Vector3 unfrozenAngularVelocity;
+    private RigidbodyConstraints unfrozenConstraints;
+    /// <summary>
+    /// Modifies the velocity of the slowed object when the master time scale is modified.
+    /// </summary>
+    /// <param name="timeScale"> master time scale </param>
+    private void StackEnvironmentEffect(float timeScale)
+    {
+        if (slowing)
+        {
+            if (timeScale == 0f)
+            {
+                environmentWasFrozen = true;
+                unfrozenVelocity = rb.velocity;
+                unfrozenAngularVelocity = rb.angularVelocity;
+                unfrozenConstraints = rb.constraints;
+
+                rb.constraints = RigidbodyConstraints.FreezeAll;
+            }
+            else if (timeScale < 1f)
+            {
+                environmentWasSlowed = true;
+                rb.velocity *= timeScale;
+                rb.angularVelocity *= timeScale;
+            }
+            else if (timeScale == 1f)
+            {
+                if (environmentWasSlowed)
+                {
+                    rb.velocity *= (1f / timeScale);
+                    rb.angularVelocity *= (1f / timeScale);
+                }
+                else if (environmentWasFrozen)
+                {
+                    rb.constraints = unfrozenConstraints;
+                    rb.velocity = unfrozenVelocity;
+                    rb.angularVelocity = unfrozenAngularVelocity;
+                }
+            }
+        }
+    }
+
+    IEnumerator SpeedObject()
     {
         //all the same stuff as the Slow method but the opposite to have a speedup effect
         speedingUp = true;

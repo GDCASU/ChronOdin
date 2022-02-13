@@ -31,7 +31,8 @@ public class ComplexTimeHub : MonoBehaviour
     public bool IntroducingNewEffect { get; private set; }
 
     private bool newEffectInterrupting = false;  // Is the new time effect interrupting another effect?
-    private bool underSingleTargetAbility = false;  // Is the object experiencing the effect of a single target time ability?
+    private bool _underSingleTargetAbility = false;  // Is the object experiencing the effect of a single target time ability?
+    public bool UnderSingleTargetAbility { get => _underSingleTargetAbility; }
 
     // Fields for the current time effect
     /// <summary>
@@ -129,23 +130,28 @@ public class ComplexTimeHub : MonoBehaviour
     /// <summary>
     /// Applies the time effect currently experienced by the environment to the gameobject for the remaning drain time.
     /// </summary>
-    private void CheckForEnvironmentEffects()
+    /// <returns> Is an environment effect active? </returns>
+    private bool CheckForEnvironmentEffects()
     {
         if (MasterTime.singleton.timeScale == 0f)
         {
             AffectObject(TimeEffect.Freeze, TimeStamina.singleton.RemainingDrainTime, 0f, false);
+            return true;
         }
         else if (MasterTime.singleton.timeScale < 1f)
         {
             AffectObject(TimeEffect.Slow, TimeStamina.singleton.RemainingDrainTime, MasterTime.singleton.timeScale, false);
+            return true;
         }
+
+        return false;
     }
 
     /// <summary>
     /// Saves the current effect as a previous effect and modifies the current effect, and transitions to the new effect.
     /// If the object is currently experiencing a time effect from a single target ability, then new effect from environment abilities are ignored.
     /// If the new effect does not interrupt an active time effect (TimeEffect.None), then the transition is handled by this method.
-    ///   If the new effect does not interrupt an active time effect, then the transition is handled by the script corresponding to the previous effect.
+    ///   If the new effect does interrupt an active time effect, then the transition is handled by the script corresponding to the previous effect.
     ///   For example, if an object is reversing whilst it receives an order to slow in forward time, then a ComplexReverse child must invoke the TransitionToNextEffect() method.
     /// </summary>
     /// <param name="effect"> the new time effect the gameobject shall experience </param>
@@ -154,38 +160,30 @@ public class ComplexTimeHub : MonoBehaviour
     /// <param name="soloTargeted"> Is the object receiving a time effect from a single target ability? </param>
     public void AffectObject(TimeEffect effect, float activeTime, float timescale, bool soloTargeted)
     {
-        // If the time effect is not none, then perform validation checks; if no issues arise with those checks, then remember whether this object is affected by a
-        //  single target ability.
-        // Otherwise, indicate that the object is not affected by a single target ability.
-        if (effect != TimeEffect.None)
+        // If the object is requested to adopt an environment effect whilst experiencing a single target effect, do nothing.
+        if (!soloTargeted && _underSingleTargetAbility)
         {
-            // If the object is requested to adopt an environment effect whilst experiencing a single target effect, do nothing.
-            if (!soloTargeted && underSingleTargetAbility)
-            {
-                return;
-            }
-            // If the script for the corresponding effect does not exist, do nothing.
-            else if (effect == TimeEffect.Freeze && objectToFreeze == null)
-            {
-                return;
-            }
-            else if (effect == TimeEffect.Reverse && objectToReverse == null)
-            {
-                return;
-            }
-            else if (effect == TimeEffect.Slow && objectToSlow == null)
-            {
-                return;
-            }
+            return;
+        }
 
-            underSingleTargetAbility = soloTargeted;
-        }
-        else
+        // If the script for the corresponding effect does not exist, do nothing.
+        else if (effect == TimeEffect.Freeze && objectToFreeze == null)
         {
-            underSingleTargetAbility = false;
+            return;
         }
+        else if (effect == TimeEffect.Reverse && objectToReverse == null)
+        {
+            return;
+        }
+        else if (effect == TimeEffect.Slow && objectToSlow == null)
+        {
+            return;
+        }
+
+        _underSingleTargetAbility = soloTargeted;
+
         // Determine if the new effect is interrupting an active effect.
-        if (CurrentEffect == TimeEffect.None)
+        if (CurrentEffect == TimeEffect.None || MasterTime.singleton.timeScale != 1f)
         {
             newEffectInterrupting = false;
         }
@@ -226,19 +224,25 @@ public class ComplexTimeHub : MonoBehaviour
     }
 
     /// <summary>
-    /// Transitions to the next time effect. If a new effect was not introduced, then the next effect is the object moving normally with time.
+    /// Transitions to the next time effect. If a new effect was not introduced, then the object follows the passage of time adopted by the environment.
     /// Invokes broadcastTransition event.
     /// </summary>
     public void TransitionToNextEffect()
     {
-        // If a new effect was not introduced, then reset the current effect.
+        // If a new effect was not introduced, then follow the environment's passage of time.
         if (IntroducingNewEffect == false)
         {
+            // Check for an active time effect adopted by the environment.
+            // If there is one, do not execute the rest of this method.
+            _underSingleTargetAbility = false;
+            if (CheckForEnvironmentEffects())
+                return;
+
+            // If there is nothing affecting the environment, set the current effect to none.
             CurrentEffect = TimeEffect.None;
             CurrentTimescale = 1f;
             CurrentActiveTime = 0f;
             CurrentData = null;
-            underSingleTargetAbility = false;
         }
 
         // Indicate that the next effect has been transitioned to and broadcast this transition.
