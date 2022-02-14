@@ -12,7 +12,8 @@ public partial class PlayerController
         #region General
         [Header("General")]
         public float maxSlope = 60;
-        public float groundCheckDistance;
+        public bool holdSprint;
+        [HideInInspector] public float groundCheckDistance;
         #endregion
 
         #region Acceleration
@@ -64,9 +65,19 @@ public partial class PlayerController
     }
     private void MovementInput()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-            if (crouchMechanic) isSprinting = (crouchVariables.isCrouching ? false : true);
-            else isSprinting = true;
+        //  Sprinting only disables when the player fully stops
+        //if (InputManager.GetButtonDown(PlayerInput.PlayerButton.Sprint))
+        //    if (crouchMechanic) isSprinting = (crouchVariables.isCrouching ? false : true);
+        //    else isSprinting = true;
+
+        if (baseMovementVariables.holdSprint)
+        {
+            isSprinting = InputManager.GetButton(PlayerInput.PlayerButton.Sprint);
+        }
+        else if (InputManager.GetButtonDown(PlayerInput.PlayerButton.Sprint)) isSprinting = !isSprinting;
+        if (crouchMechanic) isSprinting = (crouchVariables.isCrouching ? false : isSprinting);
+
+
 
         speedIncrease = (isSprinting) ? baseMovementVariables.sprintSpeedIncrease : baseMovementVariables.walkSpeedIncrease;
         maxVelocity = (isSprinting) ? baseMovementVariables.maxSprintVelocity : baseMovementVariables.maxWalkVelocity;
@@ -77,6 +88,9 @@ public partial class PlayerController
         if (Input.GetKey(KeyCode.D)) x = speedIncrease;
         else if (Input.GetKey(KeyCode.A)) x = -speedIncrease;
         else x = 0;
+
+        x = InputManager.GetAxis(PlayerInput.PlayerAxis.MoveHorizontal);
+        z = InputManager.GetAxis(PlayerInput.PlayerAxis.MoveVertical);
 
         //if (Input.GetKeyDown(KeyCode.E))
         //{

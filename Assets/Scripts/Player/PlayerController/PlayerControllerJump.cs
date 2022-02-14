@@ -7,7 +7,6 @@ public partial class PlayerController
     [System.Serializable]
     public class JumpVariables
     {
-        [HideInInspector] public float scrollWheelDelta;
         public float jumpBuffer = .3f;
         public float jumpStrength = 6.5f;
         public float jumpStregthDecreaser = .05f;
@@ -23,8 +22,7 @@ public partial class PlayerController
     }
     public void JumpInput()
     {
-        jumpVariables.scrollWheelDelta = Input.GetAxis("Mouse ScrollWheel");
-        if (Input.GetKeyDown(KeyCode.Space) || jumpVariables.scrollWheelDelta > 0)
+        if (InputManager.GetButtonDown(PlayerInput.PlayerButton.Jump))
         {
             _jumpBuffer = jumpVariables.jumpBuffer;
         }

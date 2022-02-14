@@ -28,7 +28,7 @@ public class RotateObject : SimpleTimeManipulation
     }
     void Update()
     {
-        _rotationSpeed = rotationSpeed * timeScale * Time.fixedDeltaTime;
+        _rotationSpeed = rotationSpeed * timeScale * Time.deltaTime;
         if (!stepRotation)
         {
             transform.Rotate(0, _rotationSpeed, 0, Space.Self);

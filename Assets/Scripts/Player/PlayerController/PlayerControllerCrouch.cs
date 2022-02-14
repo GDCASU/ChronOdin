@@ -10,11 +10,19 @@ public partial class PlayerController
         [HideInInspector] public bool crouchBuffer;
         [HideInInspector] public bool topIsClear;
         [HideInInspector] public bool isCrouching;
+        public bool holdCrouch;
         public bool slideMechanic;
         public float playerYScaleWhenCrouched = .5f;
         public float cameraDisplacement = 1;
     }
-    void CrouchInput() => crouchVariables.crouchBuffer = Input.GetKey(KeyCode.LeftControl);
+    void CrouchInput()
+    {
+        if (crouchVariables.holdCrouch)
+        {
+            crouchVariables.crouchBuffer = InputManager.GetButton(PlayerInput.PlayerButton.Crouch);
+        }
+        else if (InputManager.GetButtonDown(PlayerInput.PlayerButton.Crouch)) crouchVariables.crouchBuffer = !crouchVariables.crouchBuffer;
+    } 
     public void HandleCrouchInput()
     {
         crouchVariables.topIsClear = !Physics.Raycast(transform.position - newForwardandRight.normalized * capCollider.radius,

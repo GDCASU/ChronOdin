@@ -13,6 +13,7 @@ using UnityEngine;
 public class PlayerReverse : MonoBehaviour
 {
     public PlayerController playerMovement;
+    public PlayerCamera playerCamera;
     [Range(1, 50)]
     public int positionsSavedPerSecond;
     public float amountOfTimeReversed;
@@ -49,8 +50,7 @@ public class PlayerReverse : MonoBehaviour
         timeBetweenSaves = new WaitForSeconds(timeBetweenPositions);
         fixedUpdate = new WaitForFixedUpdate();
         StartCoroutine(AddPosition());
-    }
-
+    } 
     /// <summary>
     /// Check every frame if the backspace key is pressed to reverse
     /// and start a cooldown when the key is released.
@@ -74,6 +74,7 @@ public class PlayerReverse : MonoBehaviour
         reversing = true;
         StartCoroutine(Timer());
         playerMovement.enabled = false;
+        playerCamera.ToggleRotation(false);
         storePositions = false;
         isAbleToReverse = false;
         //Destroy(GetComponent<Rigidbody>());
@@ -86,13 +87,16 @@ public class PlayerReverse : MonoBehaviour
             lerpBetweenPositions = 0;
             Vector3 newPosition = transform.position;
             Quaternion newRotation = transform.rotation;
-            while (lerpBetweenPositions <= 1.0f)
+            while (lerpBetweenPositions < 1.0f)
             {
                 transform.position = Vector3.Lerp(newPosition, previousPositions[previousPositions.Count - 1], lerpBetweenPositions);
                 transform.rotation = Quaternion.Slerp(newRotation, previousRotations[previousRotations.Count - 1], lerpBetweenPositions);
                 lerpBetweenPositions += lerpBetweenPositionsRate;
+                if (lerpBetweenPositions >= 1.0f) break;
                 yield return fixedUpdate;
             }
+            transform.position = previousPositions[previousPositions.Count - 1];
+            transform.rotation = previousRotations[previousRotations.Count - 1];
             previousPositions.RemoveAt(previousPositions.Count - 1);
             previousRotations.RemoveAt(previousRotations.Count - 1);
         }
@@ -102,6 +106,7 @@ public class PlayerReverse : MonoBehaviour
         previousRotations.Clear();
 
         playerMovement.enabled = true; // this script causes the player to snap back to the rotation before hitting the backspace key
+        playerCamera.ToggleRotation(true);
         storePositions = true;
         reversing = false;
         StartCoroutine(ReversePositionCooldown());

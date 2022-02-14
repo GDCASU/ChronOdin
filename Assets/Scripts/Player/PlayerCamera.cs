@@ -13,6 +13,8 @@ public class PlayerCamera : MonoBehaviour
     float verticalAngularVelocity;
     public float smoothTime = .02f;
 
+    private bool canRotate;
+
     float xRotationHelper;
 
     private void Start()
@@ -27,22 +29,26 @@ public class PlayerCamera : MonoBehaviour
         horizontalRotationHelper.localRotation = transform.localRotation;
         xRotationHelper = transform.eulerAngles.x;
 
+        canRotate = true;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         horizontalRotationHelper.position = transform.position;
         transform.position = player.position + player.up * camHeight;
+        if (canRotate)
+        {
 
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitvity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitvity * Time.deltaTime;
+            float mouseX = InputManager.GetAxis(PlayerInput.PlayerAxis.CameraHorizontal) * mouseSensitvity * Time.deltaTime;
+            float mouseY = InputManager.GetAxis(PlayerInput.PlayerAxis.CameraVertical) * mouseSensitvity * Time.deltaTime;
 
-        mouseX = HorizontalRotation(mouseX);
-        mouseY = VerticalRotation(mouseY);
-        transform.localRotation = Quaternion.Euler(mouseY, mouseX, 0f);
-
+            mouseX = HorizontalRotation(mouseX);
+            mouseY = VerticalRotation(mouseY);
+            transform.localRotation = Quaternion.Euler(mouseY, mouseX, 0f);
+        }
+        else transform.localRotation = player.localRotation;
     }
-
+    public void ToggleRotation(bool value) => canRotate = value;
     public float HorizontalRotation(float mouseX)
     {
         horizontalRotationHelper.Rotate(Vector3.up * mouseX, Space.Self);

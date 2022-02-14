@@ -12,7 +12,7 @@ public class RotatingPlatform : MonoBehaviour
         {
             Vector3 dirToCenter = transform.parent.position - collision.transform.position;
             Vector3 projection = Vector3.Project(dirToCenter, -transform.forward);
-            rb.velocity += transform.right * multiplier * projection.magnitude * MasterTime.singleton.timeScale;
+            rb.velocity += transform.right * multiplier * projection.magnitude * GetComponentInParent<RotateObject>().TimeScale;
         }
     }
     private void OnCollisionEnter(Collision collision)
@@ -24,5 +24,4 @@ public class RotatingPlatform : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player") rb = null;
     }
-
 }

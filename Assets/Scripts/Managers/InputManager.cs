@@ -106,11 +106,11 @@ public class InputManager : MonoBehaviour {
         playerActions[3].keyboardKey = KeyCode.LeftShift;
         playerActions[3].xboxKey = KeyCode.Joystick1Button8;
         playerActions[4].keyboardKey = KeyCode.F;
-        playerActions[4].xboxKey = KeyCode.JoystickButton3;
+        playerActions[4].xboxKey = KeyCode.JoystickButton5;
         playerActions[5].keyboardKey = KeyCode.R;
-        playerActions[5].xboxKey = KeyCode.JoystickButton4;
+        playerActions[5].xboxKey = KeyCode.JoystickButton3;
         playerActions[6].keyboardKey = KeyCode.Q;
-        playerActions[6].xboxKey = KeyCode.JoystickButton5;
+        playerActions[6].xboxKey = KeyCode.JoystickButton4;
         playerActions[7].keyboardKey = KeyCode.Mouse0;
         playerActions[7].xboxKey = KeyCode.None;
         playerActions[8].keyboardKey = KeyCode.Mouse1;
