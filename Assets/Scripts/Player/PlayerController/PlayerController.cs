@@ -135,7 +135,7 @@ public partial class PlayerController : MonoBehaviour
         baseMovementVariables.StartVariables(capCollider, transform);
         if (capCollider.radius * 2 * transform.lossyScale.x >=
             transform.lossyScale.y * capCollider.height) crouchMechanic = false;
-        if (InputManager.inputMode == InputManager.InputMode.controller || InputManager.inputMode == InputManager.InputMode.both)
+        if (InputManager.inputMode == InputManager.InputMode.controller)
         {
             baseMovementVariables.holdSprint = false;
             crouchVariables.holdCrouch = false;

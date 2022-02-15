@@ -31,6 +31,7 @@ public partial class PlayerController
 
         #region Friction
         [Header("Friction Values")]
+        public float noInputFriction = .2f;
         public float groundFriction = .1f;
         public float inAirFriction = .004f;
         #endregion
@@ -91,13 +92,6 @@ public partial class PlayerController
 
         x = InputManager.GetAxis(PlayerInput.PlayerAxis.MoveHorizontal);
         z = InputManager.GetAxis(PlayerInput.PlayerAxis.MoveVertical);
-
-        //if (Input.GetKeyDown(KeyCode.E))
-        //{
-        //    if (Time.timeScale == 1f) Time.timeScale = .1f;
-        //    else Time.timeScale = 1;
-        //}
-        //else if (Input.GetKeyDown(KeyCode.Q)) Time.timeScale = 0;
     }
     private void GroundCheck()
     {
@@ -200,7 +194,7 @@ public partial class PlayerController
             if (playerLeftGround != null) playerLeftGround();
         }
         isGrounded = groundCheck;
-
+        if (x == 0 && z == 0 && isGrounded) friction = baseMovementVariables.noInputFriction;
         //If close to a small step, raise the player to the height of the step for a smoother feeling movement
         float maxDistance = capCollider.radius * (1 + ((isSprinting) ? (rb.velocity.magnitude / baseMovementVariables.maxSprintVelocity) : 0));
 
@@ -259,10 +253,11 @@ public partial class PlayerController
             }
             else if (playerState != PlayerState.Sliding)
             {
+                //If the palyer changes direction when going at the maxSpeed then decrease speed for smoother momentum shift
                 if ((z == 0 && x == 0) || (pvX < 0 && x > 0)
                     || (x < 0 && pvX > 0) || (pvZ < 0 && z > 0)
-                    || (z < 0 && pvZ > 0)) rb.velocity *= .99f; //If the palyer changes direction when going at the maxSpeed then decrease speed for smoother momentum shift
-                else if (rb.velocity.magnitude < maxVelocity + 1f) rb.velocity = newForwardandRight.normalized * maxVelocity;
+                    || (z < 0 && pvZ > 0)) rb.velocity *= .99f; 
+                else if (rb.velocity.magnitude < maxVelocity + 1f && (x!=0 || y!=0)) rb.velocity = newForwardandRight.normalized * maxVelocity;
                 totalVelocityToAdd = Vector3.zero;
             }
 
