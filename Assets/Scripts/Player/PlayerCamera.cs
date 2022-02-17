@@ -49,6 +49,12 @@ public class PlayerCamera : MonoBehaviour
         else transform.localRotation = player.localRotation;
     }
     public void ToggleRotation(bool value) => canRotate = value;
+    public void RestartRotation()
+    {
+        horizontalRotationHelper.localRotation = transform.localRotation;
+        xRotationHelper = transform.eulerAngles.x;
+        canRotate = true;
+    }
     public float HorizontalRotation(float mouseX)
     {
         horizontalRotationHelper.Rotate(Vector3.up * mouseX, Space.Self);

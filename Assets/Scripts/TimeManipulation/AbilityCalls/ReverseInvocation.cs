@@ -65,7 +65,7 @@ public class ReverseInvocation : MonoBehaviour
     }
     public void PlayerReverse()
     {
-        if (playerReversal.PreviousPositionsCount < playerReversal.previousPositionsLimit)
+        if (playerReversal.PreviousPositionsCount < playerReversal.PreviousPositionsLimit)
             return;
 
         if (TimeStamina.singleton.ConsumeChunk(playerReverseStaminaCost))

@@ -38,7 +38,7 @@ public class AbilityManager : MonoBehaviour
 
         globalBuffer = InputManager.GetButton(PlayerInput.PlayerButton.Global);
 
-        localBuffer = InputManager.GetButton(PlayerInput.PlayerButton.Local);
+        localBuffer = InputManager.GetButtonDown(PlayerInput.PlayerButton.Local);
         
 
         if (InputManager.inputMode == InputManager.InputMode.controller || InputManager.inputMode == InputManager.InputMode.both)
