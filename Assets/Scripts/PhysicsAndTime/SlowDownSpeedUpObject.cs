@@ -3,6 +3,7 @@
  * Modification: 
  *  The SlowObject coroutine transitions to the next time effect.
  *  The slowDownFactor is set in the SlowInvocation script.
+ *  Environment stacking is implemeneted.
  */
 
 using System.Collections;
@@ -20,9 +21,11 @@ public class SlowDownSpeedUpObject : ComplexSlow
     private bool casting = false;
 
     Rigidbody rb;
-    private void Start()
+    protected override void Awake()
     {
-        rb = gameObject.GetComponent<Rigidbody>();
+        base.Awake();
+        rb = GetComponent<Rigidbody>();
+        MasterTime.singleton.updateTimeScaleEvent += StackEnvironmentEffect;
     }
 
     private void FixedUpdate()
@@ -41,7 +44,12 @@ public class SlowDownSpeedUpObject : ComplexSlow
     {
         return slowing;
     }
-    // Save velocity and turn off gravity for the object reduce velocity and angular velocity
+
+    /// <summary>
+    /// Slows the object for a specified amount of time by reducing velocity.
+    /// Stacking Environment: environment freeze ceases the object from moving whilst active and environment slow decreases the object's speed further.
+    /// </summary>
+    /// <param name="slowTime"> time to slow the object </param>
     IEnumerator SlowObject(float slowTime)
     {
         slowing = true;
@@ -52,20 +60,65 @@ public class SlowDownSpeedUpObject : ComplexSlow
 
         float elapsedTime = 0f;
         while (elapsedTime < slowTime && effectHub.IntroducingNewEffect == false)
-        {
-            elapsedTime += Time.deltaTime;
+        {            
+            elapsedTime += Time.deltaTime * MasterTime.singleton.timeScale;
             yield return null;
         }
 
-        rb.velocity = preVelocity;
         slowing = false;
+        rb.velocity = preVelocity;
         rb.useGravity = true;
         casting = false;
 
         effectHub.TransitionToNextEffect();
     }
 
-     IEnumerator SpeedObject()
+    private bool environmentWasSlowed = false;
+    private bool environmentWasFrozen = false;
+    private Vector3 unfrozenVelocity;
+    private Vector3 unfrozenAngularVelocity;
+    private RigidbodyConstraints unfrozenConstraints;
+    /// <summary>
+    /// Modifies the velocity of the slowed object when the master time scale is modified.
+    /// </summary>
+    /// <param name="timeScale"> master time scale </param>
+    private void StackEnvironmentEffect(float timeScale)
+    {
+        if (slowing)
+        {
+            if (timeScale == 0f)
+            {
+                environmentWasFrozen = true;
+                unfrozenVelocity = rb.velocity;
+                unfrozenAngularVelocity = rb.angularVelocity;
+                unfrozenConstraints = rb.constraints;
+
+                rb.constraints = RigidbodyConstraints.FreezeAll;
+            }
+            else if (timeScale < 1f)
+            {
+                environmentWasSlowed = true;
+                rb.velocity *= timeScale;
+                rb.angularVelocity *= timeScale;
+            }
+            else if (timeScale == 1f)
+            {
+                if (environmentWasSlowed)
+                {
+                    rb.velocity *= (1f / timeScale);
+                    rb.angularVelocity *= (1f / timeScale);
+                }
+                else if (environmentWasFrozen)
+                {
+                    rb.constraints = unfrozenConstraints;
+                    rb.velocity = unfrozenVelocity;
+                    rb.angularVelocity = unfrozenAngularVelocity;
+                }
+            }
+        }
+    }
+
+    IEnumerator SpeedObject()
     {
         //all the same stuff as the Slow method but the opposite to have a speedup effect
         speedingUp = true;

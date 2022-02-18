@@ -30,7 +30,7 @@ public class ObjectPickup : MonoBehaviour
 
     private int originalLayer;
 
-    private Transform heldObject = null;  // the transform of the picked up object
+    public Transform heldObject = null;  // the transform of the picked up object
     private Rigidbody objectRb = null;  // the rigidbody of the picked up object
     
     // The previous interpolation and detection mode of the picked up object.

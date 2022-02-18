@@ -11,23 +11,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-/// <summary>
-/// Time-related effects an object can experience.
-/// </summary>
-public enum TimeEffect
-{
-    None,
-    Freeze,
-    Reverse,
-    Slow
-}
-
 public class ComplexTimeHub : MonoBehaviour
 {
     // Time mechanic scripts
     private ComplexFreeze objectToFreeze;
     private ComplexReverse objectToReverse;
     private ComplexSlow objectToSlow;
+
+    private bool scriptHasBeenEnabled = false; // Has this script been enabled before?
 
     /// <summary>
     /// Event invoked when a transition to a new time effect occurs.
@@ -39,7 +30,9 @@ public class ComplexTimeHub : MonoBehaviour
     /// </summary>
     public bool IntroducingNewEffect { get; private set; }
 
-    private bool interruptingAnEffect = false;  // Is the new time effect interrupting another effect?
+    private bool newEffectInterrupting = false;  // Is the new time effect interrupting another effect?
+    private bool _underSingleTargetAbility = false;  // Is the object experiencing the effect of a single target time ability?
+    public bool UnderSingleTargetAbility { get => _underSingleTargetAbility; }
 
     // Fields for the current time effect
     /// <summary>
@@ -80,7 +73,7 @@ public class ComplexTimeHub : MonoBehaviour
     public float[] PreviousData { get; private set; }
 
     /// <summary>
-    /// Acquires time mechanic scripts, and sets both the current and previous effects.
+    /// Acquires time mechanic and Player ability scripts, and sets both the current and previous effects.
     /// </summary>
     private void Awake()
     {
@@ -103,11 +96,17 @@ public class ComplexTimeHub : MonoBehaviour
 
     /// <summary>
     /// Subscribes the AffectEntity method to the freeze environment and slow environment events when the gameobject is enabled.
+    /// Also checks if the Player has an environmental ability active when the script is enabled for 2+ instances.
     /// </summary>
     private void OnEnable()
     {
         FreezeInvocation.freezeAllComplexObjects += AffectObject;
         SlowInvocation.slowAllComplexObjects += AffectObject;
+
+        if (scriptHasBeenEnabled)
+        {
+            CheckForEnvironmentEffects();
+        }
     }
 
     /// <summary>
@@ -120,18 +119,55 @@ public class ComplexTimeHub : MonoBehaviour
     }
 
     /// <summary>
+    /// Checks if the Player has an environmental ability active when the script is enabled for the 1st time.
+    /// </summary>
+    private void Start()
+    {
+        scriptHasBeenEnabled = true;
+        CheckForEnvironmentEffects();
+    }
+
+    /// <summary>
+    /// Applies the time effect currently experienced by the environment to the gameobject for the remaning drain time.
+    /// </summary>
+    /// <returns> Is an environment effect active? </returns>
+    private bool CheckForEnvironmentEffects()
+    {
+        if (MasterTime.singleton.timeScale == 0f)
+        {
+            AffectObject(TimeEffect.Freeze, TimeStamina.singleton.RemainingDrainTime, 0f, false);
+            return true;
+        }
+        else if (MasterTime.singleton.timeScale < 1f)
+        {
+            AffectObject(TimeEffect.Slow, TimeStamina.singleton.RemainingDrainTime, MasterTime.singleton.timeScale, false);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// Saves the current effect as a previous effect and modifies the current effect, and transitions to the new effect.
+    /// If the object is currently experiencing a time effect from a single target ability, then new effect from environment abilities are ignored.
     /// If the new effect does not interrupt an active time effect (TimeEffect.None), then the transition is handled by this method.
-    /// If the new effect does not interrupt an active time effect, then the transition is handled by the script corresponding to the previous effect.
-    /// For example, if an object is reversing whilst it receives an order to slow in forward time, then a ComplexReverse child must invoke the TransitionToNextEffect() method.
+    ///   If the new effect does interrupt an active time effect, then the transition is handled by the script corresponding to the previous effect.
+    ///   For example, if an object is reversing whilst it receives an order to slow in forward time, then a ComplexReverse child must invoke the TransitionToNextEffect() method.
     /// </summary>
     /// <param name="effect"> the new time effect the gameobject shall experience </param>
     /// <param name="activeTime"> how long the effect shall last </param>
     /// <param name="timescale"> the timescale of the effect (relevant for reverse and slow) </param>
-    public void AffectObject(TimeEffect effect, float activeTime, float timescale)
+    /// <param name="soloTargeted"> Is the object receiving a time effect from a single target ability? </param>
+    public void AffectObject(TimeEffect effect, float activeTime, float timescale, bool soloTargeted)
     {
+        // If the object is requested to adopt an environment effect whilst experiencing a single target effect, do nothing.
+        if (!soloTargeted && _underSingleTargetAbility)
+        {
+            return;
+        }
+
         // If the script for the corresponding effect does not exist, do nothing.
-        if (effect == TimeEffect.Freeze && objectToFreeze == null)
+        else if (effect == TimeEffect.Freeze && objectToFreeze == null)
         {
             return;
         }
@@ -143,14 +179,17 @@ public class ComplexTimeHub : MonoBehaviour
         {
             return;
         }
+
+        _underSingleTargetAbility = soloTargeted;
+
         // Determine if the new effect is interrupting an active effect.
-        if (CurrentEffect == TimeEffect.None)
+        if (CurrentEffect == TimeEffect.None || MasterTime.singleton.timeScale != 1f)
         {
-            interruptingAnEffect = false;
+            newEffectInterrupting = false;
         }
         else
         {
-            interruptingAnEffect = true;
+            newEffectInterrupting = true;
         }
 
         // Save the current effect.
@@ -178,21 +217,28 @@ public class ComplexTimeHub : MonoBehaviour
 
         // Indicate that a new effect was introduced and if the new effect was not introduced whilst another effect was occurring, transition to the new effect.
         IntroducingNewEffect = true;
-        if (interruptingAnEffect == false)
+        if (newEffectInterrupting == false)
         {
             TransitionToNextEffect();
         }
     }
 
     /// <summary>
-    /// Transitions to the next time effect. If a new effect was not introduced, then the next effect is the object moving normally with time.
+    /// Transitions to the next time effect. If a new effect was not introduced, then the object follows the passage of time adopted by the environment.
     /// Invokes broadcastTransition event.
     /// </summary>
     public void TransitionToNextEffect()
     {
-        // If a new effect was not introduced, then reset the current effect.
+        // If a new effect was not introduced, then follow the environment's passage of time.
         if (IntroducingNewEffect == false)
         {
+            // Check for an active time effect adopted by the environment.
+            // If there is one, do not execute the rest of this method.
+            _underSingleTargetAbility = false;
+            if (CheckForEnvironmentEffects())
+                return;
+
+            // If there is nothing affecting the environment, set the current effect to none.
             CurrentEffect = TimeEffect.None;
             CurrentTimescale = 1f;
             CurrentActiveTime = 0f;

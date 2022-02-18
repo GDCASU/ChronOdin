@@ -1,7 +1,7 @@
 /*
- * Reverses an object or the Player for a specified amount of time.
- * To reverse a single object, the Player must look at the object and press the reverse object button whilst the corresponding cooldown is inactive.
- * To reverse the Player, the Player must press the reverse player button whilst the corresponding cooldown is inactive.
+ * Reverses a single object or the Player for a specified amount of time.
+ * To revse a single object, the Player must look at the object and press the single object reverse button, which instantly consumes a chunk of stamina.
+ * To reverse the Player, the Player must press the player reverse button, which consumes all the available stamina.
  * 
  * Author: Cristion Dominguez
  * Date: 21 November 2021
@@ -10,204 +10,65 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using System;
 
 public class ReverseInvocation : MonoBehaviour
 {
-    [Header("Buttons")]
-    [Tooltip("The button to reverse a single object")]
-    [SerializeField]
-    private KeyCode reverseObjectButton = KeyCode.R;
 
-    [Tooltip("The button to reverse the Player")]
-    [SerializeField]
-    private KeyCode reversePlayerButton = KeyCode.E;
+    [Header("Quantities")]
+    [SerializeField, Tooltip("The duration the object shall be reversed for")]
+    private float _singleReverseTime = 3f;
+    public float ReverseSingleTime { get => _singleReverseTime; }
 
-    [Header("Time Values")]
-    [Tooltip("The duration the object shall be reverse for")]
-    [SerializeField]
-    private float reverseObjectTime = 5f;
+    [SerializeField, Tooltip("Chunk of stamina consumed upon reversing a single object")]
+    private float singleReverseStaminaCost = 1f;
 
-    [Tooltip("The duration the object can't be reversed after being reversed")]
-    [SerializeField]
-    private float reverseObjectCooldown = 5f;
+    public float SingleReverseStaminaCost { get => singleReverseStaminaCost; }
 
-    /*
-    [Tooltip("The duration the Player shall be reversed for")]
-    [SerializeField]
-    private float reversePlayerTime = 10f;
-    */
+    [SerializeField, Tooltip("Chunk of stamina consumed upon reversing the Player")]
+    private float playerReverseStaminaCost = 1.5f;
 
-    [Tooltip("The duration the Player can't be reversed after being reversed")]
-    [SerializeField]
-    private float reversePlayerCooldown = 10f;
-
-    [Header("Transforms")]
-    [Tooltip("The camera providing the Player vision")]
-    [SerializeField]
-    private Transform playerCamera;
-
-    // Values for casting a ray to detect collisions.
-    RaycastHit rayHit;
-    private Vector3 startRayPosition, rayDirection;
-    private int maxRayCasts = 2;
-    private float rayPositionOffset = 0.000006f;
-
-    [SerializeField]
-    private Text objectActiveTimerText;
-    [SerializeField]
-    private Text objectCooldownTimerText;
-    [SerializeField]
-    private Text playerCooldownTimerText;
-
-
-    private bool canInitiateObjectReverse = true;  // Is the object reverse cooldown inactive?
-    private bool canInitiatePlayerReverse = true;  // Is the Player reverse cooldown inactive?
-    SimpleTimeManipulation simpleObject = null;  // object with a simple reverse mechanism
-    ComplexTimeHub complexObject = null;  // object with a complex reverse mechanism
     PlayerReverse playerReversal = null;  // script attached to Player responsible for reversing the Player
 
-    /// <summary>
-    /// Assigns coroutine suspension times and collects the PlayerReverse script.
-    /// </summary>
-    private void Start() => playerReversal = transform.GetComponent<PlayerReverse>();
-
+    public static ReverseInvocation singleton;
 
     /// <summary>
-    /// Reverses a single object or the Player depending on Player input and the ability to reverse.
+    /// Sets up singleton and collects the PlayerReverse script.
     /// </summary>
-    private void Update()
+    private void Start()
     {
-        // If the Player presses the reverse object button and the corresponding cooldown is inactive, attempt to reverse a single object.
-        if (Input.GetKeyDown(reverseObjectButton) && canInitiateObjectReverse)
-        {
-            // Set the ray's starting position and direction.
-            startRayPosition = playerCamera.position;
-            rayDirection = playerCamera.TransformDirection(Vector3.forward);
+        if (singleton == null)
+            singleton = this;
+        else
+            Destroy(gameObject);
 
-            // Cast the ray until the ray does not hit the Player or maxRayCasts has been reached.
-            for (int i = 0; i < maxRayCasts; i++)
-            {
-                if (Physics.Raycast(startRayPosition, rayDirection, out rayHit))
-                {
-                    // If the ray hits the Player, re-assign the starting position to be a bit away from the hit position
-                    // in the previous ray's direction and continue to the next loop iteration.
-                    if (rayHit.transform.gameObject.CompareTag("Player"))
-                    {
-                        startRayPosition = rayHit.point + (rayDirection.normalized * rayPositionOffset);
-                        continue;
-                    }
+        playerReversal = transform.GetComponent<PlayerReverse>();
+    }
+    public void SimpleObjectReverse(SimpleTimeManipulation simpleObject)
+    {
+        if (simpleObject.SingleTimeScale < 0f)
+            return;
 
-                    // If the ray does not hit the Player, attempt to detect an object that can be reversed.
-                    simpleObject = rayHit.transform.GetComponent<SimpleTimeManipulation>();
-                    complexObject = rayHit.transform.GetComponent<ComplexTimeHub>();
+        if (TimeStamina.singleton.ConsumeChunk(singleReverseStaminaCost))
+            simpleObject.ActivateSingleObjectEffect(_singleReverseTime, TimeEffect.Reverse);
+    }
+    public void ComplexObjectReverse(ComplexTimeHub complexObject)
+    {
+        ComplexReverse complexReverse = complexObject.transform.GetComponent<ComplexReverse>();
 
-                    // If the ray hits an object that can be reversed, then reverse the object, activate the reverse object cooldown, and stop casting rays.
-                    if (simpleObject != null)
-                    {
-                        simpleObject.UpdateTimescale(-1f);
-                        StartCoroutine(ActivateObjectCooldown());
-                        StartCoroutine(CountdownObjectReverse(simpleObject));
-                        return;
-                        
-                    }
-                    else if (complexObject != null)
-                    {
-                        // If the object does not possess a reverse script, then do not activate cooldown.
-                        if (complexObject.transform.GetComponent<ComplexReverse>() == null)
-                        {
-                            return;
-                        }
+        if (complexReverse == null || !complexReverse.ShouldReverse())
+            return;
 
-                        complexObject.AffectObject(TimeEffect.Reverse, reverseObjectTime, -1f);
-                        StartCoroutine(ActivateObjectCooldown());
-                        return;
-                    }
-                    // If the ray hits an object that can't be reversed, then stop casting rays.
-                    // FOR TESTING PURPOSES, comment this "else" block out.
-                    else
-                    {
-                        return;
-                    }
-                }
-            }
 
-            // FOR TESTING PURPOSES, remove the comments for the block below.
-            /*
-             if (rayHit.transform != null)
-                Debug.Log(rayHit.transform.name);
-             else
-                Debug.Log("N/A");
-            */
-        }
+        if (TimeStamina.singleton.ConsumeChunk(singleReverseStaminaCost))
+            complexObject.AffectObject(TimeEffect.Reverse, _singleReverseTime, -1f, true);
+    }
+    public void PlayerReverse()
+    {
+        if (playerReversal.PreviousPositionsCount < playerReversal.PreviousPositionsLimit)
+            return;
 
-        // If the Player presses the reverse Player button and the corresponding cooldown is inactive, attempt to reverse the Player.
-        if (Input.GetKeyDown(reversePlayerButton) && canInitiatePlayerReverse)
-        {
+        if (TimeStamina.singleton.ConsumeChunk(playerReverseStaminaCost))
             playerReversal.CallReverse();
-            StartCoroutine(ActivatePlayerCooldown());
-        }
-    }
-    
-    /// <summary>
-    /// Updates the simple object's timescale to the default value after the object active time passes.
-    /// </summary>
-    /// <param name="simpleObject"> object with a simple reverse mechanism </param>
-    /// <returns></returns>
-    private IEnumerator CountdownObjectReverse(SimpleTimeManipulation simpleObject)
-    {
-        float timer = reverseObjectTime;
-        while (timer > 0)
-        {
-            objectActiveTimerText.text = timer.ToString("0.00") + "";
-            timer -= Time.deltaTime;
-            yield return null;
-        }
-        objectActiveTimerText.text = "";
-        if (simpleObject != null) simpleObject.UpdateTimescale(1f);
-    }
-
-    /// <summary>
-    /// Denies the Player from reversing an object throughout the reverse object cooldown.
-    /// </summary>
-    private IEnumerator ActivateObjectCooldown()
-    {
-        canInitiateObjectReverse = false;
-        float timer = reverseObjectCooldown;
-        while (timer > 0)
-        {
-            objectCooldownTimerText.text = timer.ToString("0.00") + "";
-            timer -= Time.deltaTime;
-            yield return null;
-        }
-        objectCooldownTimerText.text = "";
-        canInitiateObjectReverse = true;
-    }
-
-    /// <summary>
-    /// Denies the Player from reversing themself throughout the reverse Player cooldown.
-    /// </summary>
-    private IEnumerator ActivatePlayerCooldown()
-    {
-        canInitiatePlayerReverse = false;
-        float timer = reversePlayerCooldown;
-        while (timer > 0)
-        {
-            playerCooldownTimerText.text = timer.ToString("0.00") + "";
-            timer -= Time.deltaTime;
-            yield return null;
-        }
-        playerCooldownTimerText.text = "";
-        canInitiatePlayerReverse = true;
-    }
-
-    /// <summary>
-    /// Returns the duration an object shall reverse for.
-    /// </summary>
-    /// <returns></returns>
-    public float GetReverseObjectTime()
-    {
-        return reverseObjectTime;
     }
 }

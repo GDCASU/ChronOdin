@@ -6,6 +6,8 @@ using UnityEngine.UI;
 /// <summary>
 /// This script lets the player interact with objects in the scene such as doors or pickup objects.
 /// Author: Alben Trang
+/// 
+/// 
 /// </summary>
 [RequireComponent(typeof(ObjectPickup))]
 public class PlayerInteractions : MonoBehaviour
@@ -24,7 +26,11 @@ public class PlayerInteractions : MonoBehaviour
 
     [HideInInspector] public RaycastHit rayHit;
 
-    public KeyCode InteractKey;
+    public PlayerInput.PlayerButton button;
+
+    public Transform transformBeingLookedAt;
+
+    private PlayerInput.PlayerAction action;
 
     private void Awake()
     {
@@ -33,6 +39,7 @@ public class PlayerInteractions : MonoBehaviour
         else
             Destroy(gameObject);
     }
+    private void Start() => action = InputManager.playerButtons[PlayerInput.PlayerButton.Interact];
     /// <summary>
     /// Check every frame to see if the player hits the Fire1 button (left mouse button) to interact with objects
     /// </summary>
@@ -43,35 +50,30 @@ public class PlayerInteractions : MonoBehaviour
         {
             if (rayHit.transform.tag.Equals("Liftable"))
             {
-                InteractionText.text = "Press " + InteractKey.ToString() + " to PickUp";
-                if (Input.GetKeyDown(InteractKey)) GetComponent<ObjectPickup>().PickupObject();
+                InteractionText.text = "Press " + (InputManager.inputMode == InputManager.InputMode.controller? 
+                    action.xboxKey.ToString(): action.keyboardKey.ToString()) + " to PickUp";
+                if (InputManager.GetButtonDown(button))
+                {
+                    var objectPickup = GetComponent<ObjectPickup>();
+                    if (objectPickup.heldObject) objectPickup.ReleaseObject();
+                    else objectPickup.PickupObject();
+                }    
             }
             else if (rayHit.transform.tag.Equals("Interactable"))
             {
-                InteractionText.text = "Press " + InteractKey.ToString() + " to Interact";
-                if (Input.GetKeyDown(InteractKey)) rayHit.transform.GetComponent<InteractiveObject>().Interact();
+                InteractionText.text = "Press " + (InputManager.inputMode == InputManager.InputMode.controller ?
+                    action.xboxKey.ToString() : action.keyboardKey.ToString()) + "to  Interact";
+                if (InputManager.GetButtonDown(button)) rayHit.transform.GetComponent<InteractiveObject>().Interact();
             }
+            else transformBeingLookedAt = rayHit.transform;
         }
-        if (Input.GetKeyUp(InteractKey))
-        {
-            if (rayHit.collider)
-                if (rayHit.transform.tag.Equals("Liftable")) GetComponent<ObjectPickup>().ReleaseObject();
-        }
-        //if (Input.GetButtonDown("Fire1"))
+        else transformBeingLookedAt = null;
+        //if (InputManager.GetButtonUp(button))
         //{
-        //    if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out rayHit, maxInteractDistance) && rayHit.collider)
-        //    {
-        //        if (rayHit.transform.tag.Equals("Liftable"))
-        //        {
-        //            InteractionText.text = "Press E to PickUp";
-        //            GetComponent<ObjectPickup>().PickupObject();
-        //        }
-        //        else if (rayHit.transform.tag.Equals("Interactable"))
-        //        {
-        //            InteractionText.text = "Press E to Interact";
-        //            rayHit.transform.GetComponent<InteractiveObject>().Interact();
-        //        } 
-        //    }
-        //}  
-    }   
+        //    if (rayHit.collider)
+        //        if (rayHit.transform.tag.Equals("Liftable")) GetComponent<ObjectPickup>().ReleaseObject();
+        //}
+    }
+
+    public Transform RaycastTransform() => transformBeingLookedAt;
 }

@@ -10,7 +10,7 @@ using UnityEngine;
 public class RotateObject : SimpleTimeManipulation
 {
     [SerializeField]
-    private float rotationSpeed = 2;
+    public float rotationSpeed = 2;
     private float _rotationSpeed;
     public bool stepRotation;
     [HideInInspector] public bool isRotating;
@@ -22,13 +22,13 @@ public class RotateObject : SimpleTimeManipulation
     private float interpolationValue;
     private void Start()
     {
-        UpdateTimescale(MasterTime.singleton.timeScale);
+        UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
         yRotation = transform.rotation.eulerAngles.y;
         isRotating = true;
     }
     void Update()
     {
-        _rotationSpeed = rotationSpeed * timeScale * Time.fixedDeltaTime;
+        _rotationSpeed = rotationSpeed * timeScale * Time.deltaTime;
         if (!stepRotation)
         {
             transform.Rotate(0, _rotationSpeed, 0, Space.Self);
