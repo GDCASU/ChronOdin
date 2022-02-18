@@ -30,7 +30,7 @@ public class ObjectPickup : MonoBehaviour
 
     private int originalLayer;
 
-    private Transform heldObject = null;  // the transform of the picked up object
+    public Transform heldObject = null;  // the transform of the picked up object
     private Rigidbody objectRb = null;  // the rigidbody of the picked up object
     
     // The previous interpolation and detection mode of the picked up object.
@@ -90,7 +90,7 @@ public class ObjectPickup : MonoBehaviour
         }
         // If the ray hits nothing, stop casting rays.
         // FOR TESTING PURPOSES, comment this "else" block out.
-        else if (PlayerInteractions.singleton.rayHit.transform.tag.Equals("Interactable")) PlayerInteractions.singleton.rayHit.transform.GetComponent<InteractiveObject>().Interact();
+        //else if (PlayerInteractions.singleton.rayHit.transform.tag.Equals("Interactable")) PlayerInteractions.singleton.rayHit.transform.GetComponent<InteractiveObject>().Interact();
     }
 
     /// <summary>
