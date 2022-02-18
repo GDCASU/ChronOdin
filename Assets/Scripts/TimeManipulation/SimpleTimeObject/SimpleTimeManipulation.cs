@@ -23,20 +23,45 @@ public abstract class SimpleTimeManipulation : MonoBehaviour
     /// timescale > 1 denotes speed, timescale = 0 denotes freeze.
     /// </summary>
     protected float timeScale = 1f;
+    protected float _singleTimeScale = 1;
+    public float SingleTimeScale { get => _singleTimeScale; }
+    public float TimeScale { get => timeScale; }
 
     /// <summary>
     /// Subscribes the update timescale function to the MasterTime event for environment ability calls when the gameobject is enabled.
     /// </summary>
-    protected virtual void OnEnable() => MasterTime.singleton.updateTimeScaleEvent += UpdateTimescale;
+    protected virtual void OnEnable() => MasterTime.singleton.updateTimeScaleEvent += UpdateWithGlobalTimescale;
 
     /// <summary>
     /// Unsubscribes the update timescale function to the MasterTime event for environment ability calls when the gameobject is disabled.
     /// </summary>
-    protected virtual void OnDisable() => MasterTime.singleton.updateTimeScaleEvent -= UpdateTimescale;
+    protected virtual void OnDisable() => MasterTime.singleton.updateTimeScaleEvent -= UpdateWithGlobalTimescale;
 
     /// <summary>
     /// Modifes the gameobject's timescale.
     /// </summary>
-    /// <param name="newTimescale"> the new timescale value to adopt </param>
-    public virtual void UpdateTimescale(float newTimescale) => timeScale = newTimescale;
+    /// <param name="globalScale"> the new timescale value to adopt </param>
+    public virtual void UpdateWithGlobalTimescale(float globalScale)
+    {
+        if (_singleTimeScale != 1) timeScale = _singleTimeScale * globalScale;
+        else timeScale = globalScale;
+
+    }
+    public virtual void ActivateSingleObjectEffect(float activeTime, TimeEffect effect) => StartCoroutine(SingleObjectEffect(activeTime, effect)); 
+    private IEnumerator SingleObjectEffect(float activeTime, TimeEffect effect)
+    {
+        float timer = activeTime;
+        float startingEffect = (int)effect / 10f;
+        _singleTimeScale = startingEffect;
+        timeScale = _singleTimeScale;
+        while (timer > 0)
+        {
+            if (_singleTimeScale != startingEffect) yield break;
+            timer -= Time.deltaTime * MasterTime.singleton.timeScale;
+            yield return null;
+        }
+        _singleTimeScale = 1;
+        timeScale = MasterTime.singleton.timeScale;
+    }
+
 }

@@ -25,9 +25,9 @@ public class PendulumComponent : SimpleTimeManipulation
     /// Updates the pendulum's time scale when the attached pendulum component is targeted by a Player's time ability.
     /// </summary>
     /// <param name="newTimescale"></param>
-    public override void UpdateTimescale(float newTimescale)
+    public override void UpdateWithGlobalTimescale(float newTimescale)
     {
-        pendulum.UpdateTimescale(newTimescale);
+        pendulum.UpdateWithGlobalTimescale(newTimescale);
     }
 
     /// <summary>

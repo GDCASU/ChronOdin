@@ -22,6 +22,12 @@ public abstract class ComplexReverse : MonoBehaviour
     protected virtual void Awake() => effectHub = transform.GetComponent<ComplexTimeHub>();
 
     /// <summary>
+    /// Returns whether the object should reverse.
+    /// This method was implemented to prevent chain-reversing.
+    /// </summary>
+    public virtual bool ShouldReverse() => true;
+
+    /// <summary>
     /// Reverses the gameobject for a specified time.
     /// </summary>
     /// <param name="reverseTime"> how long to reverse object </param>
