@@ -18,10 +18,11 @@ public class ObjectFreeze : ComplexFreeze
     private RigidbodyConstraints previousConstraints;
 
     /// <summary>
-    /// Collects the attached object's rigidbody..
+    /// Collects the attached object's rigidbody.
     /// </summary>
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
         objectPhysics = transform.GetComponent<Rigidbody>();
     }
 
@@ -38,6 +39,7 @@ public class ObjectFreeze : ComplexFreeze
     /// Freezes the gameobject, saving its velocity, angular velocity, and constraints. After the freeze time is up, the velocity, angular
     /// velocity, and constraints are returned to the object.
     /// If the effect hub communicates that a new effect was introduced, then the object is unfrozen and the next effect is transitioned to.
+    /// Environment Stacking: environment freeze increases the time the object is frozen for for and environment slow increases it by less.
     /// </summary>
     private IEnumerator FreezeObject(float freezeTime)
     {
@@ -49,7 +51,7 @@ public class ObjectFreeze : ComplexFreeze
         float elapsedTime = 0f;
         while (elapsedTime < freezeTime && effectHub.IntroducingNewEffect == false)
         {
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.deltaTime * MasterTime.singleton.timeScale;
             yield return null;
         }
 

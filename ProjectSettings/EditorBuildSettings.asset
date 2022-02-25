@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/ForTesting/LevelManager.unity
+    guid: 9d7a7f8c5ee639c4b998e46c91f2a32f
+  - enabled: 1
+    path: Assets/Scenes/ForTesting/TimedGridWithDisappearingPlatforms.unity
+    guid: dd03a0a597eb7354e8f37bf7df163790
   m_configObjects: {}
