@@ -316,12 +316,13 @@ public partial class PlayerController
     public void ResetPosition()
     {
         rb.velocity = Vector3.zero;
-        SetInitialGravity(0);
+        previousState = playerState;
+        playerState = PlayerState.InAir;
         transform.position = lastViablePosition;
     }
     private void PlayerLanded()
     {
         climbVariables._climbingCooldown = 0;
-        lastViablePosition = transform.position;
+        //lastViablePosition = transform.position;
     }
 }
