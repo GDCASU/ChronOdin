@@ -313,6 +313,9 @@ public partial class PlayerController
         }
         onFakeGround = false;
     }
+    /// <summary>
+    /// Reset the players position to the one set by a checkpoint
+    /// </summary>
     public void ResetPosition()
     {
         rb.velocity = Vector3.zero;
