@@ -7,10 +7,10 @@ public interface LinkedToPressButton
     /// <summary>
     /// Change the object to an activated(alternative) state.
     /// </summary>
-    public void Activate();
+    public void Increment();
 
     /// <summary>
     /// Have the object return to it's original state.
     /// </summary>
-    public void Deactivate();
+    public void Decrement();
 }

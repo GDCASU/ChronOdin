@@ -11,8 +11,8 @@ public class PressButton : MonoBehaviour, InteractiveObject
     {
         foreach (GameObject obj in gameObjects)
         {
-            if (!pressed) obj.GetComponent<LinkedToPressButton>().Activate();
-            else obj.GetComponent<LinkedToPressButton>().Deactivate();
+            if (!pressed) obj.GetComponent<LinkedToPressButton>().Increment();
+            else obj.GetComponent<LinkedToPressButton>().Decrement();
         }
         pressed = !pressed;
     }
