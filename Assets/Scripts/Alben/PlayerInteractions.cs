@@ -39,7 +39,7 @@ public class PlayerInteractions : MonoBehaviour
         else
             Destroy(gameObject);
     }
-    private void Start() => action = InputManager.playerButtons[PlayerInput.PlayerButton.Interact];
+    //private void Start() => action = InputManager.playerButtons[PlayerInput.PlayerButton.Interact];
     /// <summary>
     /// Check every frame to see if the player hits the Fire1 button (left mouse button) to interact with objects
     /// </summary>
