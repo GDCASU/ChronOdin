@@ -112,7 +112,7 @@ public partial class PlayerController
         {
             if (collision.collider)
             {
-                if (collision.point != Vector3.zero)
+                if (collision.point != Vector3.zero || (transform.position.x == 0 && transform.position.z == 0 ))
                 {
                     float newSurfaceSlope = Vector3.Angle(collision.normal, Vector3.up);
                     if (!hit.collider)

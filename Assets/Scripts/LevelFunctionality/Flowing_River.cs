@@ -36,14 +36,12 @@ public class Flowing_River : SimpleTimeManipulation
         {
             originalPlayerSprint = PlayerController.singleton.baseMovementVariables.maxSprintVelocity;
             originalPlayerWalk = PlayerController.singleton.baseMovementVariables.maxWalkVelocity;           
-            PlayerController.singleton.ToggleGravity(false);
         }
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
-            PlayerController.singleton.ToggleGravity(true);
             PlayerController.singleton.baseMovementVariables.maxWalkVelocity = originalPlayerWalk;
             PlayerController.singleton.baseMovementVariables.maxSprintVelocity = originalPlayerSprint;
         }
