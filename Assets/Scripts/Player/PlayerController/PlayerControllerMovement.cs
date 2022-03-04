@@ -325,6 +325,6 @@ public partial class PlayerController
     private void PlayerLanded()
     {
         climbVariables._climbingCooldown = 0;
-        lastViablePosition = transform.position;
+        //lastViablePosition = transform.position;
     }
 }
