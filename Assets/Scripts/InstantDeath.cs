@@ -23,6 +23,7 @@ public class InstantDeath : MonoBehaviour
 
     void Die()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        PlayerController.singleton.ResetPosition();
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
