@@ -11,15 +11,33 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
     private Vector3 originalRotation;
     private bool open;
 
+    public int numOfButtonsRequired = 1;
+    private int _numOfButtonsRequired;
+
     protected void Start()
     {
         UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
         originalPosition = transform.position;
         originalRotation = transform.rotation.eulerAngles;
+        _numOfButtonsRequired = 0;
         if (!swingsOpen) moveToVector += originalPosition;
     }
-    public void Activate()=> StartCoroutine(MoveDoor());
-    public void Deactivate() => StartCoroutine(MoveDoor());
+    public void Increment()
+    {
+        _numOfButtonsRequired++;
+        if (_numOfButtonsRequired == numOfButtonsRequired)
+        {
+            StartCoroutine(MoveDoor());
+        }
+    }
+    public void Decrement()
+    {
+        if (_numOfButtonsRequired == numOfButtonsRequired)
+        {
+            StartCoroutine(MoveDoor());
+        }
+        _numOfButtonsRequired--;
+    }
     IEnumerator MoveDoor()
     {
         Vector3 endPosition = open?(swingsOpen ? originalRotation: originalPosition): moveToVector;
