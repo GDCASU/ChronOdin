@@ -58,11 +58,23 @@ public partial class PlayerController
         [HideInInspector] public bool kneesCheck;
         #endregion
 
+        #region OriginalValues
+
+        [HideInInspector] public float originalWalkingSpeed;
+        [HideInInspector] public float originalSprintSpeed;
         #endregion
 
-        public void StartVariables(CapsuleCollider capCollider, Transform transform) => groundCheckDistance =
+        #endregion
+
+        public void StartVariables(CapsuleCollider capCollider, Transform transform) 
+        {
+            groundCheckDistance =
             ((capCollider.radius * transform.lossyScale.x * 2f) > (capCollider.height * transform.lossyScale.y)) ?
             0f : (capCollider.height * .5f * transform.lossyScale.y) - (capCollider.radius * transform.lossyScale.x);
+
+            originalSprintSpeed = maxSprintVelocity;
+            originalWalkingSpeed = maxWalkVelocity;
+        } 
     }
     private void MovementInput()
     {
@@ -316,12 +328,6 @@ public partial class PlayerController
     /// <summary>
     /// Reset the players position to the one set by a checkpoint
     /// </summary>
-    public void ResetPosition()
-    {
-        rb.velocity = Vector3.zero;
-        SetInitialGravity(0);
-        transform.position = lastViablePosition;
-    }
     private void PlayerLanded()
     {
         climbVariables._climbingCooldown = 0;
