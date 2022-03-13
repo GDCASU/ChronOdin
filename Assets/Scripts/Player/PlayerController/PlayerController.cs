@@ -176,6 +176,9 @@ public partial class PlayerController : MonoBehaviour
         rb.velocity = Vector3.zero;
         SetInitialGravity(0);
         transform.position = lastViablePosition;
+        previousState = playerState;
+        playerState = PlayerState.InAir;
+        g = baseMovementVariables.initialGravity;
     }
     public void ChangeWalkingSpeed(float newWalkingSpeed) =>baseMovementVariables.maxWalkVelocity = newWalkingSpeed;
   
