@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8225854368876441683}
   - component: {fileID: 8225854368876441689}
   - component: {fileID: 8225854368876441686}
+  - component: {fileID: 669396710}
   m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
@@ -200,6 +201,22 @@ MonoBehaviour:
   climbingCooldown: 2
   wallJumpHeightStrenght: 5
   wallJumpNormalStrength: 5
+--- !u!114 &669396710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8225854368876441680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57180fe8f1bca624c84013bf10316013, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeBetweenPositionTracking: 0.1
+  timeReverseCooldown: 3
+  playerMovement: {fileID: 8225854368876441686}
+  keyToActivate: 8
 --- !u!1 &8225854369619139696
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,7 +272,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 90
   orthographic: 0
