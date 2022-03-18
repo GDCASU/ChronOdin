@@ -2,12 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PlayerAbilities
-{ 
-    Reverse,
-    Slow,
-    Freeze
-}
 public class AbilityManager : MonoBehaviour
 {
     public static AbilityManager singleton;
@@ -20,8 +14,11 @@ public class AbilityManager : MonoBehaviour
     private bool currentGlobal;
     private bool localBuffer;
     private bool currentLocal;
-    public bool environmentEffectActive;
+    [HideInInspector] public bool environmentEffectActive;
 
+    public bool canSlow = true;
+    public bool canFreeze = true;
+    public bool canReverse = true;
 
     private void Awake()
     {
@@ -32,9 +29,9 @@ public class AbilityManager : MonoBehaviour
     }
     void Update()
     {
-        if (InputManager.GetButtonDown(PlayerInput.PlayerButton.Freeze)) currentAbility = TimeEffect.Freeze;
-        else if (InputManager.GetButtonDown(PlayerInput.PlayerButton.Slow)) currentAbility = TimeEffect.Slow;
-        else if (InputManager.GetButtonDown(PlayerInput.PlayerButton.Reverse)) currentAbility = TimeEffect.Reverse;
+        if (canFreeze && InputManager.GetButtonDown(PlayerInput.PlayerButton.Freeze)) currentAbility = TimeEffect.Freeze;
+        else if (canSlow && InputManager.GetButtonDown(PlayerInput.PlayerButton.Slow)) currentAbility = TimeEffect.Slow;
+        else if (canReverse && InputManager.GetButtonDown(PlayerInput.PlayerButton.Reverse)) currentAbility = TimeEffect.Reverse;
 
         globalBuffer = InputManager.GetButton(PlayerInput.PlayerButton.Global);
 
@@ -113,5 +110,28 @@ public class AbilityManager : MonoBehaviour
     public void ToggleEnvironment(bool value)
     {
         environmentEffectActive = value;
+    }
+    /// <summary>
+    /// Changes the status for a player ability
+    /// </summary>
+    /// <param name="effect"> the player ability (TimeEffect) that will be changed </param>
+    /// /// <param name="enabled"> sets the player ability to be enabled or disabled</param>
+    public void SetAbilityStatus(TimeEffect effect ,bool enabled)
+    { 
+        switch(effect)
+        {
+            case TimeEffect.Slow:
+                canSlow = enabled;
+                break;
+            case TimeEffect.Freeze:
+                canFreeze = enabled;
+                break;
+            case TimeEffect.Reverse:
+                canReverse = enabled;
+                break;
+            default:
+                break;
+                
+        }
     }
 }
