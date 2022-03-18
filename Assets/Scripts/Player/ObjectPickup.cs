@@ -26,7 +26,7 @@ public class ObjectPickup : MonoBehaviour
 
     [SerializeField]
     [Tooltip("Layer the object will be set to to avoid collisions with the palyer")]
-    private int newLayer = 7;                   //7 is the ignore player layer
+    private int newLayer = 6;                   //6 is the Triggers layer
 
     private int originalLayer;
 
