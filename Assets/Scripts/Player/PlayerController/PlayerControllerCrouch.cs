@@ -8,7 +8,7 @@ public partial class PlayerController
     public class CrouchVariables
     {
         [HideInInspector] public bool crouchBuffer;
-         public bool topIsClear;
+        [HideInInspector] public bool topIsClear;
         [HideInInspector] public bool isCrouching;
         public bool holdCrouch;
         public bool slideMechanic;
