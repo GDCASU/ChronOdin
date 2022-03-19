@@ -171,4 +171,21 @@ public partial class PlayerController : MonoBehaviour
     }
 
     public void UpdateRespawnPoint() => lastViablePosition = transform.position;
+    public void ResetPosition()
+    {
+        rb.velocity = Vector3.zero;
+        SetInitialGravity(0);
+        transform.position = lastViablePosition;
+        previousState = playerState;
+        playerState = PlayerState.InAir;
+        g = baseMovementVariables.initialGravity;
+    }
+    public void ChangeWalkingSpeed(float newWalkingSpeed) =>baseMovementVariables.maxWalkVelocity = newWalkingSpeed;
+  
+    public void ResetWalkingSpeed() => baseMovementVariables.maxWalkVelocity = baseMovementVariables.originalWalkingSpeed;
+
+    public void ChangeSprintSpeed(float newSprintSpeed) => baseMovementVariables.maxSprintVelocity = newSprintSpeed;
+
+    public void ResetSprintSpeed() => baseMovementVariables.maxSprintVelocity = baseMovementVariables.originalSprintSpeed;
+
 }
