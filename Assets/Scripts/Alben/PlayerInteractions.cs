@@ -82,9 +82,9 @@ public class PlayerInteractions : MonoBehaviour
                     }
                     else if (rayHit.transform.GetComponent<InteractiveObject<string>>() != null)
                     {
-                        NoteSingleton.noteSingleton.setNoteContents(rayHit.transform.GetComponent<InteractiveObject<string>>().Interact());
+                        NotesManager.singleton.SetNoteUIText(rayHit.transform.GetComponent<InteractiveObject<string>>().Interact());
                         isNoteToggled = true;
-                        NoteSingleton.noteSingleton.setNoteVisibility(isNoteToggled); // Happens when looking at notes.
+                        NotesManager.singleton.setNoteVisibility(isNoteToggled); // Happens when looking at notes.
                     }
                 }
             }
@@ -118,7 +118,7 @@ public class PlayerInteractions : MonoBehaviour
         if (InputManager.GetButtonDown(button))
         {
             isNoteToggled = !isNoteToggled;
-            NoteSingleton.noteSingleton.setNoteVisibility(isNoteToggled);
+            NotesManager.singleton.setNoteVisibility(isNoteToggled);
         }
     }
 }
