@@ -54,7 +54,7 @@ public class InputManager : MonoBehaviour {
         keyboard
     }
     public static int inputType;
-    public static InputMode inputMode = InputMode.both;
+    public static InputMode inputMode;
     // there is literally no reason for this to exist ffs
     [SerializeField]
     public static PlayerAction[] playerActions = new PlayerAction[12];
@@ -95,6 +95,8 @@ public class InputManager : MonoBehaviour {
     private void Start()
     {
         ResetKeycodes();
+        if (Input.GetJoystickNames()[0]!="") inputMode = InputMode.both;
+        else inputMode = InputMode.keyboard;
     }
     public static void ResetKeycodes () {
         playerActions[0].keyboardKey = KeyCode.E;

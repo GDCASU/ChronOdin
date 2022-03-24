@@ -19,7 +19,6 @@ public class PlayerCamera : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
         transform.localRotation = player.transform.rotation;
 
         if (transform.parent) transform.parent = null;
@@ -44,6 +43,7 @@ public class PlayerCamera : MonoBehaviour
 
             mouseX = HorizontalRotation(mouseX);
             mouseY = VerticalRotation(mouseY);
+
             transform.localRotation = Quaternion.Euler(mouseY, mouseX, 0f);
         }
         else transform.localRotation = player.localRotation;
@@ -60,6 +60,7 @@ public class PlayerCamera : MonoBehaviour
         horizontalRotationHelper.Rotate(Vector3.up * mouseX, Space.Self);
         float angle = Mathf.SmoothDampAngle(
             transform.localEulerAngles.y, horizontalRotationHelper.localEulerAngles.y, ref horizontalAngularVelocity, smoothTime);
+        if (float.IsNaN(angle)) angle = 0;
         return angle;
     }
     public float VerticalRotation(float mouseY)
@@ -67,6 +68,7 @@ public class PlayerCamera : MonoBehaviour
         xRotationHelper = Mathf.Clamp(xRotationHelper - mouseY, -90, 90);
         float angle = Mathf.SmoothDampAngle(
             transform.localEulerAngles.x, xRotationHelper, ref verticalAngularVelocity, smoothTime);
+        if (float.IsNaN(angle)) angle = 0;
         return angle;
     }
 
