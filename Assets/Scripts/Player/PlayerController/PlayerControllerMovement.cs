@@ -224,6 +224,7 @@ public partial class PlayerController
             baseMovementVariables.kneesCheck = Physics.Raycast(transform.position - Vector3.up * capCollider.height * .24f, (direction - rb.velocity.y * Vector3.up), dist, ~ignores);
             if (!baseMovementVariables.kneesCheck && playerState == PlayerState.Grounded && (x != 0 || z != 0))
             {
+                Time.timeScale = 0;
                 StartCoroutine(FakeGround());
                 isGrounded = true;
             }

@@ -145,6 +145,7 @@ public partial class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.H)) Time.timeScale = 1;
         if (!movementDisabled)
         {
             if (crouchMechanic) CrouchInput();
