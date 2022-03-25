@@ -13,7 +13,7 @@ public class PauseMenu : MonoBehaviour
     public List<GameObject> panels;
     public Text noteMessage;
     public Text customMessage;
-    public PlayerController playerController;
+    public PlayerCamera playerCamera;
     public float reactivateControllerDelay;
     void Start()
     {
@@ -30,14 +30,15 @@ public class PauseMenu : MonoBehaviour
 
     void Update()
     {
-        if (InputManager.GetButtonDown(PlayerInput.PlayerButton.Pause))
+        if (currentPanel == 0 && (InputManager.GetButtonDown(PlayerInput.PlayerButton.Pause)))
         {
             Cursor.lockState = CursorLockMode.None;
             Time.timeScale = 0;
             SwitchPanels(1);
-            playerController.enabled = false;
+            PlayerController.singleton.DisableMovement();
+            playerCamera.enabled = false;
         }
-        if (InputManager.GetButtonDown(PlayerInput.PlayerButton.UI_Cancel))
+        else if (currentPanel != 0 && InputManager.GetButtonDown(PlayerInput.PlayerButton.UI_Cancel))
         {
             switch (currentPanel)
             {
@@ -49,6 +50,7 @@ public class PauseMenu : MonoBehaviour
                     break;
                 case 6:
                     SwitchPanels(0);
+                    StartCoroutine(RestartControllerDelay());
                     break;
                 case 7:
                     SwitchPanels(0);
@@ -86,6 +88,7 @@ public class PauseMenu : MonoBehaviour
     {
         SwitchPanels(6);
         noteMessage.text = message;
+        PlayerController.singleton.DisableMovement();
     }
     public void CustomMessage(string message)
     {
@@ -94,7 +97,8 @@ public class PauseMenu : MonoBehaviour
     }
     private IEnumerator RestartControllerDelay()
     {
+        playerCamera.enabled = true;
         yield return new WaitForSeconds(reactivateControllerDelay);
-        playerController.enabled = true;
+        PlayerController.singleton.EnableMovement();
     }
 }

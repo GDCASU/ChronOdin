@@ -60,7 +60,6 @@ public class PlayerCamera : MonoBehaviour
         horizontalRotationHelper.Rotate(Vector3.up * mouseX, Space.Self);
         float angle = Mathf.SmoothDampAngle(
             transform.localEulerAngles.y, horizontalRotationHelper.localEulerAngles.y, ref horizontalAngularVelocity, smoothTime);
-        if (float.IsNaN(angle)) angle = 0;
         return angle;
     }
     public float VerticalRotation(float mouseY)
@@ -68,7 +67,6 @@ public class PlayerCamera : MonoBehaviour
         xRotationHelper = Mathf.Clamp(xRotationHelper - mouseY, -90, 90);
         float angle = Mathf.SmoothDampAngle(
             transform.localEulerAngles.x, xRotationHelper, ref verticalAngularVelocity, smoothTime);
-        if (float.IsNaN(angle)) angle = 0;
         return angle;
     }
 
