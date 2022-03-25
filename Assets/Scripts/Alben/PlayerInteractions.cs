@@ -32,19 +32,12 @@ public class PlayerInteractions : MonoBehaviour
 
     private PlayerInput.PlayerAction action;
 
-    private bool isNoteToggled;
-
     private void Awake()
     {
         if (singleton == null)
             singleton = this;
         else
             Destroy(gameObject);
-    }
-
-    private void Start()
-    {
-        isNoteToggled = false;
     }
 
     //private void Start() => action = InputManager.playerButtons[PlayerInput.PlayerButton.Interact];
@@ -75,53 +68,12 @@ public class PlayerInteractions : MonoBehaviour
                 transformBeingLookedAt = rayHit.transform;
                 InteractionText.text = "Press " + (InputManager.inputMode == InputManager.InputMode.keyboard ?
                      action.keyboardKey.ToString() : InputManager.playerXboxButtons[action.xboxKey]) + " to  Interact";
-                if (InputManager.GetButtonDown(button))
-                {
-                    // Check what kind of InteractiveObject it is based on its return type.
-                    if (rayHit.transform.GetComponent<InteractiveObject<Object>>() != null)
-                    {
-                        rayHit.transform.GetComponent<InteractiveObject<Object>>().Interact();
-                    }
-                    else if (rayHit.transform.GetComponent<InteractiveObject<string>>() != null)
-                    {
-                        //NotesManager.singleton.SetNoteUIText(rayHit.transform.GetComponent<InteractiveObject<string>>().Interact());
-                        isNoteToggled = true;
-                        //NotesManager.singleton.setNoteVisibility(isNoteToggled); // Happens when looking at notes.
-                    }
-
-                }
+                if (InputManager.GetButtonDown(button)) rayHit.transform.GetComponent<InteractiveObject>().Interact();                
             }
-            else
-            {
-                transformBeingLookedAt = rayHit.transform;
-                toggleNotes(); // Happens when looking at uninteractable objects.
-            }
+            else transformBeingLookedAt = rayHit.transform;
         }
-        else
-        {
-            transformBeingLookedAt = null;
-            toggleNotes(); // Happens when looking at nothing.
-        }
-        //if (InputManager.GetButtonUp(button))
-        //{
-        //    if (rayHit.collider)
-        //        if (rayHit.transform.tag.Equals("Liftable")) GetComponent<ObjectPickup>().ReleaseObject();
-        //}
+        else transformBeingLookedAt = null;
     }
-
     public Transform RaycastTransform() => transformBeingLookedAt;
 
-    /// <summary>
-    /// Pressing the 'Interaction' button when the player isn't looking at anything
-    /// closes/opens the notes they currently have.
-    /// </summary>
-    private void toggleNotes()
-    {
-        // Added function to use 'Interaction' button to close/open notes.
-        if (InputManager.GetButtonDown(button))
-        {
-            isNoteToggled = !isNoteToggled;
-            //NotesManager.singleton.setNoteVisibility(isNoteToggled);
-        }
-    }
 }

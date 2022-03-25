@@ -6,7 +6,7 @@ using UnityEngine;
 /// The player can pick up this note to see its contents.
 /// Author: Alben Trang
 /// </summary>
-public class InteractiveNote : MonoBehaviour, InteractiveObject<string>
+public class InteractiveNote : MonoBehaviour, InteractiveObject
 {
     [Tooltip("This is what's written on the note.")] [TextArea(15, 20)] public string noteContent = "";
 
@@ -14,8 +14,8 @@ public class InteractiveNote : MonoBehaviour, InteractiveObject<string>
     /// Get the contents of the note object.
     /// </summary>
     /// <returns>The contents of the note.</returns>
-    public string Interact()
+    public void Interact()
     {
-        return noteContent;
+        PauseMenu.singleton.DisplayNote(noteContent);
     }
 }

@@ -65,7 +65,7 @@ public class PauseMenu : MonoBehaviour
         panels[panelToActivate].SetActive(true);
         currentPanel = panelToActivate;
         EventSystem.current.SetSelectedGameObject(null);
-        if(panelToActivate!=0)EventSystem.current.SetSelectedGameObject(panels[currentPanel].GetComponentInChildren<Button>().gameObject);
+        if(panelToActivate!=0 && panelToActivate != 6) EventSystem.current.SetSelectedGameObject(panels[currentPanel].GetComponentInChildren<Button>().gameObject);
     }
     public void ResumeGame()
     {
@@ -82,7 +82,7 @@ public class PauseMenu : MonoBehaviour
     public void MainMenuPrompt() => SwitchPanels(5);
     public void MainMenu() => SceneManager.LoadScene((int)Levels.title, LoadSceneMode.Single);
 
-    public void NotesUI(string message)
+    public void DisplayNote(string message)
     {
         SwitchPanels(6);
         noteMessage.text = message;
