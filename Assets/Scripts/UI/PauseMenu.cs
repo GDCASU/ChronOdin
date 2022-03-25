@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class PauseMenu : MonoBehaviour
 {
+    [HideInInspector] public static PauseMenu singleton;
+
     public int currentPanel;
     public List<GameObject> panels;
     public Text noteMessage;
@@ -17,6 +19,13 @@ public class PauseMenu : MonoBehaviour
     {
         Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.Locked;
+    }
+    private void Awake()
+    {
+        if (singleton == null)
+            singleton = this;
+        else
+            Destroy(gameObject);
     }
 
     void Update()
