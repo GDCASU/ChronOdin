@@ -58,9 +58,10 @@ public class PlayerInteractions : MonoBehaviour
         {
             if (rayHit.transform.tag.Equals("Liftable"))
             {
+                action = InputManager.playerButtons[button];
                 transformBeingLookedAt = rayHit.transform;
-                InteractionText.text = "Press " + (InputManager.inputMode == InputManager.InputMode.controller ?
-                    action.xboxKey.ToString() : action.keyboardKey.ToString()) + " to PickUp";
+                InteractionText.text = "Press " + (InputManager.inputMode == InputManager.InputMode.keyboard ?
+                     action.keyboardKey.ToString() : InputManager.playerXboxButtons[action.xboxKey]) + " to PickUp";
                 if (InputManager.GetButtonDown(button))
                 {
                     var objectPickup = GetComponent<ObjectPickup>();
@@ -70,9 +71,10 @@ public class PlayerInteractions : MonoBehaviour
             }
             else if (rayHit.transform.tag.Equals("Interactable"))
             {
+                action = InputManager.playerButtons[button];
                 transformBeingLookedAt = rayHit.transform;
-                InteractionText.text = "Press " + (InputManager.inputMode == InputManager.InputMode.controller ?
-                    action.xboxKey.ToString() : action.keyboardKey.ToString()) + "to  Interact";
+                InteractionText.text = "Press " + (InputManager.inputMode == InputManager.InputMode.keyboard ?
+                     action.keyboardKey.ToString() : InputManager.playerXboxButtons[action.xboxKey]) + " to  Interact";
                 if (InputManager.GetButtonDown(button))
                 {
                     // Check what kind of InteractiveObject it is based on its return type.
@@ -82,10 +84,11 @@ public class PlayerInteractions : MonoBehaviour
                     }
                     else if (rayHit.transform.GetComponent<InteractiveObject<string>>() != null)
                     {
-                        NotesManager.singleton.SetNoteUIText(rayHit.transform.GetComponent<InteractiveObject<string>>().Interact());
+                        //NotesManager.singleton.SetNoteUIText(rayHit.transform.GetComponent<InteractiveObject<string>>().Interact());
                         isNoteToggled = true;
-                        NotesManager.singleton.setNoteVisibility(isNoteToggled); // Happens when looking at notes.
+                        //NotesManager.singleton.setNoteVisibility(isNoteToggled); // Happens when looking at notes.
                     }
+
                 }
             }
             else
@@ -118,7 +121,7 @@ public class PlayerInteractions : MonoBehaviour
         if (InputManager.GetButtonDown(button))
         {
             isNoteToggled = !isNoteToggled;
-            NotesManager.singleton.setNoteVisibility(isNoteToggled);
+            //NotesManager.singleton.setNoteVisibility(isNoteToggled);
         }
     }
 }
