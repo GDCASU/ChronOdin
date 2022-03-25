@@ -95,7 +95,7 @@ public class InputManager : MonoBehaviour {
     private void Start()
     {
         ResetKeycodes();
-        if (Input.GetJoystickNames()[0]!="") inputMode = InputMode.both;
+        if (Input.GetJoystickNames().Length > 0 && Input.GetJoystickNames()[0]!="") inputMode = InputMode.both;
         else inputMode = InputMode.keyboard;
     }
     public static void ResetKeycodes () {

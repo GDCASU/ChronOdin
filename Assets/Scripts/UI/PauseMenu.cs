@@ -88,5 +88,4 @@ public class PauseMenu : MonoBehaviour
         yield return new WaitForSeconds(reactivateControllerDelay);
         playerController.enabled = true;
     }
-
 }
