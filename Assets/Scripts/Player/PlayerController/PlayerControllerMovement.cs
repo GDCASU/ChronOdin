@@ -4,8 +4,6 @@ using UnityEngine;
 
 public partial class PlayerController
 {
-    Vector3 start;
-    float copy;
     [System.Serializable]
     public class BaseMovementVariables
     {
@@ -68,7 +66,7 @@ public partial class PlayerController
 
         #endregion
 
-        public void StartVariables(CapsuleCollider capCollider, Transform transform) 
+        public void StartVariables(CapsuleCollider capCollider, Transform transform)
         {
             groundCheckDistance =
             ((capCollider.radius * transform.lossyScale.x * 2f) > (capCollider.height * transform.lossyScale.y)) ?
@@ -76,7 +74,7 @@ public partial class PlayerController
 
             originalSprintSpeed = maxSprintVelocity;
             originalWalkingSpeed = maxWalkVelocity;
-        } 
+        }
     }
     private void MovementInput()
     {
@@ -126,7 +124,7 @@ public partial class PlayerController
         {
             if (collision.collider)
             {
-                if (collision.point != Vector3.zero || (transform.position.x == 0 && transform.position.z == 0 ))
+                if (collision.point != Vector3.zero || (transform.position.x == 0 && transform.position.z == 0))
                 {
                     float newSurfaceSlope = Vector3.Angle(collision.normal, Vector3.up);
                     if (!hit.collider)
@@ -212,34 +210,25 @@ public partial class PlayerController
         //If close to a small step, raise the player to the height of the step for a smoother feeling movement
         float maxDistance = capCollider.radius * (1 + ((isSprinting) ? (rb.velocity.magnitude / baseMovementVariables.maxSprintVelocity) : 0));
 
-        if (playerState == PlayerState.Grounded) baseMovementVariables.feetSphereCheck = Physics.SphereCast(
+        if (playerState == PlayerState.Grounded && rb.velocity.y >= 0) baseMovementVariables.feetSphereCheck = Physics.SphereCast(
             (transform.position + capCollider.center * capCollider.height * transform.lossyScale.y) -
             (transform.up * (transform.lossyScale.y * capCollider.height * .5f - capCollider.radius * transform.lossyScale.z)),
-            capCollider.radius, rb.velocity.normalized, out feetHit, maxDistance, ~ignores);
-        start = (transform.position + capCollider.center * capCollider.height * transform.lossyScale.y) -
-            (transform.up * (transform.lossyScale.y * capCollider.height * .5f - capCollider.radius * transform.lossyScale.z));
-        copy = rb.velocity.y;
-        //Debug.DrawLine(start, start + ((feetHit.point - (transform.position - Vector3.up * .5f * transform.lossyScale.y)) - rb.velocity.y * Vector3.up), Color.red);
+            capCollider.radius + .01f, rb.velocity.normalized, out feetHit, maxDistance, ~ignores);
 
         //print( transform.position + capCollider.center*capCollider.height*transform.lossyScale.y);
-        if (baseMovementVariables.feetSphereCheck && !onFakeGround && rb.velocity.y >= 0)
+        if (baseMovementVariables.feetSphereCheck && !onFakeGround)
         {
             Vector3 direction = feetHit.point - (transform.position - Vector3.up * .5f * transform.lossyScale.y);
             float dist = direction.magnitude;
-            Debug.DrawLine(transform.position - Vector3.up * capCollider.height * .24f, (transform.position - Vector3.up * capCollider.height * .24f) + (direction - rb.velocity.y * Vector3.up), Color.red);
+            Debug.DrawLine(transform.position - Vector3.up * capCollider.height * .24f, (transform.position - Vector3.up * capCollider.height * .24f) + (direction - rb.velocity.y * Vector3.up));
             baseMovementVariables.kneesCheck = Physics.Raycast(transform.position - Vector3.up * capCollider.height * .24f, (direction - rb.velocity.y * Vector3.up), dist, ~ignores);
             if (!baseMovementVariables.kneesCheck && playerState == PlayerState.Grounded && (x != 0 || z != 0))
             {
-                Time.timeScale = 0;
-                //StartCoroutine(FakeGround());
+                StartCoroutine(FakeGround());
                 isGrounded = true;
             }
             baseMovementVariables.kneesCheck = false;
         }
-    }
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(start + ((feetHit.point - start)), capCollider.radius);
     }
     private void Move()
     {
@@ -279,8 +268,8 @@ public partial class PlayerController
                 //If the palyer changes direction when going at the maxSpeed then decrease speed for smoother momentum shift
                 if ((z == 0 && x == 0) || (pvX < 0 && x > 0)
                     || (x < 0 && pvX > 0) || (pvZ < 0 && z > 0)
-                    || (z < 0 && pvZ > 0)) rb.velocity *= .99f; 
-                else if (rb.velocity.magnitude < maxVelocity + 1f && (x!=0 || y!=0)) rb.velocity = newForwardandRight.normalized * maxVelocity;
+                    || (z < 0 && pvZ > 0)) rb.velocity *= .99f;
+                else if (rb.velocity.magnitude < maxVelocity + 1f && (x != 0 || y != 0)) rb.velocity = newForwardandRight.normalized * maxVelocity;
                 totalVelocityToAdd = Vector3.zero;
             }
 
