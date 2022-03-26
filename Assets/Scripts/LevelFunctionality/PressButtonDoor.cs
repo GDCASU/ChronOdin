@@ -12,7 +12,11 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
     private bool open;
 
     public int numOfButtonsRequired = 1;
-    private int _numOfButtonsRequired;
+    private int _numOfButtonsRequired = 1;
+
+    [SerializeField] private Material _litMaterial;
+    [SerializeField] private Material _unlitMaterial;
+    [SerializeField] private List<GameObject> _indicatorObjects;
 
     protected void Start()
     {
@@ -21,6 +25,7 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
         originalRotation = transform.rotation.eulerAngles;
         _numOfButtonsRequired = 0;
         if (!swingsOpen) moveToVector += originalPosition;
+        UpdateIndicators();
     }
     public void Increment()
     {
@@ -29,6 +34,7 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
         {
             StartCoroutine(MoveDoor());
         }
+        UpdateIndicators();
     }
     public void Decrement()
     {
@@ -37,7 +43,9 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
             StartCoroutine(MoveDoor());
         }
         _numOfButtonsRequired--;
+        UpdateIndicators();
     }
+
     IEnumerator MoveDoor()
     {
         Vector3 endPosition = open?(swingsOpen ? originalRotation: originalPosition): moveToVector;
@@ -53,5 +61,15 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
             yield return new WaitForFixedUpdate();
         }
         open = !open;
+    }
+
+    private void UpdateIndicators() 
+    {
+        for (int i = 0; i < _indicatorObjects.Count; i++) 
+        {
+            MeshRenderer indicatorObjectMeshRenderer = _indicatorObjects[i].GetComponent<MeshRenderer>();
+            if (i < _numOfButtonsRequired) indicatorObjectMeshRenderer.material = _litMaterial;
+            else indicatorObjectMeshRenderer.material = _unlitMaterial;
+        }
     }
 }
