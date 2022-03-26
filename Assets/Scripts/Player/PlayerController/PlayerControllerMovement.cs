@@ -4,6 +4,8 @@ using UnityEngine;
 
 public partial class PlayerController
 {
+    Vector3 start;
+    float copy;
     [System.Serializable]
     public class BaseMovementVariables
     {
@@ -213,23 +215,31 @@ public partial class PlayerController
         if (playerState == PlayerState.Grounded) baseMovementVariables.feetSphereCheck = Physics.SphereCast(
             (transform.position + capCollider.center * capCollider.height * transform.lossyScale.y) -
             (transform.up * (transform.lossyScale.y * capCollider.height * .5f - capCollider.radius * transform.lossyScale.z)),
-            capCollider.radius + .01f, rb.velocity.normalized, out feetHit, maxDistance, ~ignores);
+            capCollider.radius, rb.velocity.normalized, out feetHit, maxDistance, ~ignores);
+        start = (transform.position + capCollider.center * capCollider.height * transform.lossyScale.y) -
+            (transform.up * (transform.lossyScale.y * capCollider.height * .5f - capCollider.radius * transform.lossyScale.z));
+        copy = rb.velocity.y;
+        //Debug.DrawLine(start, start + ((feetHit.point - (transform.position - Vector3.up * .5f * transform.lossyScale.y)) - rb.velocity.y * Vector3.up), Color.red);
 
         //print( transform.position + capCollider.center*capCollider.height*transform.lossyScale.y);
-        if (baseMovementVariables.feetSphereCheck && !onFakeGround)
+        if (baseMovementVariables.feetSphereCheck && !onFakeGround && rb.velocity.y >= 0)
         {
             Vector3 direction = feetHit.point - (transform.position - Vector3.up * .5f * transform.lossyScale.y);
             float dist = direction.magnitude;
-            Debug.DrawLine(transform.position - Vector3.up * capCollider.height * .24f, (transform.position - Vector3.up * capCollider.height * .24f) + (direction - rb.velocity.y * Vector3.up));
+            Debug.DrawLine(transform.position - Vector3.up * capCollider.height * .24f, (transform.position - Vector3.up * capCollider.height * .24f) + (direction - rb.velocity.y * Vector3.up), Color.red);
             baseMovementVariables.kneesCheck = Physics.Raycast(transform.position - Vector3.up * capCollider.height * .24f, (direction - rb.velocity.y * Vector3.up), dist, ~ignores);
             if (!baseMovementVariables.kneesCheck && playerState == PlayerState.Grounded && (x != 0 || z != 0))
             {
                 Time.timeScale = 0;
-                StartCoroutine(FakeGround());
+                //StartCoroutine(FakeGround());
                 isGrounded = true;
             }
             baseMovementVariables.kneesCheck = false;
         }
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(start + ((feetHit.point - start)), capCollider.radius);
     }
     private void Move()
     {
