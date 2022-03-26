@@ -325,9 +325,6 @@ public partial class PlayerController
         }
         onFakeGround = false;
     }
-    /// <summary>
-    /// Reset the players position to the one set by a checkpoint
-    /// </summary>
     private void PlayerLanded()
     {
         climbVariables._climbingCooldown = 0;
