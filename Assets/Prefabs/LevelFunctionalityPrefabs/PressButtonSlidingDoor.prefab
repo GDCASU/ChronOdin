@@ -53,7 +53,6 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -112,3 +111,7 @@ MonoBehaviour:
   moveToVector: {x: 0, y: 3, z: 0}
   swingsOpen: 0
   speed: 2
+  numOfButtonsRequired: 1
+  _litMaterial: {fileID: 2100000, guid: f326a880fa4622a4b994147ed32c75eb, type: 2}
+  _unlitMaterial: {fileID: 2100000, guid: dc501008f429b934489fddb8f7b879e1, type: 2}
+  _indicatorObject: {fileID: 5443050834140431224, guid: c598d9dcc22500341bf9591c5f137ef8, type: 3}

@@ -11,12 +11,14 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
     private Vector3 originalRotation;
     private bool open;
 
-    public int numOfButtonsRequired = 1;
-    private int _numOfButtonsRequired = 1;
+    public int numOfButtonsRequired;
+    private int _numOfButtonsRequired = 0;
 
     [SerializeField] private Material _litMaterial;
     [SerializeField] private Material _unlitMaterial;
-    [SerializeField] private List<GameObject> _indicatorObjects;
+    public GameObject _indicatorObject;
+    private List<GameObject> _indicatorObjects = new List<GameObject>();
+    private const float _offsetWidth = 10f;
 
     protected void Start()
     {
@@ -25,6 +27,8 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
         originalRotation = transform.rotation.eulerAngles;
         _numOfButtonsRequired = 0;
         if (!swingsOpen) moveToVector += originalPosition;
+
+        StartIndicators();
         UpdateIndicators();
     }
     public void Increment()
@@ -63,12 +67,28 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
         open = !open;
     }
 
+    private void StartIndicators()
+    {
+        float indicatorObjectWidth = 1f / (float) numOfButtonsRequired;
+        for (int i = 0; i < numOfButtonsRequired; i++) 
+        {
+            GameObject instantiatedObject = Instantiate(_indicatorObject, Vector2.zero, Quaternion.identity);
+
+            instantiatedObject.transform.SetParent(transform);
+            instantiatedObject.transform.localScale = new Vector3(1.2f, 0.3f, indicatorObjectWidth);
+            instantiatedObject.transform.localPosition = new Vector3(0, 0.5f, (i - (numOfButtonsRequired - 1f) / 2f) * indicatorObjectWidth);
+            instantiatedObject.transform.localEulerAngles = new Vector3(0,0,0);
+
+            _indicatorObjects.Add(instantiatedObject);
+        }
+    }
+
     private void UpdateIndicators() 
     {
         for (int i = 0; i < _indicatorObjects.Count; i++) 
         {
             MeshRenderer indicatorObjectMeshRenderer = _indicatorObjects[i].GetComponent<MeshRenderer>();
-            if (i < _numOfButtonsRequired) indicatorObjectMeshRenderer.material = _litMaterial;
+            if (i > numOfButtonsRequired - _numOfButtonsRequired - 1) indicatorObjectMeshRenderer.material = _litMaterial;
             else indicatorObjectMeshRenderer.material = _unlitMaterial;
         }
     }
