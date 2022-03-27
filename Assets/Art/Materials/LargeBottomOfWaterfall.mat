@@ -83,7 +83,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_EF721CF6: {r: 0.10279459, g: 0.12714922, b: 0.2830189, a: 0}
+    - Color_EF721CF6: {r: 0.011347455, g: 0.0276177, b: 0.14150941, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
