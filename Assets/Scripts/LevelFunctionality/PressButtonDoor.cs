@@ -10,9 +10,8 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
     private Vector3 originalPosition;
     private Vector3 originalRotation;
     private bool open;
-
-    public int numOfButtonsRequired;
-    private int _numOfButtonsRequired = 3;
+    public int numOfButtonsRequired = 1;
+    private int _numOfButtonsRequired;
 
     [SerializeField] private Material _litMaterial;
     [SerializeField] private Material _unlitMaterial;
