@@ -112,6 +112,6 @@ MonoBehaviour:
   swingsOpen: 1
   speed: 2
   numOfButtonsRequired: 3
-  _litMaterial: {fileID: 2100000, guid: f326a880fa4622a4b994147ed32c75eb, type: 2}
-  _unlitMaterial: {fileID: 2100000, guid: dc501008f429b934489fddb8f7b879e1, type: 2}
+  _litMaterial: {fileID: 2100000, guid: 65c2f596f9c64c04faed95235bf2a808, type: 2}
+  _unlitMaterial: {fileID: 2100000, guid: d221a12701439fe4980fcfda80d1cf22, type: 2}
   _indicatorObject: {fileID: 5443050834140431224, guid: c598d9dcc22500341bf9591c5f137ef8, type: 3}

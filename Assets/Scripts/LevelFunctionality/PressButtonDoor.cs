@@ -12,7 +12,7 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
     private bool open;
 
     public int numOfButtonsRequired;
-    private int _numOfButtonsRequired = 0;
+    private int _numOfButtonsRequired = 3;
 
     [SerializeField] private Material _litMaterial;
     [SerializeField] private Material _unlitMaterial;
@@ -29,17 +29,17 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
         if (!swingsOpen) moveToVector += originalPosition;
 
         StartIndicators();
-        UpdateIndicators();
     }
     public void Increment()
     {
         _numOfButtonsRequired++;
+        UpdateIndicators();
         if (_numOfButtonsRequired == numOfButtonsRequired)
         {
             StartCoroutine(MoveDoor());
         }
-        UpdateIndicators();
     }
+
     public void Decrement()
     {
         if (_numOfButtonsRequired == numOfButtonsRequired)
@@ -78,6 +78,8 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
             instantiatedObject.transform.localScale = new Vector3(1.2f, 0.3f, indicatorObjectWidth);
             instantiatedObject.transform.localPosition = new Vector3(0, 0.5f, (i - (numOfButtonsRequired - 1f) / 2f) * indicatorObjectWidth);
             instantiatedObject.transform.localEulerAngles = new Vector3(0,0,0);
+
+            instantiatedObject.transform.position += transform.right;
 
             _indicatorObjects.Add(instantiatedObject);
         }
