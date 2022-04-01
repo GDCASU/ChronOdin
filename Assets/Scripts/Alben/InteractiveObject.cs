@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Added generic type (T) for the Interact function.
-public interface InteractiveObject<T>
+public interface InteractiveObject
 {
-    public T Interact();
+    public void Interact();
 }

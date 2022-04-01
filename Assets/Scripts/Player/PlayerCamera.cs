@@ -19,7 +19,6 @@ public class PlayerCamera : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
         transform.localRotation = player.transform.rotation;
 
         if (transform.parent) transform.parent = null;
@@ -44,6 +43,7 @@ public class PlayerCamera : MonoBehaviour
 
             mouseX = HorizontalRotation(mouseX);
             mouseY = VerticalRotation(mouseY);
+
             transform.localRotation = Quaternion.Euler(mouseY, mouseX, 0f);
         }
         else transform.localRotation = player.localRotation;
