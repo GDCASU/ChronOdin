@@ -29,7 +29,8 @@ public class MovingPlatformPath : SimpleTimeManipulation
             float step = 0;
             while (step < 1)
             {
-                step += speed * speedMultiplier * timeScale * Time.fixedDeltaTime * 1f / Vector3.Distance(points[i], points[i + 1]);
+                float a = (1f / ((Vector3.Distance(points[i], points[i + 1]) / speed) * 50)) * timeScale;
+                step += a;
                 platform.transform.position = transform.position + Vector3.Lerp(points[i], points[i + 1], step);
                 yield return new WaitForFixedUpdate();
             }
@@ -45,7 +46,8 @@ public class MovingPlatformPath : SimpleTimeManipulation
             float step = 0;
             while (step < 1)
             {
-                step += speed * speedMultiplier * timeScale *Time.fixedDeltaTime * 1f / Vector3.Distance(points[i], points[i - 1]);
+                float a = (1f / ((Vector3.Distance(points[i], points[i - 1]) / speed) * 50)) * timeScale;
+                step += a;
                 platform.transform.position = transform.position + Vector3.Lerp(points[i], points[i - 1], step);
                 yield return new WaitForFixedUpdate();
 
