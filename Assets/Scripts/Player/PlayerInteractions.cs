@@ -39,6 +39,7 @@ public class PlayerInteractions : MonoBehaviour
         else
             Destroy(gameObject);
     }
+
     //private void Start() => action = InputManager.playerButtons[PlayerInput.PlayerButton.Interact];
     /// <summary>
     /// Check every frame to see if the player hits the Fire1 button (left mouse button) to interact with objects
@@ -50,30 +51,29 @@ public class PlayerInteractions : MonoBehaviour
         {
             if (rayHit.transform.tag.Equals("Liftable"))
             {
-                InteractionText.text = "Press " + (InputManager.inputMode == InputManager.InputMode.controller? 
-                    action.xboxKey.ToString(): action.keyboardKey.ToString()) + " to PickUp";
+                action = InputManager.playerButtons[button];
+                transformBeingLookedAt = rayHit.transform;
+                InteractionText.text = "Press " + (InputManager.inputMode == InputManager.InputMode.keyboard ?
+                     action.keyboardKey.ToString() : InputManager.playerXboxButtons[action.xboxKey]) + " to PickUp";
                 if (InputManager.GetButtonDown(button))
                 {
                     var objectPickup = GetComponent<ObjectPickup>();
                     if (objectPickup.heldObject) objectPickup.ReleaseObject();
                     else objectPickup.PickupObject();
-                }    
+                }
             }
             else if (rayHit.transform.tag.Equals("Interactable"))
             {
-                InteractionText.text = "Press " + (InputManager.inputMode == InputManager.InputMode.controller ?
-                    action.xboxKey.ToString() : action.keyboardKey.ToString()) + "to  Interact";
-                if (InputManager.GetButtonDown(button)) rayHit.transform.GetComponent<InteractiveObject>().Interact();
+                action = InputManager.playerButtons[button];
+                transformBeingLookedAt = rayHit.transform;
+                InteractionText.text = "Press " + (InputManager.inputMode == InputManager.InputMode.keyboard ?
+                     action.keyboardKey.ToString() : InputManager.playerXboxButtons[action.xboxKey]) + " to  Interact";
+                if (InputManager.GetButtonDown(button)) rayHit.transform.GetComponent<InteractiveObject>().Interact();                
             }
             else transformBeingLookedAt = rayHit.transform;
         }
         else transformBeingLookedAt = null;
-        //if (InputManager.GetButtonUp(button))
-        //{
-        //    if (rayHit.collider)
-        //        if (rayHit.transform.tag.Equals("Liftable")) GetComponent<ObjectPickup>().ReleaseObject();
-        //}
     }
-
     public Transform RaycastTransform() => transformBeingLookedAt;
+
 }
