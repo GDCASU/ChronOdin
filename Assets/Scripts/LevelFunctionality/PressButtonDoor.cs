@@ -10,9 +10,14 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
     private Vector3 originalPosition;
     private Vector3 originalRotation;
     private bool open;
-
     public int numOfButtonsRequired = 1;
     private int _numOfButtonsRequired;
+
+    [SerializeField] private Material _litMaterial;
+    [SerializeField] private Material _unlitMaterial;
+    public GameObject _indicatorObject;
+    private List<GameObject> _indicatorObjects = new List<GameObject>();
+    private const float _offsetWidth = 10f;
 
     protected void Start()
     {
@@ -21,15 +26,19 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
         originalRotation = transform.rotation.eulerAngles;
         _numOfButtonsRequired = 0;
         if (!swingsOpen) moveToVector += originalPosition;
+
+        StartIndicators();
     }
     public void Increment()
     {
         _numOfButtonsRequired++;
+        UpdateIndicators();
         if (_numOfButtonsRequired == numOfButtonsRequired)
         {
             StartCoroutine(MoveDoor());
         }
     }
+
     public void Decrement()
     {
         if (_numOfButtonsRequired == numOfButtonsRequired)
@@ -37,7 +46,9 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
             StartCoroutine(MoveDoor());
         }
         _numOfButtonsRequired--;
+        UpdateIndicators();
     }
+
     IEnumerator MoveDoor()
     {
         Vector3 endPosition = open?(swingsOpen ? originalRotation: originalPosition): moveToVector;
@@ -53,5 +64,33 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
             yield return new WaitForFixedUpdate();
         }
         open = !open;
+    }
+
+    private void StartIndicators()
+    {
+        float indicatorObjectWidth = 1f / (float) numOfButtonsRequired;
+        for (int i = 0; i < numOfButtonsRequired; i++) 
+        {
+            GameObject instantiatedObject = Instantiate(_indicatorObject, Vector2.zero, Quaternion.identity);
+
+            instantiatedObject.transform.SetParent(transform);
+            instantiatedObject.transform.localScale = new Vector3(1.2f, 0.3f, indicatorObjectWidth);
+            instantiatedObject.transform.localPosition = new Vector3(0, 0.5f, (i - (numOfButtonsRequired - 1f) / 2f) * indicatorObjectWidth);
+            instantiatedObject.transform.localEulerAngles = new Vector3(0,0,0);
+
+            instantiatedObject.transform.position += transform.right;
+
+            _indicatorObjects.Add(instantiatedObject);
+        }
+    }
+
+    private void UpdateIndicators() 
+    {
+        for (int i = 0; i < _indicatorObjects.Count; i++) 
+        {
+            MeshRenderer indicatorObjectMeshRenderer = _indicatorObjects[i].GetComponent<MeshRenderer>();
+            if (i > numOfButtonsRequired - _numOfButtonsRequired - 1) indicatorObjectMeshRenderer.material = _litMaterial;
+            else indicatorObjectMeshRenderer.material = _unlitMaterial;
+        }
     }
 }
