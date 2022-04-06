@@ -114,4 +114,4 @@ MonoBehaviour:
   numOfButtonsRequired: 1
   _litMaterial: {fileID: 2100000, guid: 65c2f596f9c64c04faed95235bf2a808, type: 2}
   _unlitMaterial: {fileID: 2100000, guid: d221a12701439fe4980fcfda80d1cf22, type: 2}
-  _indicatorObject: {fileID: 5443050834140431224, guid: c598d9dcc22500341bf9591c5f137ef8, type: 3}
+  _indicatorObject: {fileID: 5443050834140431224, guid: a829359a00441d94885297acdaaec5fd, type: 3}
