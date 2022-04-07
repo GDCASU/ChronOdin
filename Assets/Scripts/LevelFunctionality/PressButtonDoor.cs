@@ -74,11 +74,12 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
             GameObject instantiatedObject = Instantiate(_indicatorObject, Vector2.zero, Quaternion.identity);
 
             instantiatedObject.transform.SetParent(transform);
-            instantiatedObject.transform.localScale = new Vector3(1.2f, 0.3f, indicatorObjectWidth);
-            instantiatedObject.transform.localPosition = new Vector3(0, 0.5f, (i - (numOfButtonsRequired - 1f) / 2f) * indicatorObjectWidth);
-            instantiatedObject.transform.localEulerAngles = new Vector3(0,0,0);
+            instantiatedObject.transform.localScale = Vector3.one * .75f;
+            instantiatedObject.transform.localPosition = new Vector3(0, 2f, (i - (numOfButtonsRequired - 1f) / 2f) * indicatorObjectWidth);
+            instantiatedObject.transform.localEulerAngles = new Vector3(0,-90,0);
 
             instantiatedObject.transform.position += transform.right;
+            instantiatedObject.transform.parent = null;
 
             _indicatorObjects.Add(instantiatedObject);
         }
