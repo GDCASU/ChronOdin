@@ -48,7 +48,7 @@ public abstract class SimpleTimeManipulation : MonoBehaviour
 
     }
     public virtual void ActivateSingleObjectEffect(float activeTime, TimeEffect effect) => StartCoroutine(SingleObjectEffect(activeTime, effect)); 
-    private IEnumerator SingleObjectEffect(float activeTime, TimeEffect effect)
+    protected IEnumerator SingleObjectEffect(float activeTime, TimeEffect effect)
     {
         float timer = activeTime;
         float startingEffect = (int)effect / 10f;

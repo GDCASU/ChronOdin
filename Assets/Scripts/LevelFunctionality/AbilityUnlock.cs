@@ -12,6 +12,7 @@ public class AbilityUnlock : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             other.GetComponent<AbilityManager>()?.SetAbilityStatus(abilityToUnlock, true);
+            Destroy(gameObject);
         }
     }
 }
