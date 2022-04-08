@@ -31,17 +31,19 @@ public class ReverseInvocation : MonoBehaviour
     PlayerReverse playerReversal = null;  // script attached to Player responsible for reversing the Player
 
     public static ReverseInvocation singleton;
+    private void Awake()
+    {
+        if (singleton == null)
+            singleton = this;
+        else
+            Destroy(gameObject);
+    }
 
     /// <summary>
     /// Sets up singleton and collects the PlayerReverse script.
     /// </summary>
     private void Start()
     {
-        if (singleton == null)
-            singleton = this;
-        else
-            Destroy(gameObject);
-
         playerReversal = transform.GetComponent<PlayerReverse>();
     }
     public void SimpleObjectReverse(SimpleTimeManipulation simpleObject)
