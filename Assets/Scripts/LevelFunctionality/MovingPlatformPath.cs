@@ -30,6 +30,7 @@ public class MovingPlatformPath : SimpleTimeManipulation
             while (step < 1)
             {
                 step += speed * speedMultiplier * timeScale * Time.fixedDeltaTime * 1f / Vector3.Distance(points[i], points[i + 1]);
+
                 platform.transform.position = transform.position + Vector3.Lerp(points[i], points[i + 1], step);
                 yield return new WaitForFixedUpdate();
             }
