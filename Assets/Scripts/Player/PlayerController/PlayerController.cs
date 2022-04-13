@@ -11,6 +11,7 @@ public partial class PlayerController : MonoBehaviour
     public bool jumpMechanic;
     public bool crouchMechanic;
     public bool vaultMechanic;
+    private bool movementDisabled;
     #endregion
 
     #region Additional Mechanics Variables
@@ -144,9 +145,12 @@ public partial class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (crouchMechanic) CrouchInput();
-        MovementInput();
-        if (jumpMechanic) JumpInput();
+        if (!movementDisabled)
+        {
+            if (crouchMechanic) CrouchInput();
+            MovementInput();
+            if (jumpMechanic) JumpInput();
+        }
     }
     private void FixedUpdate()
     {
@@ -171,4 +175,27 @@ public partial class PlayerController : MonoBehaviour
     }
 
     public void UpdateRespawnPoint() => lastViablePosition = transform.position;
+    /// <summary>
+    /// Reset the players position to the one set by a checkpoint
+    /// </summary>
+    public void ResetPosition()
+    {
+        rb.velocity = Vector3.zero;
+        SetInitialGravity(0);
+        transform.position = lastViablePosition;
+        previousState = playerState;
+        playerState = PlayerState.InAir;
+        g = baseMovementVariables.initialGravity;
+    }
+    public void ChangeWalkingSpeed(float newWalkingSpeed) =>baseMovementVariables.maxWalkVelocity = newWalkingSpeed;
+    public void ResetWalkingSpeed() => baseMovementVariables.maxWalkVelocity = baseMovementVariables.originalWalkingSpeed;
+    public void ChangeSprintSpeed(float newSprintSpeed) => baseMovementVariables.maxSprintVelocity = newSprintSpeed;
+    public void ResetSprintSpeed() => baseMovementVariables.maxSprintVelocity = baseMovementVariables.originalSprintSpeed;
+    public void DisableMovement()
+    {
+        x = 0;
+        z = 0;
+        movementDisabled = true;
+    }
+    public void EnableMovement() => movementDisabled = false;
 }

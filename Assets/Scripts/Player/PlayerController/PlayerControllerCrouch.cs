@@ -14,6 +14,7 @@ public partial class PlayerController
         public bool slideMechanic;
         public float playerYScaleWhenCrouched = .5f;
         public float cameraDisplacement = 1;
+        public bool standingUp;
     }
     void CrouchInput()
     {
@@ -25,7 +26,7 @@ public partial class PlayerController
     } 
     public void HandleCrouchInput()
     {
-        crouchVariables.topIsClear = !Physics.Raycast(transform.position - newForwardandRight.normalized * capCollider.radius,
+        crouchVariables.topIsClear = !Physics.Raycast(transform.position + newForwardandRight.normalized * capCollider.radius,
             transform.up, capCollider.height + .01f * transform.lossyScale.y, ~ignores); // Check if thee's nothing blocking the player from standing up
 
         if (isGrounded)
@@ -46,14 +47,27 @@ public partial class PlayerController
             //Stand Up
             if (crouchVariables.isCrouching && !crouchVariables.crouchBuffer && playerState != PlayerState.Sliding)
             {
-                if (crouchVariables.topIsClear) //Checks that there are no obstacles on top of the player so they can stand up
+                if (crouchVariables.topIsClear && !crouchVariables.standingUp) //Checks that there are no obstacles on top of the player so they can stand up
                 {
-                    capCollider.height *= (1f / crouchVariables.playerYScaleWhenCrouched);
-                    capCollider.center += Vector3.up * crouchVariables.playerYScaleWhenCrouched;
-                    crouchVariables.isCrouching = false;
-                    playerCamera.AdjustCameraHeight(false, crouchVariables.cameraDisplacement);
+                    StartCoroutine(DelayStandingUp());
                 }
             }
         }
+    }
+    private IEnumerator DelayStandingUp()
+    {
+        crouchVariables.standingUp = true;
+        yield return new WaitForSeconds(.5f);
+        if (Physics.Raycast(transform.position + newForwardandRight.normalized * capCollider.radius,
+            transform.up, capCollider.height + .01f * transform.lossyScale.y, ~ignores))
+        {
+            crouchVariables.standingUp = false;
+            yield break;
+        } 
+        capCollider.height *= (1f / crouchVariables.playerYScaleWhenCrouched);
+        capCollider.center += Vector3.up * crouchVariables.playerYScaleWhenCrouched;
+        crouchVariables.isCrouching = false;
+        playerCamera.AdjustCameraHeight(false, crouchVariables.cameraDisplacement);
+        crouchVariables.standingUp = false;
     }
 }
