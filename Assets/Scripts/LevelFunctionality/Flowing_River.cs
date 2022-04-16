@@ -10,23 +10,24 @@ public class Flowing_River : SimpleTimeManipulation
     public float playerVelocity;
     private float originalPlayerSprint;
     private float originalPlayerWalk;
+    public bool isLinked;
     public void Start() => UpdateWithGlobalTimescale(MasterTime.singleton.timeScale);
 
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.GetComponent<Rigidbody>())
-            other.gameObject.GetComponent<Rigidbody>().velocity += (overrideDirection) ? forceDirection : transform.forward * streamForce * timeScale;
+            other.gameObject.GetComponent<Rigidbody>().velocity += ((overrideDirection) ? forceDirection : transform.forward) * streamForce * timeScale;
         if (other.gameObject.tag == "Player")
         {
-            if (timeScale == 2 || timeScale == 1)
+            if (timeScale == 1)
             {
-                PlayerController.singleton.baseMovementVariables.maxWalkVelocity = playerVelocity;
-                PlayerController.singleton.baseMovementVariables.maxSprintVelocity = playerVelocity;
+                PlayerController.singleton.ChangeWalkingSpeed(playerVelocity);
+                PlayerController.singleton.ChangeSprintSpeed(playerVelocity);
             }
             else
             {
-                PlayerController.singleton.baseMovementVariables.maxWalkVelocity = originalPlayerWalk;
-                PlayerController.singleton.baseMovementVariables.maxSprintVelocity = originalPlayerSprint;
+                PlayerController.singleton.ResetWalkingSpeed();
+                PlayerController.singleton.ResetSprintSpeed();
             }
         }
     }
@@ -34,18 +35,28 @@ public class Flowing_River : SimpleTimeManipulation
     {
         if (other.gameObject.tag == "Player")
         {
-            originalPlayerSprint = PlayerController.singleton.baseMovementVariables.maxSprintVelocity;
-            originalPlayerWalk = PlayerController.singleton.baseMovementVariables.maxWalkVelocity;           
-            PlayerController.singleton.ToggleGravity(false);
+            PlayerController.singleton.ChangeWalkingSpeed(playerVelocity);
+            PlayerController.singleton.ChangeSprintSpeed(playerVelocity);
+
         }
+        
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
-            PlayerController.singleton.ToggleGravity(true);
-            PlayerController.singleton.baseMovementVariables.maxWalkVelocity = originalPlayerWalk;
-            PlayerController.singleton.baseMovementVariables.maxSprintVelocity = originalPlayerSprint;
+            PlayerController.singleton.ResetWalkingSpeed();
+            PlayerController.singleton.ResetSprintSpeed();
         }
+        
+    }
+    public override void ActivateSingleObjectEffect(float activeTime, TimeEffect effect)
+    {
+        if (isLinked) GetComponentInParent<LinkFlowingRivers>().ActivateAllLinkedRivers(activeTime, effect);
+        else StartCoroutine(SingleObjectEffect(activeTime, effect));
+    }
+    public void ActivateLinkedRiverEffect(float activeTime, TimeEffect effect)
+    {
+        StartCoroutine(SingleObjectEffect(activeTime, effect));
     }
 }

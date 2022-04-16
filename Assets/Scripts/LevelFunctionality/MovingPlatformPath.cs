@@ -30,6 +30,7 @@ public class MovingPlatformPath : SimpleTimeManipulation
             while (step < 1)
             {
                 step += speed * speedMultiplier * timeScale * Time.fixedDeltaTime * 1f / Vector3.Distance(points[i], points[i + 1]);
+
                 platform.transform.position = transform.position + Vector3.Lerp(points[i], points[i + 1], step);
                 yield return new WaitForFixedUpdate();
             }
@@ -40,12 +41,12 @@ public class MovingPlatformPath : SimpleTimeManipulation
     IEnumerator MovePlatformBackWards()
     {
         platform.transform.position = transform.position + points[0];
-        for (int i = points.Length - 1; i > 1 - 1; i--)
+        for (int i = points.Length - 1; i > 0; i--)
         {
             float step = 0;
             while (step < 1)
             {
-                step += speed * speedMultiplier * timeScale *Time.fixedDeltaTime * 1f / Vector3.Distance(points[i], points[i - 1]);
+                step += speed * speedMultiplier * timeScale * Time.fixedDeltaTime * 1f / Vector3.Distance(points[i], points[i - 1]);
                 platform.transform.position = transform.position + Vector3.Lerp(points[i], points[i - 1], step);
                 yield return new WaitForFixedUpdate();
 
