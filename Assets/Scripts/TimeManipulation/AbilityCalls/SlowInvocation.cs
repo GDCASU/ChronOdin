@@ -52,7 +52,10 @@ public class SlowInvocation : MonoBehaviour
     public void SimpleObjectSlow(SimpleTimeManipulation simpleObject)
     {
         if (TimeStamina.singleton.ConsumeChunk(singleSlowStaminaCost))
+        {
             simpleObject.ActivateSingleObjectEffect(_singleSlowTime, TimeEffect.Slow);
+            AbilityVisualInvocation.singleton.PlaySingleVFX();
+        }
     }
     public void ComplexObjectSlow(ComplexTimeHub complexObject)
     {
@@ -60,8 +63,11 @@ public class SlowInvocation : MonoBehaviour
             return;
 
         if (TimeStamina.singleton.ConsumeChunk(singleSlowStaminaCost))
+        {
             complexObject.AffectObject(TimeEffect.Slow, _singleSlowTime, slowFactor, true);
-    }
+            AbilityVisualInvocation.singleton.PlaySingleVFX();
+        }
+}
     public void EnvironmentSlow()
     {
         if (MasterTime.singleton.timeScale > 1f || MasterTime.singleton.timeScale <= 0f)
@@ -70,11 +76,13 @@ public class SlowInvocation : MonoBehaviour
         // If the environment slow ability is toggled off and the Player has stamina, freeze the environment and commence draining stamina.
         if (!AbilityManager.singleton.environmentEffectActive)
         {
+            AbilityManager.singleton.ToggleEnvironment(true);
+
             if (TimeStamina.singleton.CommenceDraining(environmentSlowStaminaRate))
             {
                 MasterTime.singleton.UpdateTime((int)TimeEffect.Slow);
                 slowAllComplexObjects?.Invoke(TimeEffect.Slow, TimeStamina.singleton.RemainingDrainTime, slowFactor, false);
-                AbilityManager.singleton.ToggleEnvironment(true);
+                AbilityVisualInvocation.singleton.PlayerEnvironmentVFX();
                 StartCoroutine(TrackEnvironmentSlow());
             }
         }
@@ -94,15 +102,7 @@ public class SlowInvocation : MonoBehaviour
         MasterTime.singleton.UpdateTime((int)TimeEffect.None);
         slowAllComplexObjects?.Invoke(TimeEffect.None, 0f, 1f, false);
 
-        // If the Player toggled off environment slow, then halt draining.
-        // Otherwise, toggle off the environment slow automatically.
-        if (!AbilityManager.singleton.environmentEffectActive)
-        {
-            TimeStamina.singleton.HaltDraining();
-        }
-        else
-        {
-            AbilityManager.singleton.ToggleEnvironment(false);
-        }
+        // Halt draining.
+        TimeStamina.singleton.HaltDraining();
     }
 }

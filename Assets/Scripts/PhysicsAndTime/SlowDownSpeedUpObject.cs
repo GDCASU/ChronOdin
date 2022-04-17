@@ -84,7 +84,7 @@ public class SlowDownSpeedUpObject : ComplexSlow
     /// <param name="timeScale"> master time scale </param>
     private void StackEnvironmentEffect(float timeScale)
     {
-        if (slowing)
+        if (slowing && rb != null)
         {
             if (timeScale == 0f)
             {
