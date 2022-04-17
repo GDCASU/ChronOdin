@@ -48,7 +48,10 @@ public class FreezeInvocation : MonoBehaviour
     public void SimpleObjectFreeze(SimpleTimeManipulation simpleObject)
     {
         if (TimeStamina.singleton.ConsumeChunk(singleFreezeStaminaCost))
+        {
             simpleObject.ActivateSingleObjectEffect(_singleFreezeTime, TimeEffect.Freeze);
+            AbilityVisualInvocation.singleton.PlaySingleVFX();
+        }
     }
     public void ComplexObjectFreeze(ComplexTimeHub complexObject)
     {
@@ -56,7 +59,11 @@ public class FreezeInvocation : MonoBehaviour
             return;
 
         if (TimeStamina.singleton.ConsumeChunk(singleFreezeStaminaCost))
+        {
             complexObject.AffectObject(TimeEffect.Freeze, _singleFreezeTime, 0f, true);
+            AbilityVisualInvocation.singleton.PlaySingleVFX();
+        }
+            
     }
     public void EnvironmentFreeze()
     {
@@ -67,11 +74,13 @@ public class FreezeInvocation : MonoBehaviour
         // If the environment freeze ability is toggled off and the Player has stamina, freeze the environment and commence draining stamina.
         if (!AbilityManager.singleton.environmentEffectActive)
         {
+            AbilityManager.singleton.ToggleEnvironment(true);
+
             if (TimeStamina.singleton.CommenceDraining(environmentFreezeStaminaRate))
             {
                 MasterTime.singleton.UpdateTime((int)TimeEffect.Freeze);
                 freezeAllComplexObjects?.Invoke(TimeEffect.Freeze, TimeStamina.singleton.RemainingDrainTime, 0, false);
-                AbilityManager.singleton.ToggleEnvironment(true);
+                AbilityVisualInvocation.singleton.PlayerEnvironmentVFX();
                 StartCoroutine(TrackEnvironmentFreeze());
             }
         }
@@ -91,15 +100,7 @@ public class FreezeInvocation : MonoBehaviour
         MasterTime.singleton.UpdateTime((int)TimeEffect.None);
         freezeAllComplexObjects?.Invoke(TimeEffect.None, 0f, 1f, false);
 
-        // If the Player toggled off environment freeze, then halt draining.
-        // Otherwise, toggle off the environment freeze automatically.
-        if (!AbilityManager.singleton.environmentEffectActive)
-        {
-            TimeStamina.singleton.HaltDraining();
-        }
-        else
-        {
-            AbilityManager.singleton.ToggleEnvironment(false);
-        }
+        // Halt draining.
+        TimeStamina.singleton.HaltDraining();
     }
 }
