@@ -39,6 +39,9 @@ public class StaminaBar : MonoBehaviour
     /// <param name="stamina"> value to be represented by the stamina bar </param>
     public void SetStamina(float stamina)
     {
-        staminaBar.value = stamina;
+        if (stamina >= 0)
+            staminaBar.value = stamina;
+        else
+            staminaBar.value = 0;
     }
 }

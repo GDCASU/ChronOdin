@@ -52,7 +52,10 @@ public class ReverseInvocation : MonoBehaviour
             return;
 
         if (TimeStamina.singleton.ConsumeChunk(singleReverseStaminaCost))
+        {
             simpleObject.ActivateSingleObjectEffect(_singleReverseTime, TimeEffect.Reverse);
+            AbilityVisualInvocation.singleton.PlaySingleVFX();
+        }
     }
     public void ComplexObjectReverse(ComplexTimeHub complexObject)
     {
@@ -63,7 +66,10 @@ public class ReverseInvocation : MonoBehaviour
 
 
         if (TimeStamina.singleton.ConsumeChunk(singleReverseStaminaCost))
+        {
             complexObject.AffectObject(TimeEffect.Reverse, _singleReverseTime, -1f, true);
+            AbilityVisualInvocation.singleton.PlaySingleVFX();
+        }
     }
     public void PlayerReverse()
     {
