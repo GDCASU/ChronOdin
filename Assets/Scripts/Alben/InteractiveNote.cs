@@ -14,7 +14,7 @@ public class InteractiveNote : MonoBehaviour, InteractiveObject
     /// Get the contents of the note object.
     /// </summary>
     /// <returns>The contents of the note.</returns>
-    public void Interact()
+    public virtual void Interact()
     {
         PauseMenu.singleton.DisplayNote(noteContent);
     }

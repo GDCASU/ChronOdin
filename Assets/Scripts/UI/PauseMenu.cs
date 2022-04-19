@@ -15,6 +15,7 @@ public class PauseMenu : MonoBehaviour
     public Text customMessage;
     public PlayerCamera playerCamera;
     public float reactivateControllerDelay;
+    public bool messagePreped = false;
     void Start()
     {
         Time.timeScale = 1;
@@ -49,11 +50,20 @@ public class PauseMenu : MonoBehaviour
                     SwitchPanels(3);
                     break;
                 case 6:
-                    SwitchPanels(0);
-                    StartCoroutine(RestartControllerDelay());
+                    if (messagePreped)
+                    {
+                        SwitchPanels(7);
+                        messagePreped = false;
+                    }
+                    else
+                    {
+                        SwitchPanels(0);
+                        StartCoroutine(RestartControllerDelay());
+                    }
                     break;
                 case 7:
                     SwitchPanels(0);
+                    StartCoroutine(RestartControllerDelay());
                     break;
                 default:
                     SwitchPanels(1);
@@ -67,7 +77,7 @@ public class PauseMenu : MonoBehaviour
         panels[panelToActivate].SetActive(true);
         currentPanel = panelToActivate;
         EventSystem.current.SetSelectedGameObject(null);
-        if(panelToActivate!=0 && panelToActivate != 6) EventSystem.current.SetSelectedGameObject(panels[currentPanel].GetComponentInChildren<Button>().gameObject);
+        if(panelToActivate!=0 && panelToActivate != 6 && panelToActivate != 7) EventSystem.current.SetSelectedGameObject(panels[currentPanel].GetComponentInChildren<Button>().gameObject);
     }
     public void ResumeGame()
     {
@@ -94,6 +104,11 @@ public class PauseMenu : MonoBehaviour
     {
         SwitchPanels(7);
         customMessage.text = message;
+    }
+    public void PrepCustomMessage(string message)
+    {
+        customMessage.text = message;
+        messagePreped = true;
     }
     private IEnumerator RestartControllerDelay()
     {

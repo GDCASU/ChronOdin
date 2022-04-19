@@ -7,17 +7,13 @@ public class IntroLevelTransition : MonoBehaviour
     public bool transitioningInside;
     public Light directionalLight;
     public float startingIntensity;
-    public float durationOfLightTransition;
-    float lightDim;
-    WaitForSeconds wfs;
+    public float transitionRate = .05f;
 
     private void Start()
     {
         if (directionalLight)
         {
             startingIntensity = directionalLight.intensity;
-            lightDim = startingIntensity / durationOfLightTransition;
-            wfs = new WaitForSeconds(lightDim);
         } 
     }
 
@@ -48,7 +44,7 @@ public class IntroLevelTransition : MonoBehaviour
 
     IEnumerator LightBrightness(bool dim)
     {
-        float adjustmentValue = (dim ? -1 : 1) * .05f;
+        float adjustmentValue = (dim ? -1 : 1) * transitionRate * Time.deltaTime;
         float goal = dim ? 0 : startingIntensity;
 
         if (dim)
@@ -56,7 +52,7 @@ public class IntroLevelTransition : MonoBehaviour
             while (directionalLight.intensity > goal)
             {
                 directionalLight.intensity += adjustmentValue;
-                yield return wfs;
+                yield return null;
             }
         }
         else
@@ -64,7 +60,7 @@ public class IntroLevelTransition : MonoBehaviour
             while (directionalLight.intensity < goal)
             {
                 directionalLight.intensity += adjustmentValue;
-                yield return wfs;
+                yield return null;
             }
         }
     }
