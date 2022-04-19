@@ -40,7 +40,8 @@ public class MainMenu : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(panels[currentPanel].GetComponentInChildren<Button>().gameObject);
     }
 
-    public void LoadSaves() => SwitchPanels(1);
+    //public void LoadSaves() => SwitchPanels(1);
+    public void LoadSaves() => SceneManager.LoadScene(1);
     public void CancelPrompt() => SwitchPanels(0);
     public void Settings() => SwitchPanels(2);
     public void Controls() => SwitchPanels(3);

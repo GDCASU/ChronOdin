@@ -14,7 +14,8 @@ public enum Levels
     stevensLevel = 2,
     travisLevel = 3,
     aaronsLevel = 4,
-    donovansLevel = 5
+    donovansLevel = 5,
+    credits = 6
 }
 
 /// <summary>

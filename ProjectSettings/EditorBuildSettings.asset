@@ -8,4 +8,19 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 8fdca2e84e40b7141b9d10dafec8479b
+  - enabled: 1
+    path: Assets/Scenes/ChristianLevels/ChristianLevelOneUpdated.unity
+    guid: d6d3082741ae4604eb7afc8c483c4b9f
+  - enabled: 1
+    path: Assets/Scenes/StevenHarms.unity
+    guid: 65bc83e648dcc354c862565027135d12
+  - enabled: 1
+    path: Assets/Scenes/Travis Howard-Pillar Puzzle.unity
+    guid: 093eac0c1b0966c4ebc4861f2fc23b7e
+  - enabled: 1
+    path: Assets/Scenes/ChristianLevels/ChrsitiansTestingScene.unity
+    guid: 89ebbfbbae83ce14c82f9b1ffe0d0d92
+  - enabled: 1
+    path: Assets/Scenes/CristionTestScene.unity
+    guid: daaa5f5530d6ac545b1eea18cde62987
   m_configObjects: {}
