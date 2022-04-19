@@ -10,7 +10,11 @@ using UnityEngine.SceneManagement;
 public enum Levels
 {
     title = 0,
-    testLevel = 1
+    christianIntralevel = 1,
+    stevensLevel = 2,
+    travisLevel = 3,
+    aaronsLevel = 4,
+    donovansLevel = 5
 }
 
 /// <summary>
