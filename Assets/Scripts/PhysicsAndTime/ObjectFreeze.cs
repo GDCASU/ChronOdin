@@ -32,6 +32,9 @@ public class ObjectFreeze : ComplexFreeze
     /// <param name="freezeTime"> time to freeze object </param>
     public override void Freeze(float freezeTime)
     {
+        if (objectPhysics == null)
+            return;
+
         StartCoroutine(FreezeObject(freezeTime));
     }
 

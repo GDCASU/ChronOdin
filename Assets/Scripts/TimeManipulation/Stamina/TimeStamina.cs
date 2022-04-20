@@ -129,7 +129,7 @@ public class TimeStamina : MonoBehaviour
     /// <returns> Is stamina greather than 0? </returns>
     public bool CommenceDraining(float staminaPerSec)
     {
-        if (Stamina <= 0f && isDraining)
+        if (Stamina <= 0f || isDraining)
             return false;
 
         drainStaminPerFixedUpdate = staminaPerSec * Time.fixedDeltaTime;
@@ -149,8 +149,6 @@ public class TimeStamina : MonoBehaviour
             StaminaBar.singleton.SetStamina(Stamina);
             yield return waitForFixedUpdate;
         }
-
-        HaltDraining();
     }
     /// <summary>
     /// Halts draining of stamina.
