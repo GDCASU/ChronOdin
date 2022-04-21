@@ -95,12 +95,12 @@ public partial class PlayerController
         speedIncrease = (isSprinting) ? baseMovementVariables.sprintSpeedIncrease : baseMovementVariables.walkSpeedIncrease;
         maxVelocity = (isSprinting) ? baseMovementVariables.maxSprintVelocity : baseMovementVariables.maxWalkVelocity;
 
-        if (Input.GetKey(KeyCode.W)) z = speedIncrease;
-        else if (Input.GetKey(KeyCode.S)) z = -speedIncrease;
-        else z = 0;
-        if (Input.GetKey(KeyCode.D)) x = speedIncrease;
-        else if (Input.GetKey(KeyCode.A)) x = -speedIncrease;
-        else x = 0;
+        //if (Input.GetKey(KeyCode.W)) z = speedIncrease;
+        //else if (Input.GetKey(KeyCode.S)) z = -speedIncrease;
+        //else z = 0;
+        //if (Input.GetKey(KeyCode.D)) x = speedIncrease;
+        //else if (Input.GetKey(KeyCode.A)) x = -speedIncrease;
+        //else x = 0;
 
         x = InputManager.GetAxis(PlayerInput.PlayerAxis.MoveHorizontal);
         z = InputManager.GetAxis(PlayerInput.PlayerAxis.MoveVertical);
