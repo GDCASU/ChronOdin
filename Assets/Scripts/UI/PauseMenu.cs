@@ -46,7 +46,6 @@ public class PauseMenu : MonoBehaviour
                 case 1:
                     ResumeGame();
                     break;
-                    break;
                 case 6:
                     if (messagePreped)
                     {

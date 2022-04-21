@@ -21,6 +21,6 @@ EditorBuildSettings:
     path: Assets/Scenes/ChristianLevels/ChrsitiansTestingScene.unity
     guid: 89ebbfbbae83ce14c82f9b1ffe0d0d92
   - enabled: 1
-    path: Assets/Scenes/CristionTestScene.unity
-    guid: daaa5f5530d6ac545b1eea18cde62987
+    path: Assets/Scenes/Rotating Bridges Level [Checkpoint Test].unity
+    guid: 7f447ae3db584404d912035954666772
   m_configObjects: {}
