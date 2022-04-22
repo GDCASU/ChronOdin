@@ -51,6 +51,7 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
 
     IEnumerator MoveDoor()
     {
+        GetComponent<FMODPlay3DSoundEffect>().PlaySoundEffect();
         Vector3 endPosition = open?(swingsOpen ? originalRotation: originalPosition): moveToVector;
         Vector3 startingPosition = swingsOpen? transform.rotation.eulerAngles : transform.position;
         Vector3 lerpVector;

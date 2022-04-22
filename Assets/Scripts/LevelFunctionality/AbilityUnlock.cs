@@ -5,14 +5,14 @@ using UnityEngine;
 public class AbilityUnlock : MonoBehaviour
 {
     public TimeEffect abilityToUnlock;
-
-
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            other.GetComponent<AbilityManager>()?.SetAbilityStatus(abilityToUnlock, true);
-            Destroy(gameObject);
-        }
+        if (other.gameObject.CompareTag("Player")) UnlockAbility();
+    }
+
+    public void UnlockAbility()
+    {
+        PlayerController.singleton.GetComponent<AbilityManager>()?.SetAbilityStatus(abilityToUnlock, true);
+        Destroy(gameObject);
     }
 }

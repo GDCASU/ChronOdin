@@ -8290,6 +8290,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f02f4d2c763742438c56dc2ee5f19f7, type: 3}
+--- !u!4 &516242130 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9097780581968264650, guid: 7f02f4d2c763742438c56dc2ee5f19f7, type: 3}
+  m_PrefabInstance: {fileID: 516242129}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &518318380
 GameObject:
   m_ObjectHideFlags: 0
@@ -11513,6 +11518,76 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 707902593}
   m_CullTransparentMesh: 1
+--- !u!1 &711038881
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 711038882}
+  - component: {fileID: 711038884}
+  - component: {fileID: 711038883}
+  m_Layer: 0
+  m_Name: MusicManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &711038882
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711038881}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 516242130}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &711038883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711038881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c1597af792baa349ba9468324129680, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event:
+    Guid:
+      Data1: 1594171712
+      Data2: 1130721806
+      Data3: -901436779
+      Data4: 201713122
+    Path: event:/Music/Project11
+  startingVolume: 0.7
+  originalVolume: 0
+--- !u!114 &711038884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711038881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9468c5f457ace64f8d4df6d642b107f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LoadEvent: 1
+  UnloadEvent: 2
+  Banks: []
+  CollisionTag: 
+  PreloadSamples: 0
 --- !u!1001 &715901222
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17756,6 +17831,7 @@ GameObject:
   - component: {fileID: 1097583370}
   - component: {fileID: 1097583367}
   - component: {fileID: 1097583369}
+  - component: {fileID: 1097583374}
   m_Layer: 3
   m_Name: Player Camera
   m_TagString: MainCamera
@@ -17917,6 +17993,20 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &1097583374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097583366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
+  ListenerNumber: -1
 --- !u!1001 &1104305895
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24927,6 +25017,7 @@ GameObject:
   - component: {fileID: 1589929841}
   - component: {fileID: 1589929840}
   - component: {fileID: 1589929839}
+  - component: {fileID: 1589929852}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -24964,7 +25055,7 @@ MonoBehaviour:
   environmentEffectActive: 0
   canSlow: 1
   canFreeze: 1
-  canReverse: 0
+  canReverse: 1
 --- !u!114 &1589929841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24994,6 +25085,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMovement: {fileID: 1589929848}
   playerCamera: {fileID: 1097583367}
+  sfx: {fileID: 1589929852}
   positionsSavedPerSecond: 10
   amountOfTimeReversed: 3
   reverseDuration: 1.5
@@ -25238,6 +25330,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1589929852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589929838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b04f50b80f6127846b18d3709fbcb405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event:
+    Guid:
+      Data1: -1063914076
+      Data2: 1166389194
+      Data3: -1738344573
+      Data4: 1095470480
+    Path: event:/SFX/PlayerReverse
+  startingVolume: 0.5
 --- !u!1001 &1594376260
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29404,7 +29516,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1857657574
 Transform:
   m_ObjectHideFlags: 0
@@ -33114,7 +33226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a03183480a2996847b40b170c429ca0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextLevel: 3
+  nextLevel: 6
 --- !u!65 &2116602082
 BoxCollider:
   m_ObjectHideFlags: 0
