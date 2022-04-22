@@ -195,146 +195,98 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Game Director
 
-    
 
-    
 
     Assistant Game Director
 
-    
 
-    
+
+    Lead Producer
+
+
 
     Lead
-    Producer
+    Programmers
 
-    
 
-    
 
-    Lead Programmers
-
-    
-
-    
-
-    
 
     Programmers
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    Lead
-    Designers
+    Lead Designers
 
-    
 
-    
 
-    
 
     Level Designers
 
-    
 
-    
 
-    
 
-    
 
-    
 
     Narrative
     Designers
 
-    
 
-    
 
-    
 
-    
 
     Lead Sound Designers
 
-    
 
-    
 
-    
 
-    Sound
-    Designers
+    Sound Designers
 
-    
 
-    
 
-    
 
-    
 
-    Lead Artist
+    Lead
+    Artist
 
-    
 
-    
 
     Artists
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    Assets
-    from Sketchfab
+    Assets from Sketchfab
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
+
 
     These
     assets were published under the CC-BY license: https://creativecommons.org/licenses/by/4.0/
 
-    
 
     Sound
     Assets
 
-    
+
+
+
+    UI Images
+
+
 
 '
 --- !u!222 &31434515
@@ -665,7 +617,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\r\nChristian Gonzalez\r\n\r\n\r\nDaniel Verhagen\r\n\r\n\r\nMeghan Vaughn\r\n\r\n\r\nBradley
+  m_Text: "\r\nChristian Gonzalez\r\n\r\n\nDaniel Verhagen\r\n\r\n\r\nMeghan Vaughn\r\n\r\n\r\nBradley
     Potzka\r\nChristion Dominguez\r\n\r\n\r\nAlben Trang\r\nJordan Davis\r\nNoel
     Ngu\r\nThy Do\r\n\r\n\r\nJanine Long\r\nMichael \"Titanium\" Vit\r\n\r\n\r\nAaron
     Huggins\r\nDonovan Harp\r\nSteven Harms\r\nTravis Howard\r\n\r\n\r\nAlyx Loch\r\nKanosh
@@ -677,8 +629,12 @@ MonoBehaviour:
     Gemstone by Discover\r\nSnowy Ancient Pillar [Stylised] by LukeThePunk666 (modified)\r\nStone
     Dungeon Wall by Kubassa\r\nStone Floor by AO-INTERACTIVE\t(modified)\r\nStylized
     Tileable Stone Floor Texture by Igor Kugar\r\nWinter Fantasy Assets Daggerfall
-    Misc by Anticipateants (modified)\r\n\r\n\r\n\r\n\n349388__macdaddyno1__river-flow-in-okutama.mp3
-    (River SFX) by macdaddyno1 on freesound.org\r\nJST Gang Vocals by JoeySturgisTones"
+    Misc by Anticipateants (modified)\r\nTorch by PeterChen(ChenXianji)\n\r\n\r\n\r\n\n349388__macdaddyno1__river-flow-in-okutama.mp3
+    (River SFX) by macdaddyno1 on freesound.org\r\nJST Gang Vocals by JoeySturgisTones\n\n\nInkscape
+    Black And White Transparent PNG from subpng.com (modified)\nCross Symbol by Mfhc
+    from cleanpng.com\nDecorative Lines SVG Celtic Knots PNG Transparent by hhwoho
+    from pngfind.com (modified)\nViking Medium Font by Dieter Steffmann from 1001
+    Free Fonts\nNordic Font by No Images Fonts from 1001 Free Fonts"
 --- !u!222 &862675327
 CanvasRenderer:
   m_ObjectHideFlags: 0
