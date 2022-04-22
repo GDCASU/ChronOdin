@@ -30,7 +30,7 @@ namespace FMODUnity
             music.start();
             music.release();
 
-            RuntimeManager.PlayOneShot("event:/SFX/Fart");
+            RuntimeManager.PlayOneShot(Event);
 
             
         }

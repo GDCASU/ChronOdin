@@ -1,32 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8954096124351649734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/SFX/Fart
-  m_EditorClassIdentifier: 
-  Path: event:/SFX/Fart
-  Guid:
-    Data1: -1302283613
-    Data2: 1140765049
-    Data3: 131833254
-    Data4: -584304328
-  Banks:
-  - {fileID: 1522515692698889383}
-  IsStream: 0
-  Is3D: 1
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 3239
 --- !u!114 &-4050531919295822242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42,10 +15,10 @@ MonoBehaviour:
   Path: TimePuzzleFmod/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 637861556766726763
+  lastModified: 637861621795891624
   FileSizes:
   - Name: Desktop
-    Value: 804
+    Value: 820
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -62,15 +35,15 @@ MonoBehaviour:
   EditorBanks:
   - {fileID: -4050531919295822242}
   - {fileID: 163200889913657394}
-  - {fileID: 1522515692698889383}
   EditorEvents:
-  - {fileID: -8954096124351649734}
+  - {fileID: 8317840660004431578}
+  - {fileID: 7397996716557501881}
   EditorParameters: []
   MasterBanks:
   - {fileID: 163200889913657394}
   StringsBanks:
   - {fileID: -4050531919295822242}
-  cacheTime: 637861556766726763
+  cacheTime: 637861621795891624
   cacheVersion: 10
 --- !u!114 &163200889913657394
 MonoBehaviour:
@@ -87,12 +60,12 @@ MonoBehaviour:
   Path: TimePuzzleFmod/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 637861556766716763
+  lastModified: 637861621795878796
   FileSizes:
   - Name: Desktop
-    Value: 1036
+    Value: 133792
   Exists: 1
---- !u!114 &1522515692698889383
+--- !u!114 &7397996716557501881
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,14 +74,48 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Test.bank
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/PlayerReverse
   m_EditorClassIdentifier: 
-  Path: TimePuzzleFmod/Build/Desktop/Test.bank
-  Name: Test
-  StudioPath: bank:/Test
-  lastModified: 637861556766726763
-  FileSizes:
-  - Name: Desktop
-    Value: 43552
-  Exists: 1
+  Path: event:/SFX/PlayerReverse
+  Guid:
+    Data1: -1063914076
+    Data2: 1166389194
+    Data3: -1738344573
+    Data4: 1095470480
+  Banks:
+  - {fileID: 163200889913657394}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 3400
+--- !u!114 &8317840660004431578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/RockSliding
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/RockSliding
+  Guid:
+    Data1: -578028204
+    Data2: 1322383276
+    Data3: -2029072217
+    Data4: 1489454930
+  Banks:
+  - {fileID: 163200889913657394}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 5500
