@@ -21,6 +21,8 @@ namespace FMODUnity
         public float originalVolume;
         private float currentVolume;
 
+        bool inMain;
+
         void Start()
         {
             music = RuntimeManager.CreateInstance(Event);
@@ -29,11 +31,28 @@ namespace FMODUnity
             music.getVolume(out originalVolume);
 
             music.start();
-            music.release(); 
+            music.release();
+
+            if (MainMenu.singleton)
+            {
+                originalVolume = MainMenu.singleton.music;
+                MainMenu.singleton.musicUpdated += UpdateVolume;
+            } 
+            else
+            {
+                originalVolume = PauseMenu.singleton.music;
+                PauseMenu.singleton.musicUpdated += UpdateVolume;
+            } 
+        }
+        void UpdateVolume()
+        {
+            currentVolume = (MainMenu.singleton) ? MainMenu.singleton.music : PauseMenu.singleton.music;
+            music.setVolume(currentVolume);
         }
         void OnDestroy()
         {
             music.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         }
     }
+
 }

@@ -16,6 +16,18 @@ public class PauseMenu : MonoBehaviour
     public PlayerCamera playerCamera;
     public float reactivateControllerDelay;
     public bool messagePreped = false;
+
+
+    public float music;
+    public float sfx;
+    public float ambient;
+
+    public delegate void MusicVolumeUpdated();
+    public event MusicVolumeUpdated musicUpdated;
+    public delegate void SFXVolumeUpdated();
+    public event SFXVolumeUpdated sfxUpdated;
+    public delegate void AmbientVolumeUpdated();
+    public event SFXVolumeUpdated ambientUpdated;
     void Start()
     {
         Time.timeScale = 1;
@@ -112,5 +124,20 @@ public class PauseMenu : MonoBehaviour
         playerCamera.enabled = true;
         yield return new WaitForSeconds(reactivateControllerDelay);
         PlayerController.singleton.EnableMovement();
+    }
+    public void UpdateMusicVolume(float value)
+    {
+        music = value;
+        if (musicUpdated != null) musicUpdated();
+    }
+    public void UpdateSFXVolume(float value)
+    {
+        sfx = value;
+        if (sfxUpdated != null) sfxUpdated();
+    }
+    public void UpdateAmbientVolume(float value)
+    {
+        ambient = value;
+        if (ambientUpdated != null) ambientUpdated();
     }
 }

@@ -7,8 +7,27 @@ using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
+    public static MainMenu singleton;
     public int currentPanel;
     public List<GameObject> panels;
+
+    public float music = .7f;
+    public float sfx = .5f;
+    public float ambient;
+
+    public delegate void MusicVolumeUpdated();
+    public event MusicVolumeUpdated musicUpdated;
+    public delegate void SFXVolumeUpdated();
+    public event SFXVolumeUpdated sfxUpdated;
+    public delegate void AmbientVolumeUpdated();
+    public event SFXVolumeUpdated ambientUpdated;
+    private void Awake()
+    {
+        if (singleton == null)
+            singleton = this;
+        else
+            Destroy(gameObject);
+    }
 
     void Start()
     {
@@ -49,4 +68,20 @@ public class MainMenu : MonoBehaviour
     public void ExitGame() => Application.Quit();
 
     public void Credits() => SceneManager.LoadScene((int)Levels.credits);
+
+    public void UpdateMusicVolume(float value)
+    {
+        music = value;
+        if (musicUpdated != null) musicUpdated();
+    }
+    public void UpdateSFXVolume(float value)
+    {
+        sfx = value;
+        if (sfxUpdated != null) sfxUpdated();
+    }
+    public void UpdateAmbientVolume(float value)
+    {
+        ambient = value;
+        if (ambientUpdated != null) ambientUpdated();
+    }
 }

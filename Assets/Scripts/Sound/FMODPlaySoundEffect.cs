@@ -14,15 +14,30 @@ public class FMODPlaySoundEffect : MonoBehaviour
 
     void Start()
     {
+        if (MainMenu.singleton)
+        {
+            originalVolume = MainMenu.singleton.sfx;
+            MainMenu.singleton.sfxUpdated += UpdateVolume;
+        }
+        else
+        {
+            originalVolume = PauseMenu.singleton.sfx;
+            PauseMenu.singleton.sfxUpdated += UpdateVolume;
+        }
+    }
+    public void PlaySoundEffect()
+    {
         effect = RuntimeManager.CreateInstance(Event);
 
         effect.setVolume(startingVolume);
         effect.getVolume(out originalVolume);
-    }
-    public void PlaySoundEffect()
-    {
         effect.start();
         effect.release();
+    }
+    void UpdateVolume()
+    {
+        currentVolume = (MainMenu.singleton) ? MainMenu.singleton.sfx : PauseMenu.singleton.sfx;
+        effect.setVolume(currentVolume);
     }
     void OnDestroy()
     {

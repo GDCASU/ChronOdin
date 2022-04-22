@@ -16,6 +16,17 @@ public class FMODPlay3DSoundEffect : MonoBehaviour
     private void Start()
     {
         if (playOnStart) PlaySoundEffect();
+
+        if (MainMenu.singleton)
+        {
+            originalVolume = MainMenu.singleton.sfx;
+            MainMenu.singleton.sfxUpdated += UpdateVolume;
+        }
+        else
+        {
+            originalVolume = PauseMenu.singleton.sfx;
+            PauseMenu.singleton.sfxUpdated += UpdateVolume;
+        } 
     }
     public void PlaySoundEffect()
     {
@@ -26,6 +37,11 @@ public class FMODPlay3DSoundEffect : MonoBehaviour
         effect.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
         effect.start();
         effect.release();
+    }
+    void UpdateVolume()
+    {
+        currentVolume = (MainMenu.singleton) ? MainMenu.singleton.sfx : PauseMenu.singleton.sfx;
+        effect.setVolume(currentVolume);
     }
     void OnDestroy()
     {
