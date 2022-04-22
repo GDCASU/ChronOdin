@@ -12,15 +12,15 @@ EditorBuildSettings:
     path: Assets/Scenes/ChristianLevels/ChristianLevelOneUpdated.unity
     guid: d6d3082741ae4604eb7afc8c483c4b9f
   - enabled: 1
-    path: Assets/Scenes/StevenHarms.unity
-    guid: 65bc83e648dcc354c862565027135d12
-  - enabled: 1
     path: Assets/Scenes/Travis Howard-Pillar Puzzle.unity
     guid: 093eac0c1b0966c4ebc4861f2fc23b7e
   - enabled: 1
-    path: Assets/Scenes/ChristianLevels/ChrsitiansTestingScene.unity
-    guid: 89ebbfbbae83ce14c82f9b1ffe0d0d92
-  - enabled: 1
     path: Assets/Scenes/Rotating Bridges Level [Checkpoint Test].unity
     guid: 7f447ae3db584404d912035954666772
+  - enabled: 1
+    path: Assets/Scenes/Moving Platform Level.unity
+    guid: ee49d5774d725a3449e0b6cde2dd14f7
+  - enabled: 1
+    path: Assets/Scenes/StevenHarms.unity
+    guid: 65bc83e648dcc354c862565027135d12
   m_configObjects: {}

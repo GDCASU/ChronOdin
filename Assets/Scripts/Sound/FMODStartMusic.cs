@@ -16,23 +16,20 @@ namespace FMODUnity
     {
         public EventReference Event;
         public static FMOD.Studio.EventInstance music;
+        public float startingVolume;
 
-        private float originalVolume;
+        public float originalVolume;
         private float currentVolume;
 
         void Start()
         {
             music = RuntimeManager.CreateInstance(Event);
 
+            music.setVolume(startingVolume);
             music.getVolume(out originalVolume);
-            music.setVolume(1);
 
             music.start();
-            music.release();
-
-            RuntimeManager.PlayOneShot(Event);
-
-            
+            music.release(); 
         }
         void OnDestroy()
         {

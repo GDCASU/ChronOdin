@@ -14,6 +14,7 @@ public class PlayerReverse : MonoBehaviour
 {
     public PlayerController playerMovement;
     public PlayerCamera playerCamera;
+    public FMODPlaySoundEffect sfx;
     [Range(1, 50)]
     public int positionsSavedPerSecond;
     public float amountOfTimeReversed;
@@ -70,6 +71,7 @@ public class PlayerReverse : MonoBehaviour
         playerMovement.enabled = false;
         playerCamera.ToggleRotation(false);
         storePositions = false;
+        sfx.PlaySoundEffect();
 
         int i = previousPositions.Count - 1;
         while (i >= 0)
