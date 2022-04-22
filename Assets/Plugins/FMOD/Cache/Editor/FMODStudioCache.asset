@@ -150,7 +150,7 @@ MonoBehaviour:
   Path: TimePuzzleFmod/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 637861960781657082
+  lastModified: 637862003474816059
   FileSizes:
   - Name: Desktop
     Value: 1818
@@ -281,7 +281,7 @@ MonoBehaviour:
   - {fileID: 163200889913657394}
   StringsBanks:
   - {fileID: -4050531919295822242}
-  cacheTime: 637861960781657082
+  cacheTime: 637862003474816059
   cacheVersion: 10
 --- !u!114 &163200889913657394
 MonoBehaviour:
@@ -298,10 +298,10 @@ MonoBehaviour:
   Path: TimePuzzleFmod/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 637861960781637076
+  lastModified: 637862003474786069
   FileSizes:
   - Name: Desktop
-    Value: 28394368
+    Value: 28394240
   Exists: 1
 --- !u!114 &381136054600359891
 MonoBehaviour:
@@ -703,7 +703,7 @@ MonoBehaviour:
   - {fileID: 163200889913657394}
   IsStream: 1
   Is3D: 0
-  IsOneShot: 0
+  IsOneShot: 1
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
