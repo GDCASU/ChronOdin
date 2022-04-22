@@ -47,4 +47,6 @@ public class MainMenu : MonoBehaviour
     public void Controls() => SwitchPanels(3);
     public void ExitPrompt() => SwitchPanels(4);
     public void ExitGame() => Application.Quit();
+
+    public void Credits() => SceneManager.LoadScene((int)Levels.credits);
 }
