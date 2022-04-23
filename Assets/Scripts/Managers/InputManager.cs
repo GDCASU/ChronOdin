@@ -55,6 +55,7 @@ public class InputManager : MonoBehaviour {
     }
     public static int inputType;
     public static InputMode inputMode;
+    public static InputManager singleton;
     // there is literally no reason for this to exist ffs
     [SerializeField]
     public static PlayerAction[] playerActions = new PlayerAction[12];
@@ -83,7 +84,7 @@ public class InputManager : MonoBehaviour {
         {PlayerAxis.UI_Vertical, "Right Joystick Vertical"},
     };
 
-    public static Dictionary<PlayerAxis, string > mouseAxis = new Dictionary <PlayerAxis, string> {
+    public static Dictionary<PlayerAxis, string > keboardAxis = new Dictionary <PlayerAxis, string> {
         {PlayerAxis.MoveHorizontal, "Horizontal"},
         {PlayerAxis.MoveVertical, "Vertical"},
         {PlayerAxis.CameraHorizontal, "Mouse X"},
@@ -98,6 +99,15 @@ public class InputManager : MonoBehaviour {
         if (Input.GetJoystickNames().Length > 0 && Input.GetJoystickNames()[0]!="") inputMode = InputMode.both;
         else inputMode = InputMode.keyboard;
     }
+    void Awake()
+    {
+        if (singleton == null)
+            singleton = this;
+        else
+            Destroy(gameObject);
+
+        DontDestroyOnLoad(gameObject);
+    }
     public static void ResetKeycodes () {
         playerActions[0].keyboardKey = KeyCode.E;
         playerActions[0].xboxKey = KeyCode.JoystickButton2;
@@ -106,7 +116,7 @@ public class InputManager : MonoBehaviour {
         playerActions[2].keyboardKey = KeyCode.LeftControl;
         playerActions[2].xboxKey = KeyCode.JoystickButton1;
         playerActions[3].keyboardKey = KeyCode.LeftShift;
-        playerActions[3].xboxKey = KeyCode.Joystick1Button8;
+        playerActions[3].xboxKey = KeyCode.JoystickButton8;
         playerActions[4].keyboardKey = KeyCode.F;
         playerActions[4].xboxKey = KeyCode.JoystickButton5;
         playerActions[5].keyboardKey = KeyCode.R;
@@ -159,7 +169,7 @@ public class InputManager : MonoBehaviour {
         return input;
     }
     public static float GetAxis (PlayerAxis axis) {
-        var mouse = mouseAxis.ContainsKey(axis) ? Input.GetAxis(mouseAxis[axis]) : 0;
+        var mouse = keboardAxis.ContainsKey(axis) ? Input.GetAxis(keboardAxis[axis]) : 0;
         var controller = joyAxis.ContainsKey(axis) ? Input.GetAxis(joyAxis[axis]) : 0;
         
         return (inputMode == InputMode.both && controller != 0) || inputMode == InputMode.controller ? controller : mouse;

@@ -125,6 +125,7 @@ public partial class PlayerController : MonoBehaviour
     }
     void Start()
     {
+        lastViablePosition = transform.position;
         capCollider = GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
         fixedUpdate = new WaitForFixedUpdate();

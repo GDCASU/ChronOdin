@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1193383302974193100
 Transform:
   m_ObjectHideFlags: 0
@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 2806153834840606455}
   - component: {fileID: 2806153834840606452}
   - component: {fileID: 2806153834840605960}
+  - component: {fileID: 429835235531470732}
   m_Layer: 0
   m_Name: Press Button
   m_TagString: Interactable
@@ -140,9 +141,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1f8f1e068bdc7241a3a496b20fb5b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameObjects:
-  - {fileID: 0}
+  buttonDoor: {fileID: 0}
+  effect: {fileID: 429835235531470732}
   pressed: 0
+--- !u!114 &429835235531470732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2806153834840606451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9df3f5a2eaab83f43bb78f2ca6c62e23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event:
+    Guid:
+      Data1: 536123956
+      Data2: 1257672658
+      Data3: -1297584712
+      Data4: -2138642764
+    Path: event:/SFX/ButtonPressed
+  startingVolume: 0.7
+  playOnStart: 0
 --- !u!1 &5749556807504290005
 GameObject:
   m_ObjectHideFlags: 0

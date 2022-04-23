@@ -11,7 +11,8 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
     private Vector3 originalRotation;
     private bool open;
     public int numOfButtonsRequired = 1;
-    private int _numOfButtonsRequired;
+    public int _numOfButtonsRequired;
+    public bool isMoving;
 
     [SerializeField] private Material _litMaterial;
     [SerializeField] private Material _unlitMaterial;
@@ -31,26 +32,34 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
     }
     public void Increment()
     {
-        _numOfButtonsRequired++;
-        UpdateIndicators();
-        if (_numOfButtonsRequired == numOfButtonsRequired)
+        if (!isMoving)
         {
-            StartCoroutine(MoveDoor());
+            _numOfButtonsRequired++;
+            UpdateIndicators();
+            if (_numOfButtonsRequired == numOfButtonsRequired)
+            {
+                StartCoroutine(MoveDoor());
+            }
         }
     }
 
     public void Decrement()
     {
-        if (_numOfButtonsRequired == numOfButtonsRequired)
+        if (!isMoving)
         {
-            StartCoroutine(MoveDoor());
+            _numOfButtonsRequired--;
+            UpdateIndicators();
+            if (_numOfButtonsRequired != numOfButtonsRequired)
+            {
+                StartCoroutine(MoveDoor());
+            }
         }
-        _numOfButtonsRequired--;
-        UpdateIndicators();
     }
 
     IEnumerator MoveDoor()
     {
+        isMoving = true;
+        GetComponent<FMODPlay3DSoundEffect>().PlaySoundEffect();
         Vector3 endPosition = open?(swingsOpen ? originalRotation: originalPosition): moveToVector;
         Vector3 startingPosition = swingsOpen? transform.rotation.eulerAngles : transform.position;
         Vector3 lerpVector;
@@ -64,6 +73,7 @@ public class PressButtonDoor: SimpleTimeManipulation, LinkedToPressButton
             yield return new WaitForFixedUpdate();
         }
         open = !open;
+        isMoving = false;
     }
 
     private void StartIndicators()
