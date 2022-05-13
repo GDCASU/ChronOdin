@@ -11,16 +11,12 @@ public class MainMenu : MonoBehaviour
     public int currentPanel;
     public List<GameObject> panels;
 
-    public float music = .7f;
-    public float sfx = .5f;
-    public float ambient;
-
     public delegate void MusicVolumeUpdated();
     public event MusicVolumeUpdated musicUpdated;
     public delegate void SFXVolumeUpdated();
     public event SFXVolumeUpdated sfxUpdated;
     public delegate void AmbientVolumeUpdated();
-    public event SFXVolumeUpdated ambientUpdated;
+    public event AmbientVolumeUpdated ambientUpdated;
     private void Awake()
     {
         if (singleton == null)
@@ -71,17 +67,17 @@ public class MainMenu : MonoBehaviour
 
     public void UpdateMusicVolume(float value)
     {
-        music = value;
+        AudioVolumeValues.singleton.MusicVolume = value;
         if (musicUpdated != null) musicUpdated();
     }
     public void UpdateSFXVolume(float value)
     {
-        sfx = value;
+        AudioVolumeValues.singleton.SFXVolume = value;
         if (sfxUpdated != null) sfxUpdated();
     }
     public void UpdateAmbientVolume(float value)
     {
-        ambient = value;
+        AudioVolumeValues.singleton.AmbientVolume = value;
         if (ambientUpdated != null) ambientUpdated();
     }
 }

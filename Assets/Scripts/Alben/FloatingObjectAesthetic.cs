@@ -65,7 +65,7 @@ public class FloatingObjectAesthetic : MonoBehaviour
         transform.Rotate(rotateX, rotateY, rotateZ);
 
         // Movement
-        rb.AddForce(acceleratedMovement, ForceMode.Acceleration);
+        rb.velocity = acceleratedMovement;
         /*if (readyToChangeDir && (Mathf.Approximately(rb.velocity.x, 0) || Mathf.Approximately(rb.velocity.y, 0) || Mathf.Approximately(rb.velocity.z, 0)))
         {
             readyToChangeDir = false;
@@ -82,7 +82,7 @@ public class FloatingObjectAesthetic : MonoBehaviour
     {
         yield return new WaitForSeconds(directionTime);
         // readyToChangeDir = true;
-        acceleratedMovement = acceleratedMovement * -1;
+        acceleratedMovement *= -1;
         StartCoroutine(switchDirections(directionTime * directionWaitMultiplier));
     }
 }

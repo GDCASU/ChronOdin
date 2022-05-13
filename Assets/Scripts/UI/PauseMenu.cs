@@ -17,21 +17,17 @@ public class PauseMenu : MonoBehaviour
     public float reactivateControllerDelay;
     public bool messagePreped = false;
 
-
-    public float music;
-    public float sfx;
-    public float ambient;
-
     public delegate void MusicVolumeUpdated();
     public event MusicVolumeUpdated musicUpdated;
     public delegate void SFXVolumeUpdated();
     public event SFXVolumeUpdated sfxUpdated;
     public delegate void AmbientVolumeUpdated();
-    public event SFXVolumeUpdated ambientUpdated;
+    public event AmbientVolumeUpdated ambientUpdated;
     void Start()
     {
         Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.Locked;
+        SetVolumeSliderValues();
     }
     private void Awake()
     {
@@ -103,6 +99,14 @@ public class PauseMenu : MonoBehaviour
     public void MainMenuPrompt() => SwitchPanels(5);
     public void MainMenu() => SceneManager.LoadScene((int)Levels.title, LoadSceneMode.Single);
 
+    private void SetVolumeSliderValues()
+    {
+        Slider[] sliders = panels[3].GetComponentsInChildren<Slider>();
+        sliders[0].value = AudioVolumeValues.singleton.MusicVolume;
+        sliders[1].value = AudioVolumeValues.singleton.SFXVolume;
+        sliders[2].value = AudioVolumeValues.singleton.AmbientVolume;
+    }
+
     public void DisplayNote(string message)
     {
         SwitchPanels(6);
@@ -127,17 +131,17 @@ public class PauseMenu : MonoBehaviour
     }
     public void UpdateMusicVolume(float value)
     {
-        music = value;
+        AudioVolumeValues.singleton.MusicVolume = value;
         if (musicUpdated != null) musicUpdated();
     }
     public void UpdateSFXVolume(float value)
     {
-        sfx = value;
+        AudioVolumeValues.singleton.SFXVolume = value;
         if (sfxUpdated != null) sfxUpdated();
     }
     public void UpdateAmbientVolume(float value)
     {
-        ambient = value;
+        AudioVolumeValues.singleton.AmbientVolume = value;
         if (ambientUpdated != null) ambientUpdated();
     }
 }
