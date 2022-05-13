@@ -24307,22 +24307,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5104804153291178905, guid: a28b5a3689fcbe244980c64d801a570a, type: 3}
       propertyPath: noteContent
-      value: 'Thou hast show strength and intellect,
-
-        Yet hast thou proven
-        redemption?
-
-        Here, whence past and present connect,
-
-        Thou
-        hast been granted another invitation.
-
-        Only a sacrifice in the name
-        of Valfather,
-
-        Will thou find sanctuary in Valhalla.
-
-'
+      value: "Thou hast shown strength and intellect,\r\nYet hast thou proven redemption?\r\nHere,
+        whence past and present connect,\r\nThou hast been granted another invitation.\r\nOnly
+        a sacrifice in the name of Valfather,\r\nWill thou find sanctuary in Valhalla.\r"
       objectReference: {fileID: 0}
     - target: {fileID: 5592407475734993186, guid: a28b5a3689fcbe244980c64d801a570a, type: 3}
       propertyPath: m_RootOrder
