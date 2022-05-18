@@ -35,8 +35,8 @@ public class GemstoneUnlockMessage : InteractiveNote
         else
         {
             messageS = InputManager.playerXboxButtons[freezeAction.xboxKey];
-            messageO = InputManager.playerXboxButtons[objectAction.xboxKey];
-            messageW = InputManager.playerXboxButtons[worldAction.xboxKey];
+            messageO = InputManager.joyAxis[PlayerInput.PlayerAxis.RightTrigger];
+            messageW = InputManager.joyAxis[PlayerInput.PlayerAxis.LeftTrigger];
         }
 
         string message = customMessageOne + messageS + customMessageTwo + messageO + customMessageThree + messageW + customMessageFour;

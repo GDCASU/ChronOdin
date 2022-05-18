@@ -24,7 +24,7 @@ namespace FMODUnity
             music.setVolume(AudioVolumeValues.singleton.MusicVolume);
 
             music.start();
-            music.release();
+            //music.release();
 
 
             if (MainMenu.singleton)

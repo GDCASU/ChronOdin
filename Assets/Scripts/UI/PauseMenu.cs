@@ -55,12 +55,7 @@ public class PauseMenu : MonoBehaviour
                     ResumeGame();
                     break;
                 case 6:
-                    if (messagePreped)
-                    {
-                        SwitchPanels(7);
-                        messagePreped = false;
-                    }
-                    else
+                    if (!messagePreped)
                     {
                         SwitchPanels(0);
                         StartCoroutine(RestartControllerDelay());
@@ -74,6 +69,12 @@ public class PauseMenu : MonoBehaviour
                     SwitchPanels(1);
                     break;
             }
+        }
+        if (messagePreped && Input.anyKeyDown)
+        {
+            SwitchPanels(7);
+            messagePreped = false;
+            StartCoroutine(RestartControllerDelay());
         }
     }
     public void SwitchPanels(int panelToActivate)
