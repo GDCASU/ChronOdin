@@ -18,9 +18,11 @@ public class PressButton : MonoBehaviour, InteractiveObject
         if (linkedDoor != null && !linkedDoor.isMoving)
         {
             effect.PlaySoundEffect();
-            if (!pressed) linkedDoor.Increment();
-            else linkedDoor.Decrement();
-            pressed = !pressed;
+            if (!pressed)
+            {
+                linkedDoor.Increment();
+                pressed = true;
+            } 
         }
     }
 }

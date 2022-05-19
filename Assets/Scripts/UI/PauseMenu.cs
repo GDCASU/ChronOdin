@@ -74,7 +74,7 @@ public class PauseMenu : MonoBehaviour
         {
             SwitchPanels(7);
             messagePreped = false;
-            StartCoroutine(RestartControllerDelay());
+            //StartCoroutine(RestartControllerDelay());
         }
     }
     public void SwitchPanels(int panelToActivate)

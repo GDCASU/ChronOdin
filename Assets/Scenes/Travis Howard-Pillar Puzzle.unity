@@ -12481,8 +12481,9 @@ MonoBehaviour:
   noteContent: A gift from a previous warrior
   customMessageOne: 'Time Freeze Unlocked. Press  '
   customMessageTwo: ' to select it. Use '
-  customMessageThree: ' to slow down a single object or hold down '
-  customMessageFour: ' to slow down the entire room'
+  customMessageThree: ' to freeze a single object or hold down '
+  customMessageFour: ' to freeze the entire room. Press escape or B to close this
+    menu.'
   freezeButton: 4
   objectButton: 8
   worldButton: 7
@@ -99066,15 +99067,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8225854368876441687, guid: 84edb829044563e40a96a9579f6a350c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.0999999
+      value: 6.81
       objectReference: {fileID: 0}
     - target: {fileID: 8225854368876441687, guid: 84edb829044563e40a96a9579f6a350c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 12.61
+      value: 12.39
       objectReference: {fileID: 0}
     - target: {fileID: 8225854368876441687, guid: 84edb829044563e40a96a9579f6a350c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.846
+      value: 2.27
       objectReference: {fileID: 0}
     - target: {fileID: 8225854368876441687, guid: 84edb829044563e40a96a9579f6a350c, type: 3}
       propertyPath: m_LocalRotation.w
