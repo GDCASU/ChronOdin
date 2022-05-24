@@ -206,7 +206,11 @@ public partial class PlayerController
             if (playerLeftGround != null) playerLeftGround();
         }
         isGrounded = groundCheck;
-        if (x == 0 && z == 0 && isGrounded) friction = baseMovementVariables.noInputFriction;
+        if (isGrounded)
+        {
+            if (x == 0 && z == 0) friction = baseMovementVariables.noInputFriction;
+            else friction = baseMovementVariables.groundFriction;
+        } 
         //If close to a small step, raise the player to the height of the step for a smoother feeling movement
         float maxDistance = capCollider.radius * (1 + ((isSprinting) ? (rb.velocity.magnitude / baseMovementVariables.maxSprintVelocity) : 0));
 

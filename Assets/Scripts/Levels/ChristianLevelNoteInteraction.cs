@@ -37,8 +37,8 @@ public class ChristianLevelNoteInteraction : InteractiveNote
         else
         {
             messageS = InputManager.playerXboxButtons[slowAction.xboxKey];
-            messageO = InputManager.playerXboxButtons[objectAction.xboxKey]; 
-            messageW = InputManager.playerXboxButtons[worldAction.xboxKey];
+            messageO = InputManager.joyAxis[PlayerInput.PlayerAxis.RightTrigger];
+            messageW = InputManager.joyAxis[PlayerInput.PlayerAxis.LeftTrigger];
         }
 
         string message = customMessageOne + messageS + customMessageTwo + messageO + customMessageThree + messageW + customMessageFour;
