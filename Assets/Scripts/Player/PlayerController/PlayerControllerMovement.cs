@@ -95,12 +95,12 @@ public partial class PlayerController
         speedIncrease = (isSprinting) ? baseMovementVariables.sprintSpeedIncrease : baseMovementVariables.walkSpeedIncrease;
         maxVelocity = (isSprinting) ? baseMovementVariables.maxSprintVelocity : baseMovementVariables.maxWalkVelocity;
 
-        if (Input.GetKey(KeyCode.W)) z = speedIncrease;
-        else if (Input.GetKey(KeyCode.S)) z = -speedIncrease;
-        else z = 0;
-        if (Input.GetKey(KeyCode.D)) x = speedIncrease;
-        else if (Input.GetKey(KeyCode.A)) x = -speedIncrease;
-        else x = 0;
+        //if (Input.GetKey(KeyCode.W)) z = speedIncrease;
+        //else if (Input.GetKey(KeyCode.S)) z = -speedIncrease;
+        //else z = 0;
+        //if (Input.GetKey(KeyCode.D)) x = speedIncrease;
+        //else if (Input.GetKey(KeyCode.A)) x = -speedIncrease;
+        //else x = 0;
 
         x = InputManager.GetAxis(PlayerInput.PlayerAxis.MoveHorizontal);
         z = InputManager.GetAxis(PlayerInput.PlayerAxis.MoveVertical);
@@ -206,7 +206,11 @@ public partial class PlayerController
             if (playerLeftGround != null) playerLeftGround();
         }
         isGrounded = groundCheck;
-        if (x == 0 && z == 0 && isGrounded) friction = baseMovementVariables.noInputFriction;
+        if (isGrounded)
+        {
+            if (x == 0 && z == 0) friction = baseMovementVariables.noInputFriction;
+            else friction = baseMovementVariables.groundFriction;
+        } 
         //If close to a small step, raise the player to the height of the step for a smoother feeling movement
         float maxDistance = capCollider.radius * (1 + ((isSprinting) ? (rb.velocity.magnitude / baseMovementVariables.maxSprintVelocity) : 0));
 
@@ -224,7 +228,7 @@ public partial class PlayerController
             baseMovementVariables.kneesCheck = Physics.Raycast(transform.position - Vector3.up * capCollider.height * .24f, (direction - rb.velocity.y * Vector3.up), dist, ~ignores);
             if (!baseMovementVariables.kneesCheck && playerState == PlayerState.Grounded && (x != 0 || z != 0))
             {
-                StartCoroutine(FakeGround());
+                //StartCoroutine(FakeGround());
                 isGrounded = true;
             }
             baseMovementVariables.kneesCheck = false;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{9c051442-3500-4d30-9f39-dba1db8aa3f4}">
+		<property name="assetPath">
+			<value>Got_An_Item_sound_eff.mp3</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>10.057142857142857</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{1707f46f-de64-4dde-a029-9a87cfb357d5}</destination>
+		</relationship>
+	</object>
+</objects>

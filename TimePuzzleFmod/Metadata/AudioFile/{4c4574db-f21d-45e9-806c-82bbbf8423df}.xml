@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{4c4574db-f21d-45e9-806c-82bbbf8423df}">
+		<property name="assetPath">
+			<value>Music/Levels/Master/The Iron Valley no rock Master.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>195.31034013605444</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{1707f46f-de64-4dde-a029-9a87cfb357d5}</destination>
+		</relationship>
+	</object>
+</objects>

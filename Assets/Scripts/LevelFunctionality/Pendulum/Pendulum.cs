@@ -145,8 +145,9 @@ public class Pendulum : SimpleTimeManipulation
         float forceMagnitude = 0;
         if (collision.transform.CompareTag("Player"))
         {
-            forceMagnitude = (velocity.magnitude * (1f / (maxBallVelocity == 0 ? .001f : maxBallVelocity) ) ) * Mathf.Lerp(maxPlayerHitForce, minPlayerHitForce, collisionAngle * (1f / 90f));
-            collidedBody.AddForce(launchDirection * forceMagnitude);
+            PlayerController.singleton.ResetPosition();
+            //forceMagnitude = (velocity.magnitude * (1f / (maxBallVelocity == 0 ? .001f : maxBallVelocity) ) ) * Mathf.Lerp(maxPlayerHitForce, minPlayerHitForce, collisionAngle * (1f / 90f));
+            //collidedBody.AddForce(launchDirection * forceMagnitude);
         }
         else if (collidedBody != null)
         {

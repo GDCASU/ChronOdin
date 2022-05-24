@@ -40,8 +40,8 @@ public class AbilityManager : MonoBehaviour
 
         if (InputManager.inputMode == InputManager.InputMode.controller || InputManager.inputMode == InputManager.InputMode.both)
         {
-            globalBuffer = (!globalBuffer)? (InputManager.GetAxis(PlayerInput.PlayerAxis.RightTrigger)!=0 ? true : false) : globalBuffer;
-            localBuffer = (!localBuffer)? (InputManager.GetAxis(PlayerInput.PlayerAxis.LeftTrigger)!=0 ? true : false) : localBuffer;
+            globalBuffer = (!globalBuffer)? (InputManager.GetAxis(PlayerInput.PlayerAxis.LeftTrigger)!=0 ? true : false) : globalBuffer;
+            localBuffer = (!localBuffer)? (InputManager.GetAxis(PlayerInput.PlayerAxis.RightTrigger)!=0 ? true : false) : localBuffer;
         }
         if (localBuffer!=currentLocal && localBuffer)
         {

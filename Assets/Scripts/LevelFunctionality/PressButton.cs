@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class PressButton : MonoBehaviour, InteractiveObject
 {
-    public GameObject[] gameObjects;
+    public GameObject buttonDoor;
+    public FMODPlay3DSoundEffect effect;
     public bool pressed;
+    PressButtonDoor linkedDoor;
+    private void Start()
+    {
+        linkedDoor = buttonDoor.GetComponent<PressButtonDoor>();
+    }
 
-    // InteractiveObject carries a generic type because NotePickup.cs needed it.
     public void Interact()
     {
-        foreach (GameObject obj in gameObjects)
+        if (linkedDoor != null && !linkedDoor.isMoving)
         {
-            if (!pressed) obj.GetComponent<LinkedToPressButton>().Increment();
-            else obj.GetComponent<LinkedToPressButton>().Decrement();
+            effect.PlaySoundEffect();
+            if (!pressed)
+            {
+                linkedDoor.Increment();
+                pressed = true;
+            } 
         }
-        pressed = !pressed;
     }
 }

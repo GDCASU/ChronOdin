@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4054154246375637065}
   - component: {fileID: 4054154246375637070}
+  - component: {fileID: -6067784467365050626}
   m_Layer: 0
   m_Name: PressButtonSlidingDoor
   m_TagString: Untagged
@@ -46,11 +47,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveToVector: {x: 0, y: 3, z: 0}
   swingsOpen: 0
-  speed: 2
+  speed: 1
   numOfButtonsRequired: 1
   _litMaterial: {fileID: 2100000, guid: 65c2f596f9c64c04faed95235bf2a808, type: 2}
   _unlitMaterial: {fileID: 2100000, guid: d221a12701439fe4980fcfda80d1cf22, type: 2}
   _indicatorObject: {fileID: 5443050834140431224, guid: a829359a00441d94885297acdaaec5fd, type: 3}
+--- !u!114 &-6067784467365050626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4054154246375637071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9df3f5a2eaab83f43bb78f2ca6c62e23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event:
+    Guid:
+      Data1: -578028204
+      Data2: 1322383276
+      Data3: -2029072217
+      Data4: 1489454930
+    Path: event:/SFX/RockSliding
+  startingVolume: 1
 --- !u!1 &5905582742493122218
 GameObject:
   m_ObjectHideFlags: 0

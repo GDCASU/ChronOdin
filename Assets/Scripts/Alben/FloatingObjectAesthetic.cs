@@ -32,7 +32,7 @@ public class FloatingObjectAesthetic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = this.gameObject.GetComponent<Rigidbody>();
+        rb = gameObject.GetComponent<Rigidbody>();
         acceleratedMovement = new Vector3(startSpeedX, startSpeedY, startSpeedZ);
         // readyToChangeDir = false;
 
@@ -55,17 +55,17 @@ public class FloatingObjectAesthetic : MonoBehaviour
         rotateY = maxRotateSpeedY;
         rotateZ = maxRotateSpeedZ;
 
-        StartCoroutine(switchDirections(this.directionTime));
+        StartCoroutine(switchDirections(directionTime));
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         // Rotation
-        this.transform.Rotate(rotateX, rotateY, rotateZ);
+        transform.Rotate(rotateX, rotateY, rotateZ);
 
         // Movement
-        rb.AddForce(acceleratedMovement, ForceMode.Acceleration);
+        rb.velocity = acceleratedMovement;
         /*if (readyToChangeDir && (Mathf.Approximately(rb.velocity.x, 0) || Mathf.Approximately(rb.velocity.y, 0) || Mathf.Approximately(rb.velocity.z, 0)))
         {
             readyToChangeDir = false;
@@ -82,7 +82,7 @@ public class FloatingObjectAesthetic : MonoBehaviour
     {
         yield return new WaitForSeconds(directionTime);
         // readyToChangeDir = true;
-        acceleratedMovement = acceleratedMovement * -1;
-        StartCoroutine(switchDirections(this.directionTime * directionWaitMultiplier));
+        acceleratedMovement *= -1;
+        StartCoroutine(switchDirections(directionTime * directionWaitMultiplier));
     }
 }
